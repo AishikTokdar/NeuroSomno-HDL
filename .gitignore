@@ -1,0 +1,45 @@
+# MATLAB generated files
+*.asv
+*.m~
+*.mex*
+slprj/
+*.slxc
+*.autosave
+
+# Vivado generated files
+*.jou
+*.log
+*.str
+*.bit
+*.ltx
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.gen/
+.Xil/
+*.xpr
+*.wdb
+*.vcd
+!results/*.png
+
+# Large dataset files - do not commit EDF recordings
+*.edf
+*.EDF
+*.mat
+!docs/*.mat
+
+# MIF files with actual trained weights (large binary data)
+# hardware/mif/*.mif  <- keep sample MIF files, ignore large ones
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
