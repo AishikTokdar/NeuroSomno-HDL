@@ -1,3 +1,6 @@
+if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
+    cd('..');
+end
 load('dataset/eeg_train.mat', 'eeg_train');
 load('dataset/train_labels.mat', 'train_labels');
 X_0 = eeg_train(train_labels == 0, :);
