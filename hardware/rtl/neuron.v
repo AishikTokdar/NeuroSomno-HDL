@@ -47,13 +47,14 @@ module neuron #(
     reg signed [31:0] acc;
     reg [11:0] cnt;
     reg [1:0] state;
-    wire signed [15:0] s_x = i_data;
+    reg signed [15:0] s_x_reg;
     wire signed [15:0] s_w = w_data;
     reg signed [31:0] prod;
     reg prod_valid;
     always @(posedge clk) begin
         if (i_valid) begin
-            prod <= (s_x * s_w) >>> 13;
+            s_x_reg <= $signed(i_data);
+            prod <= ($signed(s_x_reg) * s_w) >>> 13;
         end
     end
     always @(posedge clk) begin
