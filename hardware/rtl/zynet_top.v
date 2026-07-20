@@ -78,7 +78,7 @@ module zynet_top (
             end
         end
     end
-    assign s_axis_tready = !running;
+    assign s_axis_tready = running;
     wire net_rst = rst || soft_rst;
     wire l1_valid;
     wire [15:0] l1_data;

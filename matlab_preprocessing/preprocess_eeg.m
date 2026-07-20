@@ -1,3 +1,6 @@
+if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
+    cd('..');
+end
 if ~exist('dataset', 'dir')
     mkdir('dataset');
 end

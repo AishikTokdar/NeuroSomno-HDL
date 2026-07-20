@@ -1,10 +1,10 @@
-# ⚙️ MATLAB Preprocessing & Model Training Details
+# MATLAB Preprocessing & Model Training Details
 
 This directory contains the MATLAB R2023b scripts used to process raw EEG signals, train the neural network classifiers, and export quantized parameters for hardware simulation.
 
 ---
 
-## 📋 Detailed Script Specifications
+## Detailed Script Specifications
 
 | Script | Inputs | Outputs | Purpose & Logic |
 | :--- | :--- | :--- | :--- |
@@ -18,7 +18,7 @@ This directory contains the MATLAB R2023b scripts used to process raw EEG signal
 
 ---
 
-## 📈 Preprocessing & Filtering Mathematics
+## Preprocessing & Filtering Mathematics
 
 ### 1. IIR Notch Filter (50 Hz)
 To suppress powerline hum, a notch filter is designed:
@@ -42,7 +42,7 @@ Where:
 
 ---
 
-## 🛠️ Prerequisites & Toolbox Dependencies
+## Prerequisites & Toolbox Dependencies
 
 Ensure you have the following toolboxes installed in your MATLAB environment:
 *   **Deep Learning Toolbox** (for neural net construction and training)
@@ -52,7 +52,7 @@ Ensure you have the following toolboxes installed in your MATLAB environment:
 
 ---
 
-## 🔄 Step-by-Step Run Order
+## Step-by-Step Run Order
 
 Open MATLAB and execute the scripts in the following order:
 

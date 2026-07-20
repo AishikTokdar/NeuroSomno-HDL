@@ -1,3 +1,6 @@
+if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
+    cd('..');
+end
 load('fcn_model.mat', 'fcnNet');
 if ~exist('hardware/mif', 'dir')
     mkdir('hardware/mif');

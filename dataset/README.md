@@ -1,10 +1,10 @@
-# 📊 EEG Dataset Setup Guide
+# EEG Dataset Setup Guide
 
 This document describes how to obtain and configure the European Data Format (EDF) signals for training and validating the **NeuroSomno-HDL** model.
 
 ---
 
-## 🔍 Dataset Details
+## Dataset Details
 *   **Database:** St. Vincent's University Hospital / UCD Sleep Apnea Database (UCDDB)
 *   **Provider:** PhysioNet
 *   **Format:** European Data Format (EDF)
@@ -13,7 +13,7 @@ This document describes how to obtain and configure the European Data Format (ED
 
 ---
 
-## 🛠️ Step-by-Step Dataset Download Procedure
+## Step-by-Step Dataset Download Procedure
 
 ### 1. Manual Download from PhysioNet
 1. Navigate to the official PhysioNet UCDDB page: [https://physionet.org/content/ucddb/1.0.0/](https://physionet.org/content/ucddb/1.0.0/).
@@ -28,7 +28,7 @@ This document describes how to obtain and configure the European Data Format (ED
 
 ---
 
-## 🔄 Fallback: Running with Synthetic Data
+## Fallback: Running with Synthetic Data
 
 > [!TIP]
 > If you want to test the complete training, weight extraction, and RTL simulation pipeline immediately without downloading large external databases:

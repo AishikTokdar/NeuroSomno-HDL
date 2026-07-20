@@ -1,5 +1,8 @@
+if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
+    cd('..');
+end
 load('dataset/eeg_train_balanced.mat', 'eeg_train');
-load('dataset/train_labels.mat', 'train_labels');
+load('dataset/train_labels_balanced.mat', 'train_labels');
 load('dataset/eeg_valid.mat', 'eeg_valid');
 load('dataset/valid_labels.mat', 'valid_labels');
 X_train_reshaped = reshape(eeg_train', [2816, 1, 1, size(eeg_train, 1)]);

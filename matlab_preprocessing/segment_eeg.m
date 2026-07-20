@@ -1,3 +1,6 @@
+if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
+    cd('..');
+end
 c3Files = dir(fullfile('dataset', '*_C3A2.mat'));
 X = [];
 Y = [];

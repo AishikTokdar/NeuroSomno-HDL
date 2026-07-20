@@ -1,10 +1,10 @@
-# 🧠 NeuroSomno-HDL — Complete Architecture & Interface Specification
+# NeuroSomno-HDL — Architecture & Interface Specification
 
 This document provides the full system design specifications, latency analyses, and register configurations for the **NeuroSomno-HDL** sleep apnea detection accelerator.
 
 ---
 
-## 🛠️ 1. Top-Level Pipelined System Diagram
+## 1. Top-Level Pipelined System Diagram
 
 ```
       ┌─────────────────────────────────────────────────┐
@@ -40,7 +40,7 @@ This document provides the full system design specifications, latency analyses, 
 
 ---
 
-## ⏱️ 2. Timing & Latency Analysis
+## 2. Timing & Latency Analysis
 
 ### Clock Cycles per Layer
 The network computes layer outputs sequentially in a feed-forward manner. The clock cycle counts for each layer are bounded by the number of inputs and weights processed:
@@ -67,7 +67,7 @@ The network computes layer outputs sequentially in a feed-forward manner. The cl
 
 ---
 
-## 📋 3. Register Configuration Map
+## 3. Register Configuration Map
 
 The AXI-Lite registers allow the PS to monitor and program the network parameters. All registers are 32-bit aligned.
 
@@ -86,7 +86,7 @@ The AXI-Lite registers allow the PS to monitor and program the network parameter
 
 ---
 
-## 🔄 4. Layer Serialization FSM
+## 4. Layer Serialization FSM
 
 Each layer (e.g., `layer1.v`) coordinates the execution of its parallel neuron array and serializes the resulting outputs to stream to the next layer:
 
@@ -106,7 +106,7 @@ stateDiagram-v2
 
 ---
 
-## ⚙️ 5. Pipelined MAC Execution Model
+## 5. Pipelined MAC Execution Model
 
 Each single neuron PE computes MAC operations in a three-stage pipeline to optimize clock speeds:
 

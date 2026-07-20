@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroSomno-HDL — Sleep Apnea Detection on FPGA</title>
+    <meta name="description" content="Edge-Intelligent Sleep Apnea Detection Framework on Zynq-7000 FPGA using Hybrid 1D-CNN and Quantized Fixed-Point Verilog HDL Accelerator.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <nav class="navbar">
+        <a href="#" class="brand">
+            <span>NeuroSomno-HDL</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#fpgaboard">ZedBoard FPGA</a></li>
+            <li><a href="#results">Results & FPGA Synthesis</a></li>
+            <li><a href="#execution">Execution Guide</a></li>
+            <li><a href="#registers">AXI Register Map</a></li>
+        </ul>
+        <a href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" class="github-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub Repository
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero container" id="overview">
+        <div class="hero-pill">
+            <span>Zynq-7000 ZedBoard FPGA Accelerator</span>
+        </div>
+        <h1 class="hero-title">Real-Time Sleep Apnea Detection<br>using Fixed-Point Verilog HDL</h1>
+        <p class="hero-subtitle">
+            An end-to-end edge-intelligent biomedical processing pipeline. Features raw EEG artifact filtering, SMOTE class balancing, a hybrid 1D-CNN, and a Q3.13 16-bit pipelined hardware accelerator fully simulated in Xilinx Vivado.
+        </p>
+
+        <div class="hero-actions">
+            <a href="#execution" class="btn-primary">Get Started & Run Simulation</a>
+            <a href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" class="btn-secondary">View GitHub Source</a>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">99.62%</div>
+                <div class="stat-label">MATLAB Model Accuracy</div>
+                <div class="stat-subtext">1D-CNN + SMOTE Balancing</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">89.00%</div>
+                <div class="stat-label">FPGA Quantized Accuracy</div>
+                <div class="stat-subtext">Q3.13 16-Bit Signed Fixed-Point</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4.156 ns</div>
+                <div class="stat-label">Worst Negative Slack (WNS)</div>
+                <div class="stat-subtext">Timing Closure @ 100 MHz</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0.368 W</div>
+                <div class="stat-label">Total On-Chip Power</div>
+                <div class="stat-subtext">Ultra-low Power Edge Budget</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Architecture Block Diagram Explorer -->
+    <section class="section container" id="architecture">
+        <div class="section-header">
+            <h2 class="section-title">Interactive Hardware Accelerator Architecture</h2>
+            <p class="section-desc">Click on any hardware block below to explore its Verilog RTL module specifications, FPGA primitives, and clock latency.</p>
+        </div>
+
+        <div class="arch-container">
+            <div class="arch-header-hint">💡 Click any block to view RTL module details & FPGA primitives</div>
+            <div class="arch-diagram">
+                <!-- PS CPU Block -->
+                <div class="arch-block" onclick="openArchModal('ps-cpu')">
+                    <div>
+                        <div class="arch-block-tag">Host CPU System</div>
+                        <div class="arch-block-title">ARM Cortex-A9</div>
+                        <div class="arch-block-specs">AXI-Lite Control & Stream Sender</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>Zynq PS</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- AXI Wrapper Block -->
+                <div class="arch-block" onclick="openArchModal('axi-wrapper')">
+                    <div>
+                        <div class="arch-block-tag">Control Interconnect</div>
+                        <div class="arch-block-title">AXI-Lite Wrapper</div>
+                        <div class="arch-block-specs">10 Address Registers (h00–h24)</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>120 LUTs / 142 FFs</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- Layer 1 Block -->
+                <div class="arch-block" onclick="openArchModal('layer-1')">
+                    <div>
+                        <div class="arch-block-tag">Layer 1 (784 ➔ 30)</div>
+                        <div class="arch-block-title">Layer 1 (ReLU)</div>
+                        <div class="arch-block-specs">30 Parallel Neurons + 15 BRAMs</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>60 DSPs / 15 BRAMs</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- Layer 2 Block -->
+                <div class="arch-block" onclick="openArchModal('layer-2')">
+                    <div>
+                        <div class="arch-block-tag">Layer 2 (30 ➔ 30)</div>
+                        <div class="arch-block-title">Layer 2 (ReLU)</div>
+                        <div class="arch-block-specs">30 Parallel Neurons + LUTRAM</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>60 DSPs / Distributed</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- Layer 3 Block -->
+                <div class="arch-block" onclick="openArchModal('layer-3')">
+                    <div>
+                        <div class="arch-block-tag">Layer 3 (30 ➔ 10)</div>
+                        <div class="arch-block-title">Layer 3 (Sigmoid)</div>
+                        <div class="arch-block-specs">10 Neurons + 1024-word ROM</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>20 DSPs / 2560 LUTs</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- Layer 4 Block -->
+                <div class="arch-block" onclick="openArchModal('layer-4')">
+                    <div>
+                        <div class="arch-block-tag">Layer 4 (10 ➔ 10)</div>
+                        <div class="arch-block-title">Layer 4 (Sigmoid)</div>
+                        <div class="arch-block-specs">10 Output Neurons + Sigmoid</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>20 DSPs / 2560 LUTs</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+
+                <!-- Argmax Block -->
+                <div class="arch-block" onclick="openArchModal('argmax')">
+                    <div>
+                        <div class="arch-block-tag">Classification Decision</div>
+                        <div class="arch-block-title">Argmax Unit</div>
+                        <div class="arch-block-specs">Sequential Max Finder</div>
+                    </div>
+                    <div class="arch-block-footer">
+                        <span>45 LUTs / 32 FFs</span>
+                        <span>Click for details ➔</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Detail Modal Popup -->
+        <div class="modal-overlay" id="archModal">
+            <div class="modal-content">
+                <button class="modal-close" id="modalClose">✕</button>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;" id="modalModule">hardware/rtl/neuron.v</div>
+                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);" id="modalTitle">Component Title</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: var(--text-dim);">FPGA Primitives Used</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan);" id="modalPrimitives">60 DSPs, 15 BRAMs</div>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
+                        <div style="font-size: 0.75rem; color: var(--text-dim);">Datawidth & Format</div>
+                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-indigo);" id="modalDatawidth">16-bit Q3.13 Fixed-Point</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1.25rem;">
+                    <div style="font-size: 0.75rem; color: var(--text-dim);">Latency & Computation Cycles</div>
+                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald);" id="modalCycles">787 Clock Cycles</div>
+                </div>
+
+                <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;" id="modalDesc">
+                    Description goes here...
+                </div>
+            </div>
+        </div>
+
+        <!-- End-to-End Pipeline Steps -->
+        <div class="pipeline-flow">
+            <div class="flow-step">
+                <div class="step-num">01</div>
+                <div class="step-content">
+                    <div class="step-title">EEG Signal Acquisition & Preprocessing (MATLAB)</div>
+                    <div class="step-detail">Extracts C3-A2 / C4-A1 channels from UCDDB EDF recordings. Applies 50 Hz IIR Notch filter and 0.5–45 Hz 4th-order Butterworth bandpass filter.</div>
+                </div>
+                <div class="step-tag">preprocess_eeg.m</div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-num">02</div>
+                <div class="step-content">
+                    <div class="step-title">Sliding Window Segmentation & SMOTE Class Balancing</div>
+                    <div class="step-detail">Segments continuous EEG into 11-second overlapping windows (2816 features). Synthesizes minority apnea class samples using SMOTE k-NN (k=5) interpolation.</div>
+                </div>
+                <div class="step-tag">handle_imbalance.m</div>
+            </div>
+
+            <div class="flow-step">
+                <div class="step-num">03</div>
+                <div class="step-content">
+                    <div class="step-title">1D-CNN Training & Q3.13 Fixed-Point Parameter Extraction</div>
+                    <div class="step-detail">Trains hybrid CNN and downsampled 784-input target FCN network. Quantizes weights/biases into 16-bit Q3.13 signed binary arrays and generates .mif files.</div>
+                </div>
+                <div class="step-tag">extract_weights.m</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target FPGA Board & Primitive Deep Dive Section -->
+    <section class="section container" id="fpgaboard">
+        <div class="section-header">
+            <h2 class="section-title">Target FPGA Board & Hardware Primitives</h2>
+            <p class="section-desc">Detailed specs of the Xilinx ZedBoard (Zynq XC7Z020-CLG484-1) evaluation platform.</p>
+        </div>
+
+        <div class="fpga-grid">
+            <div class="fpga-card">
+                <div class="fpga-icon">LUT</div>
+                <div class="fpga-card-title">Look-Up Tables (LUT6)</div>
+                <div class="fpga-card-desc">
+                    <strong>53,200 total LUTs</strong> on the Zynq-7000 fabric. 6-input LUTs emulate any 6-variable boolean logic function, 64-bit shift registers, or Distributed RAM (LUTRAM). Used in Layer 2–4 weight memory and Sigmoid ROM LUTs (5,120 LUTs).
+                </div>
+            </div>
+
+            <div class="fpga-card">
+                <div class="fpga-icon">DSP</div>
+                <div class="fpga-card-title">DSP48E1 Multiplier Slices</div>
+                <div class="fpga-card-desc">
+                    <strong>220 total DSP slices</strong>. Each DSP48E1 slice contains a high-speed 25×18 signed multiplier and 48-bit accumulator. The design uses 160 DSPs (2 per neuron due to unsigned port casting; reducible to 80 DSPs by adding signed declarations).
+                </div>
+            </div>
+
+            <div class="fpga-card">
+                <div class="fpga-icon">RAM</div>
+                <div class="fpga-card-title">Block RAM (BRAM36 / BRAM18)</div>
+                <div class="fpga-card-desc">
+                    <strong>140 total 36Kb Block RAMs</strong> (or 280 18Kb RAMB18E1 blocks). Dedicated dual-port memory cells embedded in silicon. Layer 1 uses 15 BRAMs (0.5 RAMB18 per neuron) to store 30×784 16-bit weight parameter arrays.
+                </div>
+            </div>
+
+            <div class="fpga-card">
+                <div class="fpga-icon">STA</div>
+                <div class="fpga-card-title">Static Timing Analysis & Clocking</div>
+                <div class="fpga-card-desc">
+                    Target PL clock frequency of <strong>100 MHz</strong> (10.00 ns period) driven via MMCM/PLLE2. Pipelined 3-stage MAC execution achieves a Worst Negative Slack (WNS) of <strong>+4.156 ns</strong> ($F_{max} \approx 171.12\text{ MHz}$).
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results & Synthesis Section -->
+    <section class="section container" id="results">
+        <div class="section-header">
+            <h2 class="section-title">Results & FPGA Synthesis Footprint</h2>
+            <p class="section-desc">Validated on Xilinx ZedBoard (Zynq XC7Z020-CLG484-1) target device.</p>
+        </div>
+
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="tab-hardware">FPGA Resource Utilization</button>
+            <button class="tab-btn" data-tab="tab-software">MATLAB Software Accuracy</button>
+            <button class="tab-btn" data-tab="tab-timing">Timing & Power Summary</button>
+        </div>
+
+        <!-- Hardware Resource Tab -->
+        <div class="tab-content active" id="tab-hardware">
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Look-Up Tables (LUT)</span>
+                        <span class="resource-val">6,290 / 53,200 (11.82%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="11.82%"></div>
+                    </div>
+                    <div class="resource-meta">Implements neuron accumulators, saturation logic, and Sigmoid ROM LUTs.</div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Flip-Flops (FF)</span>
+                        <span class="resource-val">6,653 / 106,400 (6.25%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="6.25%"></div>
+                    </div>
+                    <div class="resource-meta">Implements MAC pipeline registers, layer shift registers, and AXI state machines.</div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">DSP48E1 Slices</span>
+                        <span class="resource-val">160 / 220 (72.73%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="background: var(--gradient-amber)" data-width="72.73%"></div>
+                    </div>
+                    <div class="resource-meta">16x16 signed multiplications. (Can be reduced to 80 DSPs by declaring signed input ports).</div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Block RAM (BRAM36)</span>
+                        <span class="resource-val">15.0 / 140 (10.71%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" data-width="10.71%"></div>
+                    </div>
+                    <div class="resource-meta">Stores 30x784 Layer 1 weight parameter memory arrays.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Software Model Tab -->
+        <div class="tab-content" id="tab-software">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Performance Metric</th>
+                            <th>Random Oversampling</th>
+                            <th>SMOTE Balancing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Classification Accuracy</strong></td>
+                            <td>99.53%</td>
+                            <td><strong style="color: var(--accent-cyan)">99.62%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Balanced Accuracy</strong></td>
+                            <td>91.23%</td>
+                            <td><strong style="color: var(--accent-cyan)">91.58%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sensitivity (Recall)</strong></td>
+                            <td>82.61%</td>
+                            <td><strong style="color: var(--accent-cyan)">83.33%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Specificity</strong></td>
+                            <td><strong>99.85%</strong></td>
+                            <td>99.84%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Precision</strong></td>
+                            <td><strong>91.57%</strong></td>
+                            <td>86.96%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>F1 Score</strong></td>
+                            <td><strong>0.8686</strong></td>
+                            <td>0.8511</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Timing & Power Tab -->
+        <div class="tab-content" id="tab-timing">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Measured Value</th>
+                            <th>Specification & Context</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Target Clock Frequency</strong></td>
+                            <td>100.00 MHz</td>
+                            <td>Clock Period constraint: 10.000 ns in <code>zedboard.xdc</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Worst Negative Slack (WNS)</strong></td>
+                            <td><strong style="color: var(--accent-emerald)">+4.156 ns</strong></td>
+                            <td>Clean timing closure achieved without setup violations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Maximum Frequency (Fmax)</strong></td>
+                            <td><strong>171.12 MHz</strong></td>
+                            <td>Theoretical maximum operational speed of synthesized netlist</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total On-Chip Power</strong></td>
+                            <td><strong>0.368 W</strong></td>
+                            <td>Vivado Power Analyzer estimate (0.243W Dynamic / 0.125W Static)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Inference Latency</strong></td>
+                            <td><strong>8.8 microseconds</strong></td>
+                            <td>880 clock cycles per sample at 100 MHz execution speed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Execution Guide Section -->
+    <section class="section container" id="execution">
+        <div class="section-header">
+            <h2 class="section-title">Automated & Manual Execution Guide</h2>
+            <p class="section-desc">Run the full pipeline using automated launcher scripts or step-by-step commands.</p>
+        </div>
+
+        <!-- Automated Launcher Scripts -->
+        <div class="code-block">
+            <div class="code-header">
+                <span>Automated Launcher Scripts (Linux, macOS, Windows)</span>
+                <button class="copy-btn" onclick="copyCode(this, 'code-auto')">Copy Code</button>
+            </div>
+            <pre id="code-auto"><code># Linux / macOS / WSL / Git Bash:
+chmod +x run_all.sh
+./run_all.sh
+
+# Windows PowerShell:
+powershell -ExecutionPolicy Bypass -File .\run_all.ps1
+
+# Windows Command Prompt (CMD):
+run_all.bat</code></pre>
+        </div>
+
+        <!-- CLI Verilog Simulator -->
+        <div class="code-block">
+            <div class="code-header">
+                <span>Icarus Verilog Open-Source CLI Simulation</span>
+                <button class="copy-btn" onclick="copyCode(this, 'code-iverilog')">Copy Code</button>
+            </div>
+            <pre id="code-iverilog"><code># Compile RTL and Testbench using Icarus Verilog:
+cd hardware/mif
+iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
+
+# Run the VVP simulator executable:
+vvp sim_top</code></pre>
+        </div>
+    </section>
+
+    <!-- AXI Register Map Section -->
+    <section class="section container" id="registers">
+        <div class="section-header">
+            <h2 class="section-title">AXI-Lite Register Interface Map</h2>
+            <p class="section-desc">Interfacing memory-mapped registers for host control and status monitoring.</p>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+            <input type="text" id="regSearch" placeholder="Search register map..." style="width: 100%; max-width: 380px; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-family: var(--font-main);">
+        </div>
+
+        <div class="table-responsive">
+            <table id="regTable">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Address Offset</th>
+                        <th>Access</th>
+                        <th>Name</th>
+                        <th>Bitfield & Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0</td>
+                        <td><code>32'h00</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_CTRL</code></td>
+                        <td>Bit [0]: Soft Reset (1=Reset), Bit [1]: Start Inference (1=Trigger)</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td><code>32'h04</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_LAYER</code></td>
+                        <td>Bits [3:0]: Target Layer ID (1 to 4)</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><code>32'h08</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_NEURON</code></td>
+                        <td>Bits [5:0]: Target Neuron ID (0 to 29)</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><code>32'h0C</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_WADDR</code></td>
+                        <td>Bits [11:0]: Weight Memory Address offset</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><code>32'h10</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_WVAL</code></td>
+                        <td>Bits [15:0]: 16-bit signed Q3.13 weight parameter value</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><code>32'h14</code></td>
+                        <td>R/W</td>
+                        <td><code>REG_BVAL</code></td>
+                        <td>Bits [15:0]: 16-bit signed Q3.13 bias parameter value</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td><code>32'h18</code></td>
+                        <td>W</td>
+                        <td><code>REG_WEN</code></td>
+                        <td>Bit [0]: Weight write strobe</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td><code>32'h1C</code></td>
+                        <td>W</td>
+                        <td><code>REG_BWEN</code></td>
+                        <td>Bit [0]: Bias write strobe</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td><code>32'h20</code></td>
+                        <td>R</td>
+                        <td><code>REG_NNOUT</code></td>
+                        <td>Bits [3:0]: Final Argmax output (0 = Normal, 1 = Apnea)</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td><code>32'h24</code></td>
+                        <td>R</td>
+                        <td><code>REG_STATUS</code></td>
+                        <td>Bit [0]: Done Flag, Bit [1]: Interrupt Pending (`intr` pin state)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p><strong>NeuroSomno-HDL</strong> — Open-Source FPGA Biomedical Hardware Acceleration</p>
+            <p style="margin-top: 0.5rem;">Maintained by <a href="https://github.com/AishikTokdar" target="_blank">Aishik Tokdar</a> | Released under MIT License</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

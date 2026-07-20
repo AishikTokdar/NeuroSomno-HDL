@@ -1,10 +1,11 @@
-# 🌙 NeuroSomno-HDL : Sleep Apnea Detection on FPGA using Hybrid CNN
+# NeuroSomno-HDL: Sleep Apnea Detection on FPGA using Hybrid CNN
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT">
-  <img src="https://img.shields.io/badge/Platform-MATLAB%20R2026b-orange.svg?style=for-the-badge" alt="Platform: MATLAB">
-  <img src="https://img.shields.io/badge/Simulation-Xilinx%20Vivado%202026.1-blue.svg?style=for-the-badge" alt="Simulation: Vivado">
+  <img src="https://img.shields.io/badge/Platform-MATLAB%20R2023b-orange.svg?style=for-the-badge" alt="Platform: MATLAB">
+  <img src="https://img.shields.io/badge/Simulation-Xilinx%20Vivado%202023.1-blue.svg?style=for-the-badge" alt="Simulation: Vivado">
   <img src="https://img.shields.io/badge/Target-Zynq--7000%20ZedBoard-red.svg?style=for-the-badge" alt="Target: Zynq">
+  <img src="https://img.shields.io/badge/GitHub%20Pages-Live%20Dashboard-brightgreen.svg?style=for-the-badge" alt="GitHub Pages: Live Dashboard">
 </p>
 
 NeuroSomno-HDL is an edge-intelligent, software-only FPGA simulation framework designed for real-time sleep apnea detection using EEG signals. The system processes raw biosignals, trains a hybrid 1D Convolutional Neural Network (1D-CNN) classifier in MATLAB, and implements a quantized, pipelined feed-forward neural network accelerator in Verilog HDL.
@@ -13,26 +14,28 @@ This repository provides a complete, hardware-independent simulation pipeline th
 
 ---
 
-## 👥 Author & Repository Info
+## Author & Repository Info
 
 *   **Author:** Aishik Tokdar
 *   **Repository URL:** [https://github.com/AishikTokdar/NeuroSomno-HDL](https://github.com/AishikTokdar/NeuroSomno-HDL)
+*   **Live Interactive Dashboard:** [https://aishiktokdar.github.io/NeuroSomno-HDL/](https://aishiktokdar.github.io/NeuroSomno-HDL/)
 
 ---
 
-## 📂 Document Navigation
+## Document Navigation
 
 For detailed breakdowns of specific project components, refer to the following sub-documents:
-*   [📖 System Architecture Overview](docs/architecture_overview.md) — Register maps, latency calculations, and layer dataflow logic.
-*   [📊 EEG Dataset Configuration](dataset/README.md) — Channel configurations and manual download instructions.
-*   [⚙️ MATLAB Preprocessing Pipeline Guide](matlab_preprocessing/README.md) — In-depth details on filtering, segmentation, and model training.
-*   [💾 Hardware RTL & Simulation Reference](hardware/README.md) — Verilog module breakdowns and state machine definitions.
-*   [📁 Memory Initialization Guide](hardware/mif/README.md) — Specifications for `.mif`, `.mem`, and `.txt` simulator files.
-*   [📈 Validation Results & Synthesis Reports](results/README.md) — Detailed accuracy metrics, power budgets, and FPGA resource footprints.
+*   [System Architecture Overview](docs/architecture_overview.md) — Register maps, latency calculations, and layer dataflow logic.
+*   [EEG Dataset Configuration](dataset/README.md) — Channel configurations and manual download instructions.
+*   [MATLAB Preprocessing Pipeline Guide](matlab_preprocessing/README.md) — In-depth details on filtering, segmentation, and model training.
+*   [Hardware RTL & Simulation Reference](hardware/README.md) — Verilog module breakdowns and state machine definitions.
+*   [Memory Initialization Guide](hardware/mif/README.md) — Specifications for `.mif`, `.mem`, and `.txt` simulator files.
+*   [Validation Results & Synthesis Reports](results/README.md) — Detailed accuracy metrics, power budgets, and FPGA resource footprints.
+*   [Vivado Synthesis & Accuracy Validation Report](docs/synthesis_and_accuracy_validation.md) — Detailed resource analysis, LUT/DSP definitions, and simulation accuracy verification.
 
 ---
 
-## ⚡ System Overview
+## System Overview
 
 ```
 EEG Signal (EDF)
@@ -61,12 +64,12 @@ EEG Signal (EDF)
   ├── Feed-forward fully connected network (30-30-10-10 neurons)
   ├── Fully simulated in Xilinx Vivado (no physical hardware required)
   ├── AXI-Lite register interface for weight configuration & control
-  └── Overall simulation accuracy: 89.00%
+  └── Quantized model accuracy: 89.00% (Simulation subset: 86.67% - 90.00%)
 ```
 
 ---
 
-## 💻 System Requirements & Toolchain Verification
+## System Requirements & Toolchain Verification
 
 Before starting, ensure that your system meets the following specifications:
 *   **Operating System:** Windows 10/11 or Ubuntu 20.04/22.04 LTS.
@@ -77,7 +80,7 @@ Before starting, ensure that your system meets the following specifications:
 
 ---
 
-## 🏆 Key Results
+## Key Results
 
 ### Software Model Performance (MATLAB)
 
@@ -98,15 +101,44 @@ Before starting, ensure that your system meets the following specifications:
 | **Total Estimated Power** | 0.157 W | 0.368 W |
 | **LUT Utilization** | 51 / 53200 (0.10%) | 6290 / 53200 (11.82%) |
 | **FF Utilization** | 43 / 106400 (0.04%) | 6653 / 106400 (6.25%) |
-| **DSP Utilization** | 2 / 220 (0.91%) | 160 / 220 (72.73%) |
-| **BRAM Utilization** | 0.50 / 140 (0.36%) | 15 / 140 (10.71%) |
-| **Overall Simulation Accuracy** | — | **89.00%** |
+| **DSP Utilization** | 2 / 220 (0.91%) | 160 / 220 (72.73%) *[1]* |
+| **BRAM Utilization** | 0.50 / 140 (0.36%) | 15 / 140 (10.71%) *[2]* |
+| **Quantized Model Accuracy (Full)** | — | **89.00%** |
+| **Simulation Accuracy (30-sample subset)** | — | **86.67% - 90.00%** |
+
+*[1] Theoretical minimum is 80 DSPs (1 per neuron). Vivado infers 2 DSPs per neuron due to port signedness and register packing constraints.*
+*[2] Sigmoid ROMs are synthesized as Distributed ROM using LUTs. If mapped to BRAM, utilization is 25 BRAMs.*
 
 ---
 
-## 🛠️ Complete Step-by-Step Execution Guide
+## Complete Step-by-Step Execution Guide
 
-Follow these exact steps to run the dataset preprocessing, train the model, extract weights, and execute the RTL behavioral simulation to obtain the **89.00%** classification accuracy.
+Follow these steps to run the dataset preprocessing, train the model, extract weights, and execute the RTL behavioral simulation to obtain the **86.67% - 90.00%** simulation accuracy (representing the 89.00% quantized network accuracy).
+
+### Automated Execution (Windows & Linux)
+
+You can execute the entire pipeline (MATLAB preprocessing + weight quantization + Vivado/Icarus simulation) automatically using the cross-platform launcher scripts:
+
+*   **Linux / macOS / WSL / Git Bash:**
+    ```bash
+    chmod +x run_all.sh
+    ./run_all.sh
+    ```
+*   **Windows PowerShell:**
+    ```powershell
+    powershell -ExecutionPolicy Bypass -File .\run_all.ps1
+    ```
+*   **Windows Command Prompt (CMD):**
+    ```cmd
+    run_all.bat
+    ```
+
+> [!NOTE]
+> The automated scripts detect whether `matlab` and `vivado` (or `iverilog`) are installed in your PATH. If MATLAB is not installed, the script automatically utilizes the pre-quantized parameter files in `hardware/mif/` to execute the hardware RTL simulation.
+
+---
+
+### Manual Execution Guide
 
 ### Phase 1: Set Up the Dataset & Environment
 
@@ -155,8 +187,11 @@ Follow these exact steps to run the dataset preprocessing, train the model, extr
     > [!IMPORTANT]
     > This generates all `.mif` weight files, `sig_rom.mem`, `test_data.txt`, and `test_labels.txt` inside the `hardware/mif/` folder.
 
-### Phase 3: Run RTL Behavioral Simulation (Xilinx Vivado)
+### Phase 3: Run RTL Behavioral Simulation
 
+You can execute the RTL behavioral simulation manually using Xilinx Vivado (GUI or Batch) or Icarus Verilog (CLI):
+
+#### Option A: Xilinx Vivado GUI Mode
 1.  Launch Xilinx Vivado.
 2.  Create a new RTL Project named `NeuroSomno_HDL` in the root repository directory.
 3.  Import the source files:
@@ -170,21 +205,43 @@ Follow these exact steps to run the dataset preprocessing, train the model, extr
 5.  Launch the simulation:
     *   Click **Run Simulation** -> **Run Behavioral Simulation**.
     *   In the Tcl console, run the command: `run -all`.
-6.  Verify the Results:
-    *   Check the Tcl Console. It will stream the prediction vs actual label comparison for each test sample:
-        ```text
-        Sample 0: Pred = 0, Act = 0
-        Sample 1: Pred = 1, Act = 1
-        ...
-        Sample 29: Pred = 0, Act = 0
-        Overall Accuracy: 89.000000
-        ```
-    > [!TIP]
-    > The simulation prints an overall accuracy of **89.00%**, matching the synthesized model benchmarks.
+
+#### Option B: Xilinx Vivado Command Line (Batch Mode)
+Execute Vivado batch simulation directly from your terminal:
+```bash
+vivado -mode batch -source -eval "create_project -force NeuroSomno_HDL ./vivado_proj -part xc7z020clg484-1; add_files [glob ./hardware/rtl/*.v]; add_files -fileset sim_1 [glob ./hardware/tb/*.v]; set_property top tb_top_sim [get_filesets sim_1]; launch_simulation; run -all; exit"
+```
+
+#### Option C: Icarus Verilog (Open-Source CLI Simulation)
+If you do not have Vivado installed, you can use the open-source **Icarus Verilog** toolchain:
+1.  Navigate to the MIF directory:
+    ```bash
+    cd hardware/mif
+    ```
+2.  Compile the RTL and Testbench:
+    ```bash
+    iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
+    ```
+3.  Run the simulation executable with VVP:
+    ```bash
+    vvp sim_top
+    ```
+
+#### Verification of Simulation Results
+Check the terminal / Tcl console output. It will stream the prediction vs actual label comparison for each test sample:
+```text
+Sample 0: Pred = 0, Act = 0
+Sample 1: Pred = 1, Act = 1
+...
+Sample 29: Pred = 0, Act = 0
+Overall Accuracy: 90.000000 (or 86.666667)
+```
+> [!TIP]
+> The simulation prints an overall accuracy of **90.00%** (27/30 correct) or **86.67%** (26/30 correct), which represents the 89.00% full-dataset quantized accuracy evaluated over this 30-sample subset.
 
 ---
 
-## 📈 Visualizing Waveforms in Vivado
+## Visualizing Waveforms in Vivado
 
 To inspect signals visually in Vivado's Waveform Viewer:
 1.  Locate the simulation signal tree inside the **Scope** window.
@@ -195,6 +252,6 @@ To inspect signals visually in Vivado's Waveform Viewer:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
