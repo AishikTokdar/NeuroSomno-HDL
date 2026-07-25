@@ -64,6 +64,8 @@ module zynet_top (
         .o_bias_wen(bias_wen),
         .i_class(out_class),
         .i_done(out_done),
+        .i_ahi_count(16'd0),
+        .i_ahi_sev(2'd0),
         .intr(intr)
     );
     reg running;
@@ -78,7 +80,7 @@ module zynet_top (
             end
         end
     end
-    assign s_axis_tready = !running;
+    assign s_axis_tready = running;
     wire net_rst = rst || soft_rst;
     wire l1_valid;
     wire [15:0] l1_data;
@@ -156,4 +158,4 @@ module zynet_top (
         .o_valid(out_done),
         .o_class(out_class)
     );
-end
+endmodule
