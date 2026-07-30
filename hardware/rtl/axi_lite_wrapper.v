@@ -122,7 +122,7 @@ module axi_lite_wrapper (
                     4'd4: S_AXI_RDATA <= reg_wval;
                     4'd5: S_AXI_RDATA <= reg_bval;
                     4'd8: S_AXI_RDATA <= reg_nn_out;
-                    4'd9: S_AXI_RDATA <= {31'd0, reg_done};
+                    4'd9: S_AXI_RDATA <= {30'd0, intr, reg_done};
                     default: S_AXI_RDATA <= 0;
                 endcase
             end
