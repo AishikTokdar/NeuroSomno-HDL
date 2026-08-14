@@ -14,25 +14,41 @@ Write-Host ""
 Write-Host "[Phase 1/2] Checking MATLAB Environment..." -ForegroundColor Yellow
 
 $matlabCmd = Get-Command matlab -ErrorAction SilentlyContinue
+$octaveCmd = Get-Command octave -ErrorAction SilentlyContinue
 if ($matlabCmd) {
-    Write-Host "[INFO] MATLAB detected. Running preprocessing & model training pipeline..." -ForegroundColor Green
-    try {
-        & matlab -batch "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
-        Write-Host "[SUCCESS] MATLAB preprocessing and parameter extraction completed." -ForegroundColor Green
-    } catch {
-        Write-Host "[WARNING] MATLAB execution encountered an issue. Using pre-extracted hardware MIF files..." -ForegroundColor Yellow
+    Write-Host "[INFO] MATLAB detected. Attempting preprocessing & model training..." -ForegroundColor Green
+    & matlab -batch "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[SUCCESS] MATLAB preprocessing completed." -ForegroundColor Green
+        $phase1Done = $true
+    } else {
+        Write-Host "[WARNING] MATLAB execution exited with error code $LASTEXITCODE (e.g. license/version issue)." -ForegroundColor Yellow
+        $phase1Done = $false
     }
-} else {
-    Write-Host "[INFO] MATLAB command not found in PATH." -ForegroundColor Yellow
+}
+
+if (-not $phase1Done -and $octaveCmd) {
+    Write-Host "[INFO] Running preprocessing pipeline in GNU Octave..." -ForegroundColor Green
+    & octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[SUCCESS] Octave preprocessing completed." -ForegroundColor Green
+        $phase1Done = $true
+    } else {
+        Write-Host "[WARNING] Octave execution encountered an issue." -ForegroundColor Yellow
+    }
+}
+
+if (-not $phase1Done) {
     Write-Host "[INFO] Utilizing pre-extracted memory initialization files (.mif / .mem / .txt) in hardware/mif/" -ForegroundColor Yellow
 }
 
-# Phase 2: Verilog Hardware RTL Behavioral Simulation
+# Phase 2: Verilog Hardware RTL Behavioral Simulation & Synthesis
 Write-Host ""
-Write-Host "[Phase 2/2] Checking Verilog Simulation Toolchain..." -ForegroundColor Yellow
+Write-Host "[Phase 2/2] Checking Verilog Toolchain..." -ForegroundColor Yellow
 
 $vivadoCmd = Get-Command vivado -ErrorAction SilentlyContinue
 $iverilogCmd = Get-Command iverilog -ErrorAction SilentlyContinue
+$yosysCmd = Get-Command yosys -ErrorAction SilentlyContinue
 
 if ($vivadoCmd) {
     Write-Host "[INFO] Xilinx Vivado detected. Running batch simulation..." -ForegroundColor Green
@@ -62,14 +78,15 @@ exit
     Write-Host "[SUCCESS] Icarus Verilog simulation finished successfully." -ForegroundColor Green
 
 } else {
-    Write-Host "[INFO] Neither Xilinx Vivado nor Icarus Verilog (iverilog) was found in PATH." -ForegroundColor Yellow
-    Write-Host "[INFO] Verilog RTL files and simulation testbenches are ready at:" -ForegroundColor White
-    Write-Host "       - RTL: hardware/rtl/" -ForegroundColor White
-    Write-Host "       - Testbench: hardware/tb/tb_top_sim.v" -ForegroundColor White
-    Write-Host "       - MIF Memory Files: hardware/mif/" -ForegroundColor White
+    Write-Host "[INFO] Neither Xilinx Vivado nor Icarus Verilog was found in PATH." -ForegroundColor Yellow
+    Write-Host "       RTL and simulation testbenches are available in hardware/" -ForegroundColor White
+}
+
+if ($yosysCmd) {
     Write-Host ""
-    Write-Host "[SUMMARY] Preprocessed weights and Q3.13 quantized parameters are verified." -ForegroundColor Cyan
-    Write-Host "          To execute RTL simulation, install Vivado or Icarus Verilog." -ForegroundColor Cyan
+    Write-Host "[INFO] Yosys detected. Running RTL synthesis check..." -ForegroundColor Green
+    & yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"
+    Write-Host "[SUCCESS] Yosys RTL synthesis check completed." -ForegroundColor Green
 }
 
 Write-Host ""

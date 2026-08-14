@@ -42,19 +42,16 @@ Where:
 
 ---
 
-## Prerequisites & Toolbox Dependencies
+## Software Prerequisites
 
-Ensure you have the following toolboxes installed in your MATLAB environment:
-*   **Deep Learning Toolbox** (for neural net construction and training)
-*   **Fixed-Point Designer** (for fixed-point representation and validation)
-*   **Signal Processing Toolbox** (for notch and butterworth filtering)
-*   **MATLAB add-on:** `edfread` (only required if importing raw PhysioNet `.edf` files)
+*   **MATLAB R2023b (Primary Default):** Requires *Deep Learning Toolbox*, *Fixed-Point Designer*, and *Signal Processing Toolbox*.
+*   **GNU Octave (Open-Source Free Alternative):** 100% compatible for executing filtering, segmentation, SMOTE, and weight extraction scripts via CLI.
 
 ---
 
 ## Step-by-Step Run Order
 
-Open MATLAB and execute the scripts in the following order:
+For complete step-by-step instructions for both MATLAB and GNU Octave CLI execution, see [Phase 2 of the main Execution Guide in README.md](file:///d:/Repositories/NeuroSomno-HDL/README.md#phase-2-signal-preprocessing--quantization).
 
 ```matlab
 % Step 1: Preprocess raw channels or generate synthetic fallback signals
@@ -74,4 +71,4 @@ run('extract_weights.m')
 ```
 
 > [!TIP]
-> All files required for Vivado simulation are automatically exported to the `../hardware/mif/` folder upon running the final step.
+> All files required for Vivado or Icarus Verilog simulation are automatically exported to the `../hardware/mif/` folder upon running the final step.

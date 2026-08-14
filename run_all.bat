@@ -13,7 +13,13 @@ if %ERRORLEVEL% equ 0 (
     echo [INFO] MATLAB detected. Running preprocessing and weight extraction...
     matlab -batch "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
 ) else (
-    echo [INFO] MATLAB not found in PATH. Using pre-extracted hardware memory files in hardware/mif/
+    where octave >nul 2>&1
+    if %ERRORLEVEL% equ 0 (
+        echo [INFO] GNU Octave detected. Running preprocessing pipeline in Octave...
+        octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
+    ) else (
+        echo [INFO] Neither MATLAB nor Octave found in PATH. Using pre-extracted hardware memory files in hardware/mif/
+    )
 )
 
 echo.
@@ -34,7 +40,7 @@ if %ERRORLEVEL% equ 0 (
     ) > run_sim.tcl
     vivado -mode batch -source run_sim.tcl
     del /f /q run_sim.tcl
-    goto END
+    goto SIM_DONE
 )
 
 where iverilog >nul 2>&1
@@ -44,13 +50,19 @@ if %ERRORLEVEL% equ 0 (
     iverilog -g2012 -I ..\rtl -o sim_top ..\rtl\*.v ..\tb\tb_top_sim.v
     vvp sim_top
     cd /d "%~dp0"
-    goto END
+    goto SIM_DONE
 )
 
 echo [INFO] Neither Vivado nor Icarus Verilog was found in PATH.
 echo [INFO] Hardware RTL and MIF files are verified and located in hardware/
 
-:END
+:SIM_DONE
+where yosys >nul 2>&1
+if %ERRORLEVEL% equ 0 (
+    echo.
+    echo [INFO] Yosys detected. Running RTL synthesis check...
+    yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"
+)
 echo.
 echo ========================================================
 echo           NeuroSomno-HDL Execution Complete            

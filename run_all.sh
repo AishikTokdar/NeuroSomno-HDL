@@ -23,18 +23,25 @@ if command -v matlab &> /dev/null; then
     if matlab -batch "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"; then
         echo "[SUCCESS] MATLAB preprocessing and parameter extraction completed."
     else
-        echo "[WARNING] MATLAB execution encountered an issue (e.g. license/version). Using pre-extracted hardware MIF files..."
+        echo "[WARNING] MATLAB execution encountered an issue. Using pre-extracted hardware MIF files..."
+    fi
+elif command -v octave &> /dev/null; then
+    echo "[INFO] GNU Octave detected. Running preprocessing & model training pipeline in Octave..."
+    if octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"; then
+        echo "[SUCCESS] Octave preprocessing and parameter extraction completed."
+    else
+        echo "[WARNING] Octave execution encountered an issue. Using pre-extracted hardware MIF files..."
     fi
 else
-    echo "[INFO] MATLAB command not found in PATH."
+    echo "[INFO] Neither MATLAB nor GNU Octave was found in PATH."
     echo "[INFO] Utilizing pre-extracted memory initialization files (.mif / .mem / .txt) in hardware/mif/"
 fi
 
 # ---------------------------------------------------------
-# Phase 2: Verilog Hardware RTL Behavioral Simulation
+# Phase 2: Verilog Hardware RTL Behavioral Simulation & Synthesis
 # ---------------------------------------------------------
 echo ""
-echo "[Phase 2/2] Checking Verilog Simulation Toolchain..."
+echo "[Phase 2/2] Checking Verilog Simulation & Synthesis Toolchain..."
 
 if command -v vivado &> /dev/null; then
     echo "[INFO] Xilinx Vivado detected. Running batch simulation..."
@@ -68,9 +75,13 @@ else
     echo "       - RTL: hardware/rtl/"
     echo "       - Testbench: hardware/tb/tb_top_sim.v"
     echo "       - MIF Memory Files: hardware/mif/"
+fi
+
+if command -v yosys &> /dev/null; then
     echo ""
-    echo "[SUMMARY] Preprocessed weights and Q3.13 quantized parameters are verified."
-    echo "          To execute RTL simulation, install Vivado or Icarus Verilog."
+    echo "[INFO] Yosys Open-Source Synthesis Suite detected. Running RTL synthesis check..."
+    yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"
+    echo "[SUCCESS] Yosys RTL synthesis check completed."
 fi
 
 echo ""

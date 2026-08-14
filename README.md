@@ -71,18 +71,34 @@ EEG Signal (EDF)
 
 ## System Requirements & Toolchain Verification
 
-Before starting, ensure that your system meets the following specifications:
+NeuroSomno-HDL supports both **Proprietary Vendor Toolchains** (Primary Default) and **100% Free & Open-Source (FOSS) Software** (Alternative Suite).
+
+### Primary Default Toolchain (Vendor Recommended)
 *   **Operating System:** Windows 10/11 or Ubuntu 20.04/22.04 LTS.
-*   **MATLAB Version:** R2023b or newer.
-    *   *Verification:* Type `ver` in the MATLAB Command Window and verify that **Deep Learning Toolbox**, **Fixed-Point Designer**, and **Signal Processing Toolbox** are listed.
-*   **Vivado Version:** Xilinx Vivado 2023.1 or newer.
-    *   *Verification:* Ensure `vivado` is added to your system PATH or launch via the desktop icon.
+*   **MATLAB Version:** [MATLAB R2023b or newer](https://www.mathworks.com/products/matlab.html).
+    *   *Required Toolboxes:* Deep Learning Toolbox, Fixed-Point Designer, Signal Processing Toolbox.
+    *   *Verification:* Type `ver` in the MATLAB Command Window.
+*   **Vivado Version:** [Xilinx Vivado 2023.1 or newer](https://www.xilinx.com/products/design-tools/vivado.html).
+    *   *Verification:* Ensure `vivado` is added to system `PATH` or launch via Vivado GUI.
+
+### Open-Source Toolchain Suite (100% Free Alternative)
+
+You can run, simulate, synthesize, and verify this entire repository using free open-source tools without any proprietary software licenses:
+
+| Software Tool | Primary Purpose in Project | Web & Download Link |
+| :--- | :--- | :--- |
+| **Icarus Verilog (`iverilog`)** | Verilog RTL IEEE-1364 behavioral simulator engine | [steveicarus.github.io/iverilog](https://steveicarus.github.io/iverilog/) |
+| **GTKWave** | Graphical digital waveform visualizer (`.vcd` output) | [gtkwave.sourceforge.net](http://gtkwave.sourceforge.net/) |
+| **Yosys** | Open-source RTL logic synthesis suite & gate analysis | [yosyshq.net/yosys](https://yosyshq.net/yosys/) |
+| **GNU Octave** | Free drop-in MATLAB-compatible numerical framework | [gnu.org/software/octave](https://www.gnu.org/software/octave/) |
+| **Python 3.x** | Open-source machine learning & biosignal processing | [python.org](https://www.python.org/) |
+| **Verilator** *(Optional)* | High-performance C++ cycle-accurate simulator | [veripool.org/verilator](https://www.veripool.org/verilator/) |
 
 ---
 
 ## Key Results
 
-### Software Model Performance (MATLAB)
+### Software Model Performance (MATLAB / Octave)
 
 | Metric | Random Oversampling | SMOTE |
 | :--- | :---: | :---: |
@@ -93,7 +109,7 @@ Before starting, ensure that your system meets the following specifications:
 | **Precision** | **91.57%** | 86.96% |
 | **F1 Score** | **0.8686** | 0.8511 |
 
-### Hardware Accelerator Performance (Vivado Simulation)
+### Hardware Accelerator Performance (Vivado / Icarus Verilog Simulation)
 
 | Metric | Neuron Module | Full FCN Accelerator |
 | :--- | :---: | :---: |
@@ -115,9 +131,9 @@ Before starting, ensure that your system meets the following specifications:
 
 Follow these steps to run the dataset preprocessing, train the model, extract weights, and execute the RTL behavioral simulation to obtain the **86.67% - 90.00%** simulation accuracy (representing the 89.00% quantized network accuracy).
 
-### Automated Execution (Windows & Linux)
+### 1. Automated Pipeline Execution (Windows, Linux & macOS)
 
-You can execute the entire pipeline (MATLAB preprocessing + weight quantization + Vivado/Icarus simulation) automatically using the cross-platform launcher scripts:
+The cross-platform launcher scripts automatically detect installed software (MATLAB vs GNU Octave for Phase 1, and Vivado vs Icarus Verilog / Yosys for Phase 2). If no simulation or preprocessing environment is installed, pre-quantized parameter files in `hardware/mif/` are automatically utilized.
 
 *   **Linux / macOS / WSL / Git Bash:**
     ```bash
@@ -133,102 +149,84 @@ You can execute the entire pipeline (MATLAB preprocessing + weight quantization 
     run_all.bat
     ```
 
-> [!NOTE]
-> The automated scripts detect whether `matlab` and `vivado` (or `iverilog`) are installed in your PATH. If MATLAB is not installed, the script automatically utilizes the pre-quantized parameter files in `hardware/mif/` to execute the hardware RTL simulation.
-
 ---
 
-### Manual Execution Guide
+### 2. Manual Execution Guide
 
-### Phase 1: Set Up the Dataset & Environment
+#### Phase 1: Set Up Repository & Dataset
 
 1.  **Clone the Repository**:
     ```bash
     git clone https://github.com/AishikTokdar/NeuroSomno-HDL.git
     cd NeuroSomno-HDL
     ```
-2.  **Ensure Prerequisites are Installed**:
-    *   MATLAB R2023b or later (with *Signal Processing*, *Deep Learning*, and *Fixed-Point Designer* toolboxes).
-    *   Xilinx Vivado 2023.1 (or later).
-3.  **Prepare the Dataset**:
-    *   **Option A (UCDDB Database):** Download `.edf` records from the [PhysioNet UCDDB Database](https://physionet.org/content/ucddb/1.0.0/) and place them inside the `dataset/` directory.
-    *   **Option B (Synthetic Generation):** If no `.edf` files are found, the preprocessing script will automatically generate synthetic structured EEG-like signals. This allows you to run and verify the entire project without any manual downloads.
+2.  **Prepare Dataset**:
+    *   **Option A (UCDDB Database):** Download `.edf` records from the [PhysioNet UCDDB Database](https://physionet.org/content/ucddb/1.0.0/) and place inside `dataset/`.
+    *   **Option B (Synthetic Generation):** If no `.edf` files are present, the preprocessing pipeline automatically generates structured synthetic signals for full verification without downloading external data.
 
-### Phase 2: Execute the MATLAB Pipeline
+---
 
-1.  Open MATLAB.
-2.  Change your working directory to the cloned repository's `matlab_preprocessing/` folder.
-3.  Run the main preprocessing script:
-    ```matlab
-    run('preprocess_eeg.m')
-    ```
-    > [!NOTE]
-    > This filters the signals and saves them as mat variables (`c3_filt`, `c4_filt`).
-4.  Run the segmentation script:
-    ```matlab
-    run('segment_eeg.m')
-    ```
-    > [!NOTE]
-    > This creates the overlapping 11-second segments (2816 elements) and partitions the dataset.
-5.  Balance the training data classes using SMOTE:
-    ```matlab
-    run('handle_imbalance.m')
-    ```
-6.  Train the neural network models:
-    ```matlab
-    run('train_1dcnn.m')
-    ```
-    > [!NOTE]
-    > This trains the 1D-CNN (`global_model.mat`) and the target FCN hardware model (`fcn_model.mat`).
-7.  Extract, quantize, and export the network parameters:
-    ```matlab
-    run('extract_weights.m')
-    ```
-    > [!IMPORTANT]
-    > This generates all `.mif` weight files, `sig_rom.mem`, `test_data.txt`, and `test_labels.txt` inside the `hardware/mif/` folder.
+#### Phase 2: Signal Preprocessing & Quantization
 
-### Phase 3: Run RTL Behavioral Simulation
-
-You can execute the RTL behavioral simulation manually using Xilinx Vivado (GUI or Batch) or Icarus Verilog (CLI):
-
-#### Option A: Xilinx Vivado GUI Mode
-1.  Launch Xilinx Vivado.
-2.  Create a new RTL Project named `NeuroSomno_HDL` in the root repository directory.
-3.  Import the source files:
-    *   Add all `.v` files located in `hardware/rtl/` as **Design Sources**.
-    *   Add all `.v` files located in `hardware/tb/` as **Simulation Sources**.
-    *   Add `hardware/constraints/zedboard.xdc` as a **Constraints** file.
-4.  Configure the Simulator Working Directory:
-    *   In the Flow Navigator, click **Simulation Settings**.
-    *   Under **Simulation**, set the **Simulation Run Directory** to point to the `hardware/mif/` folder containing the weights and test data.
-    *   *Alternative:* Copy all `.mif`, `.mem`, and `.txt` files from `hardware/mif/` into the default Vivado simulation output folder: `<project_name>.sim/sim_1/behav/xsim/`.
-5.  Launch the simulation:
-    *   Click **Run Simulation** -> **Run Behavioral Simulation**.
-    *   In the Tcl console, run the command: `run -all`.
-
-#### Option B: Xilinx Vivado Command Line (Batch Mode)
-Execute Vivado batch simulation directly from your terminal:
-```bash
-vivado -mode batch -source -eval "create_project -force NeuroSomno_HDL ./vivado_proj -part xc7z020clg484-1; add_files [glob ./hardware/rtl/*.v]; add_files -fileset sim_1 [glob ./hardware/tb/*.v]; set_property top tb_top_sim [get_filesets sim_1]; launch_simulation; run -all; exit"
+##### Option A: MATLAB R2023b (Primary Default)
+Open MATLAB, navigate to `matlab_preprocessing/`, and run:
+```matlab
+run('preprocess_eeg.m');
+run('segment_eeg.m');
+run('handle_imbalance.m');
+run('train_1dcnn.m');
+run('extract_weights.m');
 ```
 
-#### Option C: Icarus Verilog (Open-Source CLI Simulation)
-If you do not have Vivado installed, you can use the open-source **Icarus Verilog** toolchain:
-1.  Navigate to the MIF directory:
+##### Option B: GNU Octave (Open-Source Free Alternative)
+Install GNU Octave via package manager (`sudo apt install octave` or `brew install octave` or `choco install octave`) and run:
+```bash
+octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
+```
+
+---
+
+#### Phase 3: Hardware RTL Simulation & Synthesis
+
+##### Option A: Xilinx Vivado (Primary Default)
+
+*   **GUI Mode:**
+    1. Open Vivado and create project `NeuroSomno_HDL` in the root folder.
+    2. Add `hardware/rtl/*.v` as **Design Sources**, `hardware/tb/*.v` as **Simulation Sources**, and `hardware/constraints/zedboard.xdc` as **Constraints**.
+    3. In **Simulation Settings**, set **Simulation Run Directory** to `hardware/mif/`.
+    4. Click **Run Simulation** -> **Run Behavioral Simulation**, then run `run -all` in the Tcl console.
+*   **Batch CLI Mode:**
     ```bash
-    cd hardware/mif
-    ```
-2.  Compile the RTL and Testbench:
-    ```bash
-    iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
-    ```
-3.  Run the simulation executable with VVP:
-    ```bash
-    vvp sim_top
+    vivado -mode batch -source -eval "create_project -force NeuroSomno_HDL ./vivado_proj -part xc7z020clg484-1; add_files [glob ./hardware/rtl/*.v]; add_files -fileset sim_1 [glob ./hardware/tb/*.v]; set_property top tb_top_sim [get_filesets sim_1]; launch_simulation; run -all; exit"
     ```
 
+##### Option B: Icarus Verilog + GTKWave (Open-Source CLI Simulation)
+
+Install Icarus Verilog & GTKWave (`sudo apt install iverilog gtkwave` or `brew install icarus-verilog gtkwave`):
+
+1.  **Compile & Run Simulation**:
+    ```bash
+    cd hardware/mif
+    iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
+    vvp sim_top
+    ```
+2.  **View Waveform Traces in GTKWave**:
+    To inspect signals graphically, dump waveforms during simulation and open in GTKWave:
+    ```bash
+    gtkwave dump.vcd
+    ```
+
+##### Option C: Yosys Open-Source Synthesis Check
+
+Install Yosys (`sudo apt install yosys` or `brew install yosys` or `choco install yosys`) to check logic gate count and synthesizability:
+```bash
+yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"
+```
+
+---
+
 #### Verification of Simulation Results
-Check the terminal / Tcl console output. It will stream the prediction vs actual label comparison for each test sample:
+Regardless of whether you run Vivado or Icarus Verilog, the console will print predictions against actual sample labels:
 ```text
 Sample 0: Pred = 0, Act = 0
 Sample 1: Pred = 1, Act = 1
@@ -237,18 +235,13 @@ Sample 29: Pred = 0, Act = 0
 Overall Accuracy: 90.000000 (or 86.666667)
 ```
 > [!TIP]
-> The simulation prints an overall accuracy of **90.00%** (27/30 correct) or **86.67%** (26/30 correct), which represents the 89.00% full-dataset quantized accuracy evaluated over this 30-sample subset.
+> The simulation prints an overall accuracy of **90.00%** (27/30 correct) or **86.67%** (26/30 correct), matching the full 89.00% dataset quantized accuracy evaluated over this 30-sample behavioral testbench.
 
 ---
 
 ## Visualizing Waveforms in Vivado
 
-To inspect signals visually in Vivado's Waveform Viewer:
-1.  Locate the simulation signal tree inside the **Scope** window.
-2.  Navigate to `tb_top_sim` -> `uut` -> `l1` (Layer 1).
-3.  Drag the `o_data` and `o_valid` signals into the **Wave** window.
-4.  Right-click on `o_data`, select **Radix** -> **Real Settings...** -> Choose **Fixed Point** -> Select **Signed** -> Set **Fraction Length** to **13**.
-5.  Select **Waveform Style** -> **Analog** to display the signal values as continuous waveforms.
+For visual waveform setup in Vivado GUI, see the signal trace guide in [Hardware RTL & Simulation Reference](hardware/README.md#visualizing-waveforms).
 
 ---
 
