@@ -16,17 +16,19 @@
     <nav class="navbar">
         <a href="#" class="brand">
             <span>NeuroSomno-HDL</span>
+            <span class="brand-badge">FPGA RTL</span>
         </a>
         <ul class="nav-links">
             <li><a href="#overview">Overview</a></li>
+            <li><a href="#foss-tools">Open Source Suite</a></li>
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#fpgaboard">ZedBoard FPGA</a></li>
-            <li><a href="#results">Results & FPGA Synthesis</a></li>
+            <li><a href="#results">Results & Synthesis</a></li>
             <li><a href="#execution">Execution Guide</a></li>
-            <li><a href="#registers">AXI Register Map</a></li>
+            <li><a href="#registers">AXI Registers</a></li>
         </ul>
         <a href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" class="github-btn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             GitHub Repository
         </a>
     </nav>
@@ -34,48 +36,160 @@
     <!-- Hero Section -->
     <header class="hero container" id="overview">
         <div class="hero-pill">
-            <span>Zynq-7000 ZedBoard FPGA Accelerator</span>
+            <span>Zynq-7000 ZedBoard FPGA Accelerator • Multi-Toolchain Support</span>
         </div>
-        <h1 class="hero-title">Real-Time Sleep Apnea Detection<br>using Fixed-Point Verilog HDL</h1>
+        <h1 class="hero-title">Real-Time Sleep Apnea Detection<br>using Quantized Verilog HDL</h1>
         <p class="hero-subtitle">
-            An end-to-end edge-intelligent biomedical processing pipeline. Features raw EEG artifact filtering, SMOTE class balancing, a hybrid 1D-CNN, and a Q3.13 16-bit pipelined hardware accelerator fully simulated in Xilinx Vivado.
+            An end-to-end biomedical processing pipeline for real-time EEG sleep apnea classification. Pairs a MATLAB 15-layer hybrid 1D-CNN with a 16-bit Q3.13 fixed-point Verilog hardware accelerator. Fully verified using both <strong>Xilinx Vivado</strong> and <strong>100% Free Open-Source Software (Icarus Verilog, Yosys, GTKWave, GNU Octave)</strong>.
         </p>
 
         <div class="hero-actions">
-            <a href="#execution" class="btn-primary">Get Started & Run Simulation</a>
-            <a href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" class="btn-secondary">View GitHub Source</a>
+            <a href="#execution" class="btn-primary">Execution Guide & Simulation</a>
+            <a href="#foss-tools" class="btn-secondary">Open Source Deployment Suite</a>
         </div>
 
         <!-- Key Metrics Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">99.62%</div>
-                <div class="stat-label">MATLAB Model Accuracy</div>
-                <div class="stat-subtext">1D-CNN + SMOTE Balancing</div>
+                <div class="stat-label">Software Model Accuracy</div>
+                <div class="stat-subtext">MATLAB 1D-CNN + SMOTE (0.8511 F1)</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">89.00%</div>
                 <div class="stat-label">FPGA Quantized Accuracy</div>
-                <div class="stat-subtext">Q3.13 16-Bit Signed Fixed-Point</div>
+                <div class="stat-subtext">16-Bit Q3.13 Signed Fixed-Point</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">4.156 ns</div>
+                <div class="stat-number">+4.156 ns</div>
                 <div class="stat-label">Worst Negative Slack (WNS)</div>
-                <div class="stat-subtext">Timing Closure @ 100 MHz</div>
+                <div class="stat-subtext">100 MHz Clock (Fmax ≈ 171.12 MHz)</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">0.368 W</div>
                 <div class="stat-label">Total On-Chip Power</div>
-                <div class="stat-subtext">Ultra-low Power Edge Budget</div>
+                <div class="stat-subtext">8.8 µs Latency (880 Clock Cycles)</div>
             </div>
         </div>
     </header>
 
+    <!-- Open Source Tools Section -->
+    <section class="section container" id="foss-tools">
+        <div class="section-header">
+            <h2 class="section-title">Open-Source Software Deployment Suite</h2>
+            <p class="section-desc">You do not need proprietary vendor licenses to run, simulate, synthesize, or verify this project. The entire hardware and software pipeline can be deployed using 100% free open-source tools.</p>
+        </div>
+
+        <div class="foss-grid">
+            <!-- Icarus Verilog -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">Icarus Verilog (`iverilog`)</div>
+                        <span class="foss-tag">Simulation</span>
+                    </div>
+                    <p class="foss-desc">
+                        Open-source IEEE-1364 Verilog / SystemVerilog behavioral simulator engine. Compiles RTL modules (`hardware/rtl/*.v`) and testbenches into high-speed simulation binaries.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>FOSS Engine</span>
+                    <a href="https://steveicarus.github.io/iverilog/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+
+            <!-- GTKWave -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">GTKWave</div>
+                        <span class="foss-tag">Waveform Viewer</span>
+                    </div>
+                    <p class="foss-desc">
+                        Fully featured digital waveform visualizer for inspecting `.vcd` trace output. Used to visualize MAC pipeline states, AXI transactions, and fixed-point data buses.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>FOSS GUI</span>
+                    <a href="http://gtkwave.sourceforge.net/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+
+            <!-- Yosys -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">Yosys Open Synthesis</div>
+                        <span class="foss-tag">Logic Synthesis</span>
+                    </div>
+                    <p class="foss-desc">
+                        Open-source framework for Verilog RTL synthesis, gate mapping, and resource estimation. Synthesizes `zynet_top.v` into technology netlists without vendor licensing.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>ISC Licensed FOSS</span>
+                    <a href="https://yosyshq.net/yosys/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+
+            <!-- GNU Octave -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">GNU Octave</div>
+                        <span class="foss-tag">Preprocessing</span>
+                    </div>
+                    <p class="foss-desc">
+                        Free drop-in numerical computing language compatible with MATLAB. Executes signal filtering, SMOTE imbalance handling, model training, and Q3.13 parameter extraction scripts.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>GPL v3 FOSS</span>
+                    <a href="https://www.gnu.org/software/octave/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+
+            <!-- Python -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">Python 3.x Ecosystem</div>
+                        <span class="foss-tag">ML & Biosignals</span>
+                    </div>
+                    <p class="foss-desc">
+                        Standard open-source machine learning stack (`numpy`, `scipy`, `mne`, `torch`, `scikit-learn`) for EEG preprocessing, model cross-validation, and software co-simulation.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>PSF License</span>
+                    <a href="https://www.python.org/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+
+            <!-- Verilator -->
+            <div class="foss-card">
+                <div>
+                    <div class="foss-header">
+                        <div class="foss-title">Verilator (Optional)</div>
+                        <span class="foss-tag">C++ Co-Simulation</span>
+                    </div>
+                    <p class="foss-desc">
+                        Compiles Verilog HDL directly into high-performance C++ or SystemC objects for fast cycle-accurate co-simulation with software test drivers.
+                    </p>
+                </div>
+                <div class="foss-footer">
+                    <span>LGPL v3 FOSS</span>
+                    <a href="https://www.veripool.org/verilator/" target="_blank" class="foss-link">Website & Download ➔</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Interactive Architecture Block Diagram Explorer -->
     <section class="section container" id="architecture">
         <div class="section-header">
-            <h2 class="section-title">Interactive Hardware Accelerator Architecture</h2>
-            <p class="section-desc">Click on any hardware block below to explore its Verilog RTL module specifications, FPGA primitives, and clock latency.</p>
+            <h2 class="section-title">Hardware Accelerator Architecture</h2>
+            <p class="section-desc">Click on any hardware module block below to inspect its Verilog RTL source file, FPGA primitives, datawidth format, and execution cycles.</p>
         </div>
 
         <div class="arch-container">
@@ -90,7 +204,7 @@
                     </div>
                     <div class="arch-block-footer">
                         <span>Zynq PS</span>
-                        <span>Click for details ➔</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -103,7 +217,7 @@
                     </div>
                     <div class="arch-block-footer">
                         <span>120 LUTs / 142 FFs</span>
-                        <span>Click for details ➔</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -116,7 +230,7 @@
                     </div>
                     <div class="arch-block-footer">
                         <span>60 DSPs / 15 BRAMs</span>
-                        <span>Click for details ➔</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -129,7 +243,7 @@
                     </div>
                     <div class="arch-block-footer">
                         <span>60 DSPs / Distributed</span>
-                        <span>Click for details ➔</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -141,8 +255,8 @@
                         <div class="arch-block-specs">10 Neurons + 1024-word ROM</div>
                     </div>
                     <div class="arch-block-footer">
-                        <span>20 DSPs / 2560 LUTs</span>
-                        <span>Click for details ➔</span>
+                        <span>20 DSPs / 2,560 LUTs</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -154,8 +268,8 @@
                         <div class="arch-block-specs">10 Output Neurons + Sigmoid</div>
                     </div>
                     <div class="arch-block-footer">
-                        <span>20 DSPs / 2560 LUTs</span>
-                        <span>Click for details ➔</span>
+                        <span>20 DSPs / 2,560 LUTs</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
 
@@ -168,7 +282,7 @@
                     </div>
                     <div class="arch-block-footer">
                         <span>45 LUTs / 32 FFs</span>
-                        <span>Click for details ➔</span>
+                        <span>View Specs ➔</span>
                     </div>
                 </div>
             </div>
@@ -178,26 +292,26 @@
         <div class="modal-overlay" id="archModal">
             <div class="modal-content">
                 <button class="modal-close" id="modalClose">✕</button>
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;" id="modalModule">hardware/rtl/neuron.v</div>
-                <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);" id="modalTitle">Component Title</h3>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.25rem;" id="modalModule">hardware/rtl/neuron.v</div>
+                <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);" id="modalTitle">Component Title</h3>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: var(--text-dim);">FPGA Primitives Used</div>
-                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-cyan);" id="modalPrimitives">60 DSPs, 15 BRAMs</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
+                    <div style="background: #0d1320; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">FPGA Primitives Used</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-blue);" id="modalPrimitives">60 DSPs, 15 BRAMs</div>
                     </div>
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
-                        <div style="font-size: 0.75rem; color: var(--text-dim);">Datawidth & Format</div>
-                        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-indigo);" id="modalDatawidth">16-bit Q3.13 Fixed-Point</div>
+                    <div style="background: #0d1320; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem;">
+                        <div style="font-size: 0.72rem; color: var(--text-dim);">Datawidth & Format</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-indigo);" id="modalDatawidth">16-bit Q3.13 Fixed-Point</div>
                     </div>
                 </div>
 
-                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1.25rem;">
-                    <div style="font-size: 0.75rem; color: var(--text-dim);">Latency & Computation Cycles</div>
-                    <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-emerald);" id="modalCycles">787 Clock Cycles</div>
+                <div style="background: #0d1320; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem;">
+                    <div style="font-size: 0.72rem; color: var(--text-dim);">Latency & Computation Cycles</div>
+                    <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent-emerald);" id="modalCycles">787 Clock Cycles</div>
                 </div>
 
-                <div style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6;" id="modalDesc">
+                <div style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;" id="modalDesc">
                     Description goes here...
                 </div>
             </div>
@@ -206,30 +320,24 @@
         <!-- End-to-End Pipeline Steps -->
         <div class="pipeline-flow">
             <div class="flow-step">
-                <div class="step-num">01</div>
-                <div class="step-content">
-                    <div class="step-title">EEG Signal Acquisition & Preprocessing (MATLAB)</div>
-                    <div class="step-detail">Extracts C3-A2 / C4-A1 channels from UCDDB EDF recordings. Applies 50 Hz IIR Notch filter and 0.5–45 Hz 4th-order Butterworth bandpass filter.</div>
-                </div>
-                <div class="step-tag">preprocess_eeg.m</div>
+                <span class="step-num">STAGE 01</span>
+                <div class="step-title">EEG Signal Acquisition & Preprocessing</div>
+                <div class="step-detail">Extracts C3-A2 / C4-A1 channels from UCDDB EDF recordings. Applies 50 Hz IIR Notch filter and 0.5–45 Hz 4th-order Butterworth bandpass filter in MATLAB / GNU Octave.</div>
+                <span class="step-tag">preprocess_eeg.m</span>
             </div>
 
             <div class="flow-step">
-                <div class="step-num">02</div>
-                <div class="step-content">
-                    <div class="step-title">Sliding Window Segmentation & SMOTE Class Balancing</div>
-                    <div class="step-detail">Segments continuous EEG into 11-second overlapping windows (2816 features). Synthesizes minority apnea class samples using SMOTE k-NN (k=5) interpolation.</div>
-                </div>
-                <div class="step-tag">handle_imbalance.m</div>
+                <span class="step-num">STAGE 02</span>
+                <div class="step-title">Segmentation & SMOTE Class Balancing</div>
+                <div class="step-detail">Segments continuous EEG into 11-second overlapping windows (2816 features). Synthesizes minority apnea class samples using SMOTE k-NN (k=5) neighborhood interpolation.</div>
+                <span class="step-tag">handle_imbalance.m</span>
             </div>
 
             <div class="flow-step">
-                <div class="step-num">03</div>
-                <div class="step-content">
-                    <div class="step-title">1D-CNN Training & Q3.13 Fixed-Point Parameter Extraction</div>
-                    <div class="step-detail">Trains hybrid CNN and downsampled 784-input target FCN network. Quantizes weights/biases into 16-bit Q3.13 signed binary arrays and generates .mif files.</div>
-                </div>
-                <div class="step-tag">extract_weights.m</div>
+                <span class="step-num">STAGE 03</span>
+                <div class="step-title">CNN Training & Q3.13 Quantization Export</div>
+                <div class="step-detail">Trains hybrid CNN and downsampled 784-input target FCN network. Quantizes parameters into 16-bit Q3.13 signed binary arrays and generates `.mif` files in `hardware/mif/`.</div>
+                <span class="step-tag">extract_weights.m</span>
             </div>
         </div>
     </section>
@@ -237,8 +345,8 @@
     <!-- Target FPGA Board & Primitive Deep Dive Section -->
     <section class="section container" id="fpgaboard">
         <div class="section-header">
-            <h2 class="section-title">Target FPGA Board & Hardware Primitives</h2>
-            <p class="section-desc">Detailed specs of the Xilinx ZedBoard (Zynq XC7Z020-CLG484-1) evaluation platform.</p>
+            <h2 class="section-title">Target FPGA Platform & Primitives</h2>
+            <p class="section-desc">Hardware primitives and static timing specifications targeting the Xilinx ZedBoard (Zynq XC7Z020-CLG484-1) platform.</p>
         </div>
 
         <div class="fpga-grid">
@@ -246,7 +354,7 @@
                 <div class="fpga-icon">LUT</div>
                 <div class="fpga-card-title">Look-Up Tables (LUT6)</div>
                 <div class="fpga-card-desc">
-                    <strong>53,200 total LUTs</strong> on the Zynq-7000 fabric. 6-input LUTs emulate any 6-variable boolean logic function, 64-bit shift registers, or Distributed RAM (LUTRAM). Used in Layer 2–4 weight memory and Sigmoid ROM LUTs (5,120 LUTs).
+                    <strong>53,200 total LUTs</strong> on the Zynq-7000 fabric. 6-input LUTs emulate boolean logic functions, 64-bit shift registers, or Distributed RAM. Design uses 6,290 LUTs (11.82%), including 5,120 LUTs for Distributed Sigmoid ROM tables.
                 </div>
             </div>
 
@@ -254,7 +362,7 @@
                 <div class="fpga-icon">DSP</div>
                 <div class="fpga-card-title">DSP48E1 Multiplier Slices</div>
                 <div class="fpga-card-desc">
-                    <strong>220 total DSP slices</strong>. Each DSP48E1 slice contains a high-speed 25×18 signed multiplier and 48-bit accumulator. The design uses 160 DSPs (2 per neuron due to unsigned port casting; reducible to 80 DSPs by adding signed declarations).
+                    <strong>220 total DSP slices</strong>. Each DSP48E1 slice contains a high-speed 25×18 signed multiplier and 48-bit accumulator. Uses 160 DSPs (72.73%; reducible to 80 DSPs by adding signed input port declarations).
                 </div>
             </div>
 
@@ -262,15 +370,15 @@
                 <div class="fpga-icon">RAM</div>
                 <div class="fpga-card-title">Block RAM (BRAM36 / BRAM18)</div>
                 <div class="fpga-card-desc">
-                    <strong>140 total 36Kb Block RAMs</strong> (or 280 18Kb RAMB18E1 blocks). Dedicated dual-port memory cells embedded in silicon. Layer 1 uses 15 BRAMs (0.5 RAMB18 per neuron) to store 30×784 16-bit weight parameter arrays.
+                    <strong>140 total 36Kb Block RAMs</strong> (280 18Kb RAMB18E1 blocks). Dedicated dual-port memory cells embedded in silicon. Layer 1 uses 15 BRAMs (10.71%) to store 30×784 16-bit weight parameter arrays.
                 </div>
             </div>
 
             <div class="fpga-card">
                 <div class="fpga-icon">STA</div>
-                <div class="fpga-card-title">Static Timing Analysis & Clocking</div>
+                <div class="fpga-card-title">Timing Closure & Clocking</div>
                 <div class="fpga-card-desc">
-                    Target PL clock frequency of <strong>100 MHz</strong> (10.00 ns period) driven via MMCM/PLLE2. Pipelined 3-stage MAC execution achieves a Worst Negative Slack (WNS) of <strong>+4.156 ns</strong> (F<sub>max</sub> ≈ 171.12 MHz).
+                    Target PL clock frequency of <strong>100 MHz</strong> (10.00 ns period). Pipelined 3-stage MAC execution achieves a Worst Negative Slack (WNS) of <strong>+4.156 ns</strong> (Maximum Frequency $F_{max} \approx 171.12\text{ MHz}$).
                 </div>
             </div>
         </div>
@@ -285,7 +393,7 @@
 
         <div class="tabs-header">
             <button class="tab-btn active" data-tab="tab-hardware">FPGA Resource Utilization</button>
-            <button class="tab-btn" data-tab="tab-software">MATLAB Software Accuracy</button>
+            <button class="tab-btn" data-tab="tab-software">Software Model Performance</button>
             <button class="tab-btn" data-tab="tab-timing">Timing & Power Summary</button>
         </div>
 
@@ -320,7 +428,7 @@
                         <span class="resource-val">160 / 220 (72.73%)</span>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="background: var(--gradient-amber)" data-width="72.73%"></div>
+                        <div class="progress-bar-fill" data-width="72.73%"></div>
                     </div>
                     <div class="resource-meta">16x16 signed multiplications. (Can be reduced to 80 DSPs by declaring signed input ports).</div>
                 </div>
@@ -346,24 +454,24 @@
                         <tr>
                             <th>Performance Metric</th>
                             <th>Random Oversampling</th>
-                            <th>SMOTE Balancing</th>
+                            <th>SMOTE Balancing (Selected)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Classification Accuracy</strong></td>
                             <td>99.53%</td>
-                            <td><strong style="color: var(--accent-cyan)">99.62%</strong></td>
+                            <td><strong style="color: var(--accent-emerald)">99.62%</strong></td>
                         </tr>
                         <tr>
                             <td><strong>Balanced Accuracy</strong></td>
                             <td>91.23%</td>
-                            <td><strong style="color: var(--accent-cyan)">91.58%</strong></td>
+                            <td><strong style="color: var(--accent-emerald)">91.58%</strong></td>
                         </tr>
                         <tr>
                             <td><strong>Sensitivity (Recall)</strong></td>
                             <td>82.61%</td>
-                            <td><strong style="color: var(--accent-cyan)">83.33%</strong></td>
+                            <td><strong style="color: var(--accent-emerald)">83.33%</strong></td>
                         </tr>
                         <tr>
                             <td><strong>Specificity</strong></td>
@@ -431,8 +539,8 @@
     <!-- Execution Guide Section -->
     <section class="section container" id="execution">
         <div class="section-header">
-            <h2 class="section-title">Automated & Manual Execution Guide</h2>
-            <p class="section-desc">Run the full pipeline using automated launcher scripts or step-by-step commands.</p>
+            <h2 class="section-title">Execution & Deployment Guide</h2>
+            <p class="section-desc">Run the full pipeline using automated launcher scripts or step-by-step commands in Vivado or Icarus Verilog.</p>
         </div>
 
         <!-- Automated Launcher Scripts -->
@@ -452,18 +560,25 @@ powershell -ExecutionPolicy Bypass -File .\run_all.ps1
 run_all.bat</code></pre>
         </div>
 
-        <!-- CLI Verilog Simulator -->
+        <!-- FOSS CLI Commands -->
         <div class="code-block">
             <div class="code-header">
-                <span>Icarus Verilog Open-Source CLI Simulation</span>
-                <button class="copy-btn" onclick="copyCode(this, 'code-iverilog')">Copy Code</button>
+                <span>Open-Source Simulation (GNU Octave + Icarus Verilog + Yosys)</span>
+                <button class="copy-btn" onclick="copyCode(this, 'code-foss')">Copy Code</button>
             </div>
-            <pre id="code-iverilog"><code># Compile RTL and Testbench using Icarus Verilog:
+            <pre id="code-foss"><code># 1. Run signal preprocessing & Q3.13 quantization export in GNU Octave:
+octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/extract_weights.m');"
+
+# 2. Compile & run Verilog behavioral simulation in Icarus Verilog:
 cd hardware/mif
 iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
+vvp sim_top
 
-# Run the VVP simulator executable:
-vvp sim_top</code></pre>
+# 3. View waveform traces in GTKWave:
+gtkwave dump.vcd
+
+# 4. Run open-source logic synthesis & resource count check in Yosys:
+yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"</code></pre>
         </div>
     </section>
 
@@ -471,11 +586,11 @@ vvp sim_top</code></pre>
     <section class="section container" id="registers">
         <div class="section-header">
             <h2 class="section-title">AXI-Lite Register Interface Map</h2>
-            <p class="section-desc">Interfacing memory-mapped registers for host control and status monitoring.</p>
+            <p class="section-desc">Memory-mapped register specifications for host processor control and status monitoring.</p>
         </div>
 
-        <div style="margin-bottom: 1rem;">
-            <input type="text" id="regSearch" placeholder="Search register map..." style="width: 100%; max-width: 380px; padding: 0.75rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-family: var(--font-main);">
+        <div style="margin-bottom: 1.25rem;">
+            <input type="text" id="regSearch" placeholder="Search register map by name, address, or bitfield..." style="width: 100%; max-width: 420px; padding: 0.7rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-main); font-family: var(--font-main); font-size: 0.88rem;">
         </div>
 
         <div class="table-responsive">
@@ -568,7 +683,7 @@ vvp sim_top</code></pre>
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p><strong>NeuroSomno-HDL</strong> — Open-Source FPGA Biomedical Hardware Acceleration</p>
+            <p><strong>NeuroSomno-HDL</strong> — Edge-Intelligent Biomedical FPGA Hardware Acceleration</p>
             <p style="margin-top: 0.5rem;">Maintained by <a href="https://github.com/AishikTokdar" target="_blank">Aishik Tokdar</a> | Released under MIT License</p>
         </div>
     </footer>
