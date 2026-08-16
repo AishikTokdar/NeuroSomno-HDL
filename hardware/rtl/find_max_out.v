@@ -24,18 +24,25 @@ module find_max_out (
                     max_idx <= 0;
                     cnt <= 1;
                 end else begin
-                    cnt <= cnt + 1;
+                    // Update running max for indices 1..8 (cnt holds current index)
                     if ($signed(i_data) > $signed(max_val)) begin
                         max_val <= i_data;
                         max_idx <= cnt;
                     end
                     if (cnt == 9) begin
+                        // Final element: decide winner then reset for next sample
                         cnt <= 0;
                         o_valid <= 1;
-                        o_class <= ($signed(i_data) > $signed(max_val)) ? cnt : max_idx;
+                        if ($signed(i_data) > $signed(max_val)) begin
+                            o_class <= 4'd9;
+                        end else begin
+                            o_class <= max_idx;
+                        end
+                    end else begin
+                        cnt <= cnt + 1;
                     end
                 end
             end
         end
     end
-end
+endmodule

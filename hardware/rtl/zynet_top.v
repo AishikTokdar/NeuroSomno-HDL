@@ -155,5 +155,4 @@ module zynet_top (
         .i_data(l4_data),
         .o_valid(out_done),
         .o_class(out_class)
-    );
-end
+endmodule

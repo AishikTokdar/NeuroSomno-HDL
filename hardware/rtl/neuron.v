@@ -118,5 +118,4 @@ module neuron #(
                 state <= 0;
             end
         end
-    end
-end
+endmodule

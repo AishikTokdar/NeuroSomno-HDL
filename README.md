@@ -188,6 +188,10 @@ octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matla
 
 #### Phase 3: Hardware RTL Simulation & Synthesis
 
+> [!NOTE]
+> **Out-of-the-Box Hardware Simulation**:
+> All 164 pre-extracted memory initialization files (`.mif`), activation lookup tables (`sig_rom.mem`), and test vectors (`test_data.txt`, `test_labels.txt`) are already included in `hardware/mif/`. You can skip Phase 2 and proceed directly to Phase 3 to simulate the hardware accelerator out-of-the-box.
+
 ##### Option A: Xilinx Vivado (Primary Default)
 
 *   **GUI Mode:**

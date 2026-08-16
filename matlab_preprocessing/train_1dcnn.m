@@ -43,8 +43,8 @@ X_valid_fcn = zeros(size(eeg_valid, 1), 784);
 for i = 1:size(eeg_valid, 1)
     X_valid_fcn(i, :) = interp1(1:2816, eeg_valid(i, :), linspace(1, 2816, 784));
 end
-Y_train_fcn = categorical(train_labels, 0:9);
-Y_valid_fcn = categorical(valid_labels, 0:9);
+Y_train_fcn = categorical(train_labels);
+Y_valid_fcn = categorical(valid_labels);
 fcn_layers = [
     featureInputLayer(784, 'Normalization', 'none')
     fullyConnectedLayer(30, 'Name', 'fc1')
