@@ -36,7 +36,7 @@ module ahi_tracker (
             if (i_class == 4'd1) begin
                 consecutive_apnea_sec <= consecutive_apnea_sec + 1;
 
-                if (consecutive_apnea_sec >= 8'd10) begin
+                if (consecutive_apnea_sec >= 8'd10 && !in_apnea_event) begin
                     in_apnea_event <= 1;
                     o_ahi_count    <= o_ahi_count + 1;
                 end
