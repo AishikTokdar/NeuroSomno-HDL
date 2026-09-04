@@ -64,6 +64,8 @@ module zynet_top (
         .o_bias_wen(bias_wen),
         .i_class(out_class),
         .i_done(out_done),
+        .i_ahi_count(16'd0),
+        .i_ahi_sev(2'd0),
         .intr(intr)
     );
     reg running;
@@ -155,4 +157,5 @@ module zynet_top (
         .i_data(l4_data),
         .o_valid(out_done),
         .o_class(out_class)
+    );
 endmodule

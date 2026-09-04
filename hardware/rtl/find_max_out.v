@@ -33,10 +33,12 @@ module find_max_out (
                         // Final element: decide winner then reset for next sample
                         cnt <= 0;
                         o_valid <= 1;
+                        // Map highest firing output node to binary clinical class:
+                        // Neuron 9 corresponds to Apnea (1); Neuron 2 / default corresponds to Normal (0)
                         if ($signed(i_data) > $signed(max_val)) begin
-                            o_class <= 4'd9;
+                            o_class <= 4'd1;
                         end else begin
-                            o_class <= max_idx;
+                            o_class <= (max_idx == 4'd9) ? 4'd1 : 4'd0;
                         end
                     end else begin
                         cnt <= cnt + 1;
