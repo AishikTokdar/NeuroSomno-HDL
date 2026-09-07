@@ -8,7 +8,7 @@ This report provides a formal verification of the hardware synthesis metrics, ex
 
 ### A. Overall Simulation Accuracy (89.00% vs. RTL Simulation Outputs)
 *   **The Claim:** The system achieves a hardware classification accuracy of **89.00%**.
-*   **The Reality:** The testbench file `tb_top_sim.v` is configured to run a quick behavioral simulation using exactly **30 samples** to avoid long simulation compile and run times:
+*   **The Reality:** The testbench file [`tb_top_sim.v`](../hardware/tb/tb_top_sim.v) is configured to run a quick behavioral simulation using exactly **30 samples** to avoid long simulation compile and run times:
     ```verilog
     for (i = 0; i < 30; i = i + 1) begin
         send_data(i);
@@ -27,7 +27,7 @@ This report provides a formal verification of the hardware synthesis metrics, ex
 
 ### B. Worst Negative Slack (WNS) & Timing
 *   **The Claim:** Worst Negative Slack (WNS) of **4.156 ns** at a clock period of **10.000 ns** (100 MHz clock frequency).
-*   **The Reality:** In `neuron.v`, the Multiply-Accumulate (MAC) pipeline is highly optimized:
+*   **The Reality:** In [`neuron.v`](../hardware/rtl/neuron.v), the Multiply-Accumulate (MAC) pipeline is highly optimized:
     *   **Stage 1:** Weight is loaded from synchronous memory.
     *   **Stage 2:** The multiplication `s_x * s_w` is executed and registered to `prod` (`always @(posedge clk)`).
     *   **Stage 3:** The product is arithmetically shifted (`>>> 13`) and added to the accumulator `acc <= acc + prod`.
@@ -67,8 +67,8 @@ graph TD
 *   **Utilization in this project:**
     *   **Neuron Module:** 51 LUTs (used for the 32-bit accumulator adder, saturation comparators, and state selection).
     *   **Full FCN Accelerator:** 6,290 LUTs.
-    *   **Explanation:** With 80 total neurons (30 in L1, 30 in L2, 10 in L3, 10 in L4), the core neurons consume $80 \times 51 = 4,080$ LUTs. The remaining ~2,200 LUTs are consumed by the AXI-Lite register interface (`axi_lite_wrapper.v`), Layer serialization logic, and the output `find_max_out.v` comparator.
-    *   *Note:* The weight memories of Layers 2, 3, and 4 are very small (e.g. 10 or 30 words) and are synthesized using Distributed RAM (LUTRAM) rather than Block RAMs. Additionally, the 20 Sigmoid ROM tables (`sig_rom.v`, 1024 $\times$ 16 bits each) are synthesized using LUTs, which accounts for $\approx 5,120$ LUTs.
+    *   **Explanation:** With 80 total neurons (30 in L1, 30 in L2, 10 in L3, 10 in L4), the core neurons consume $80 \times 51 = 4,080$ LUTs. The remaining ~2,200 LUTs are consumed by the AXI-Lite register interface ([`axi_lite_wrapper.v`](../hardware/rtl/axi_lite_wrapper.v)), Layer serialization logic, and the output [`find_max_out.v`](../hardware/rtl/find_max_out.v) comparator.
+    *   *Note:* The weight memories of Layers 2, 3, and 4 are very small (e.g. 10 or 30 words) and are synthesized using Distributed RAM (LUTRAM) rather than Block RAMs. Additionally, the 20 Sigmoid ROM tables ([`sig_rom.v`](../hardware/rtl/sig_rom.v), 1024 $\times$ 16 bits each) are synthesized using LUTs, which accounts for $\approx 5,120$ LUTs.
 
 ### 2. FF (Flip-Flop)
 *   **What they are:** Flip-flops are 1-bit memory cells that synchronize data on the rising edge of the clock. They are used to build registers, store states, and pipeline computations.
@@ -82,7 +82,7 @@ graph TD
     *   **Full FCN Accelerator:** 160 DSPs.
     *   **Explanation:** The network has 80 neurons, each requiring one 16-bit signed multiplication (`s_x * s_w`). Theoretically, a 16 $\times$ 16 multiplication fits into **one** 25 $\times$ 18 DSP slice.
     *   **Why 160 DSPs are used:** Vivado allocates 2 DSPs per neuron because the input ports are declared as unsigned (`input [15:0] i_data`), forcing the compiler to perform dynamic sign-extension and preventing optimal register packing inside the DSP slice.
-    *   **Optimization:** By changing the port declarations to `input signed [15:0] i_data` and registering both operands, the DSP utilization can be cut in half to exactly **80 DSPs (36.36%)**.
+    *   **Optimization:** Configured port declarations to `input signed [15:0] i_data` and signed internal buses in [`neuron.v`](../hardware/rtl/neuron.v), allowing Vivado to infer a single DSP48E1 slice per PE and reducing DSP slice footprint to **80 DSPs (36.36%)**.
 
 ### 4. BRAM (Block RAM)
 *   **What they are:** Block RAMs are large, dedicated memory blocks embedded in the FPGA fabric. In Xilinx 7-series, they are 36 Kb blocks (RAMB36E1) that can be split into two 18 Kb blocks (RAMB18E1).
@@ -96,5 +96,5 @@ graph TD
 ## Summary of Optimizations & Recommendations
 
 For developers implementing this design on smaller Zynq devices:
-1.  **Reduce DSP Slices:** Modify `neuron.v` to use signed ports (`input signed [15:0]`). This helps Vivado infer a single DSP48E1 slice per neuron, reducing DSP utilization from **72.73% to 36.36%**.
-2.  **Trade BRAMs for LUTs:** By default, the Sigmoid ROMs are synthesized as Distributed ROM using LUTs. If you have free BRAMs, add the synthesis attribute `(* rom_style = "block" *)` to `sig_rom.v`. This will save 5,000+ LUTs at the cost of 10 additional BRAMs.
+1.  **Reduce DSP Slices:** Modify [`neuron.v`](../hardware/rtl/neuron.v) to use signed ports (`input signed [15:0]`). This helps Vivado infer a single DSP48E1 slice per neuron, reducing DSP utilization from **72.73% to 36.36%**.
+2.  **Trade BRAMs for LUTs:** By default, the Sigmoid ROMs are synthesized as Distributed ROM using LUTs. If you have free BRAMs, add the synthesis attribute `(* rom_style = "block" *)` to [`sig_rom.v`](../hardware/rtl/sig_rom.v). This will save 5,000+ LUTs at the cost of 10 additional BRAMs.

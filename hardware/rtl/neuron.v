@@ -9,17 +9,17 @@ module neuron #(
     input clk,
     input rst,
     input i_valid,
-    input [15:0] i_data,
+    input signed [15:0] i_data,
     output reg o_valid,
     output reg [15:0] o_data,
     input wen,
     input [11:0] waddr,
-    input [15:0] wdata,
+    input signed [15:0] wdata,
     input bias_wen,
-    input [15:0] bias_wdata
+    input signed [15:0] bias_wdata
 );
     reg [11:0] raddr;
-    wire [15:0] w_data;
+    wire signed [15:0] w_data;
     weight_memory #(
         .numWeight(numWeight),
         .mifFile(mifFile)
@@ -32,7 +32,7 @@ module neuron #(
         .waddr(waddr),
         .wdata(wdata)
     );
-    reg [15:0] bias_mem [0:0];
+    reg signed [15:0] bias_mem [0:0];
     initial begin
         if (biasMifFile != "") begin
             $readmemb(biasMifFile, bias_mem);
@@ -53,8 +53,8 @@ module neuron #(
     reg prod_valid;
     always @(posedge clk) begin
         if (i_valid) begin
-            s_x_reg <= $signed(i_data);
-            prod <= ($signed(s_x_reg) * s_w) >>> 13;
+            s_x_reg <= i_data;
+            prod <= (i_data * s_w) >>> 13;
         end
     end
     always @(posedge clk) begin
