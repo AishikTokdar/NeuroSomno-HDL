@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License: MIT">
+  <img src="https://img.shields.io/badge/CI-RTL%20Simulation-success.svg?style=for-the-badge" alt="CI: RTL Simulation">
   <img src="https://img.shields.io/badge/Platform-MATLAB%20R2023b-orange.svg?style=for-the-badge" alt="Platform: MATLAB">
   <img src="https://img.shields.io/badge/Simulation-Xilinx%20Vivado%202023.1-blue.svg?style=for-the-badge" alt="Simulation: Vivado">
   <img src="https://img.shields.io/badge/Target-Zynq--7000%20ZedBoard-red.svg?style=for-the-badge" alt="Target: Zynq">
@@ -25,13 +26,13 @@ This repository provides a complete, hardware-independent simulation pipeline th
 ## Document Navigation
 
 For detailed breakdowns of specific project components, refer to the following sub-documents:
-*   [System Architecture Overview](docs/architecture_overview.md) — Register maps, latency calculations, and layer dataflow logic.
-*   [EEG Dataset Configuration](dataset/README.md) — Channel configurations and manual download instructions.
-*   [MATLAB Preprocessing Pipeline Guide](matlab_preprocessing/README.md) — In-depth details on filtering, segmentation, and model training.
-*   [Hardware RTL & Simulation Reference](hardware/README.md) — Verilog module breakdowns and state machine definitions.
-*   [Memory Initialization Guide](hardware/mif/README.md) — Specifications for `.mif`, `.mem`, and `.txt` simulator files.
-*   [Validation Results & Synthesis Reports](results/README.md) — Detailed accuracy metrics, power budgets, and FPGA resource footprints.
-*   [Vivado Synthesis & Accuracy Validation Report](docs/synthesis_and_accuracy_validation.md) — Detailed resource analysis, LUT/DSP definitions, and simulation accuracy verification.
+*   [System Architecture Overview](docs/architecture_overview.md) â€” Register maps, latency calculations, and layer dataflow logic.
+*   [EEG Dataset Configuration](dataset/README.md) â€” Channel configurations and manual download instructions.
+*   [MATLAB Preprocessing Pipeline Guide](matlab_preprocessing/README.md) â€” In-depth details on filtering, segmentation, and model training.
+*   [Hardware RTL & Simulation Reference](hardware/README.md) â€” Verilog module breakdowns and state machine definitions.
+*   [Memory Initialization Guide](hardware/mif/README.md) â€” Specifications for `.mif`, `.mem`, and `.txt` simulator files.
+*   [Validation Results & Synthesis Reports](results/README.md) â€” Detailed accuracy metrics, power budgets, and FPGA resource footprints.
+*   [Vivado Synthesis & Accuracy Validation Report](docs/synthesis_and_accuracy_validation.md) â€” Detailed resource analysis, LUT/DSP definitions, and simulation accuracy verification.
 
 ---
 
@@ -39,32 +40,32 @@ For detailed breakdowns of specific project components, refer to the following s
 
 ```
 EEG Signal (EDF)
-      │
-      ▼
+      â”‚
+      â–¼
 [MATLAB Preprocessing]
-  ├── Artifact removal (IIR Notch filter @ 50 Hz)
-  ├── Bandpass filter (Butterworth 4th-order @ 0.5-45 Hz)
-  ├── Segmentation (11s windows, 10s overlap @ 128 Hz -> 2816 samples)
-  ├── Z-score normalization (Zero-mean, unit-variance)
-  └── Class imbalance handling (SMOTE k-NN neighborhood interpolation)
-      │
-      ▼
+  â”œâ”€â”€ Artifact removal (IIR Notch filter @ 50 Hz)
+  â”œâ”€â”€ Bandpass filter (Butterworth 4th-order @ 0.5-45 Hz)
+  â”œâ”€â”€ Segmentation (11s windows, 10s overlap @ 128 Hz -> 2816 samples)
+  â”œâ”€â”€ Z-score normalization (Zero-mean, unit-variance)
+  â””â”€â”€ Class imbalance handling (SMOTE k-NN neighborhood interpolation)
+      â”‚
+      â–¼
 [1D-CNN Training (MATLAB)]
-  ├── 15-layer hybrid architecture
-  ├── Binary classification (Apnea vs Normal respiration)
-  ├── 65,185 trainable parameters
-  └── Accuracy: 99.62% (with SMOTE)
-      │
-      ▼
+  â”œâ”€â”€ 15-layer hybrid architecture
+  â”œâ”€â”€ Binary classification (Apnea vs Normal respiration)
+  â”œâ”€â”€ 65,185 trainable parameters
+  â””â”€â”€ Accuracy: 99.62% (with SMOTE)
+      â”‚
+      â–¼
 [Weight Extraction & Quantization]
-  └── Fixed-point quantization (16-bit signed: Q3.13 format)
-      │
-      ▼
+  â””â”€â”€ Fixed-point quantization (16-bit signed: Q3.13 format)
+      â”‚
+      â–¼
 [Verilog Hardware Accelerator (Vivado Simulation)]
-  ├── Feed-forward fully connected network (30-30-10-10 neurons)
-  ├── Fully simulated in Xilinx Vivado (no physical hardware required)
-  ├── AXI-Lite register interface for weight configuration & control
-  └── Quantized model accuracy: 89.00% (Simulation subset: 86.67% - 90.00%)
+  â”œâ”€â”€ Feed-forward fully connected network (30-30-10-10 neurons)
+  â”œâ”€â”€ Fully simulated in Xilinx Vivado (no physical hardware required)
+  â”œâ”€â”€ AXI-Lite register interface for weight configuration & control
+  â””â”€â”€ Quantized model accuracy: 89.00% (Simulation subset: 86.67% - 90.00%)
 ```
 
 ---
@@ -119,8 +120,8 @@ You can run, simulate, synthesize, and verify this entire repository using free 
 | **FF Utilization** | 43 / 106400 (0.04%) | 6653 / 106400 (6.25%) |
 | **DSP Utilization** | 2 / 220 (0.91%) | 160 / 220 (72.73%) *[1]* |
 | **BRAM Utilization** | 0.50 / 140 (0.36%) | 15 / 140 (10.71%) *[2]* |
-| **Quantized Model Accuracy (Full)** | — | **89.00%** |
-| **Simulation Accuracy (30-sample subset)** | — | **86.67% - 90.00%** |
+| **Quantized Model Accuracy (Full)** | â€” | **89.00%** |
+| **Simulation Accuracy (30-sample subset)** | â€” | **86.67% - 90.00%** |
 
 *[1] Theoretical minimum is 80 DSPs (1 per neuron). Vivado infers 2 DSPs per neuron due to port signedness and register packing constraints.*
 *[2] Sigmoid ROMs are synthesized as Distributed ROM using LUTs. If mapped to BRAM, utilization is 25 BRAMs.*
@@ -251,4 +252,4 @@ For visual waveform setup in Vivado GUI, see the signal trace guide in [Hardware
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License â€” see the [LICENSE](LICENSE) file for details.
