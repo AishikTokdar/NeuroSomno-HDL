@@ -1,0 +1,6 @@
+# NeuroSomno-HDL Open-Source Python Machine Learning Pipeline Requirements
+numpy>=1.22.0
+scipy>=1.8.0
+scikit-learn>=1.0.0
+torch>=2.0.0
+mne>=1.0.0

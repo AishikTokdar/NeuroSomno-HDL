@@ -33,5 +33,5 @@ This document describes how to obtain and configure the European Data Format (ED
 > [!TIP]
 > If you want to test the complete training, weight extraction, and RTL simulation pipeline immediately without downloading large external databases:
 > 1. Keep this `dataset/` directory empty.
-> 2. Run `matlab_preprocessing/preprocess_eeg.m`.
-> 3. The script will detect the missing files and automatically generate three synthetic subject files (`ucddb001`, `ucddb002`, `ucddb003`) containing simulated EEG signals and label structures.
+> 2. Run [`../matlab_preprocessing/preprocess_eeg.m`](../matlab_preprocessing/preprocess_eeg.m) or [`../python_pipeline/preprocess_eeg.py`](../python_pipeline/preprocess_eeg.py).
+> 3. The script will detect the missing files and automatically generate synthetic subject records containing simulated EEG signals and label structures.

@@ -187,6 +187,16 @@ octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matla
 
 ---
 
+##### Option C: Python 3.x / PyTorch (100% Free & Open-Source)
+Install lightweight requirements and execute the standalone preprocessing script:
+```bash
+pip install -r python_pipeline/requirements.txt
+python python_pipeline/preprocess_eeg.py
+```
+*(Automatically extracts or synthesizes EEG epochs and partitions into train/val/test splits)*
+
+---
+
 #### Phase 3: Hardware RTL Simulation & Synthesis
 
 > [!NOTE]
