@@ -548,3 +548,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+// Real-time canvas visualizer enabled
