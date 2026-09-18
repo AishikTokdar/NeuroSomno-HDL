@@ -192,6 +192,7 @@ Install lightweight requirements and execute the standalone preprocessing script
 ```bash
 pip install -r python_pipeline/requirements.txt
 python python_pipeline/preprocess_eeg.py
+python python_pipeline/train_model.py
 ```
 *(Automatically extracts or synthesizes EEG epochs and partitions into train/val/test splits)*
 
