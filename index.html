@@ -12,7 +12,6 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <nav class="navbar">
         <a href="#" class="brand">
             <span>NeuroSomno-HDL</span>
@@ -35,7 +34,6 @@
         </a>
     </nav>
 
-    <!-- Hero Section -->
     <header class="hero container" id="overview">
         <div class="hero-pill">
             <span>Zynq-7000 ZedBoard FPGA Accelerator • Multi-Toolchain Support</span>
@@ -50,7 +48,6 @@
             <a href="#foss-tools" class="btn-secondary">Open Source Deployment Suite</a>
         </div>
 
-        <!-- Key Metrics Cards -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">99.62%</div>
@@ -75,7 +72,6 @@
         </div>
     </header>
 
-    <!-- Open Source Tools Section -->
     <section class="section container" id="foss-tools">
         <div class="section-header">
             <h2 class="section-title">Open-Source Software Deployment Suite</h2>
@@ -83,7 +79,6 @@
         </div>
 
         <div class="foss-grid">
-            <!-- Icarus Verilog -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -100,7 +95,6 @@
                 </div>
             </div>
 
-            <!-- GTKWave -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -117,7 +111,6 @@
                 </div>
             </div>
 
-            <!-- Yosys -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -134,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- GNU Octave -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -151,7 +143,6 @@
                 </div>
             </div>
 
-            <!-- Python -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -168,7 +159,6 @@
                 </div>
             </div>
 
-            <!-- Verilator -->
             <div class="foss-card">
                 <div>
                     <div class="foss-header">
@@ -187,7 +177,6 @@
         </div>
     </section>
 
-    <!-- Interactive Architecture Block Diagram Explorer -->
     <section class="section container" id="architecture">
         <div class="section-header">
             <h2 class="section-title">Hardware Accelerator Architecture</h2>
@@ -197,7 +186,6 @@
         <div class="arch-container">
             <div class="arch-header-hint">💡 Click any block to view RTL module details & FPGA primitives</div>
             <div class="arch-diagram">
-                <!-- PS CPU Block -->
                 <div class="arch-block" onclick="openArchModal('ps-cpu')">
                     <div>
                         <div class="arch-block-tag">Host CPU System</div>
@@ -210,7 +198,6 @@
                     </div>
                 </div>
 
-                <!-- AXI Wrapper Block -->
                 <div class="arch-block" onclick="openArchModal('axi-wrapper')">
                     <div>
                         <div class="arch-block-tag">Control Interconnect</div>
@@ -223,7 +210,6 @@
                     </div>
                 </div>
 
-                <!-- Layer 1 Block -->
                 <div class="arch-block" onclick="openArchModal('layer-1')">
                     <div>
                         <div class="arch-block-tag">Layer 1 (784 ➔ 30)</div>
@@ -236,7 +222,6 @@
                     </div>
                 </div>
 
-                <!-- Layer 2 Block -->
                 <div class="arch-block" onclick="openArchModal('layer-2')">
                     <div>
                         <div class="arch-block-tag">Layer 2 (30 ➔ 30)</div>
@@ -249,7 +234,6 @@
                     </div>
                 </div>
 
-                <!-- Layer 3 Block -->
                 <div class="arch-block" onclick="openArchModal('layer-3')">
                     <div>
                         <div class="arch-block-tag">Layer 3 (30 ➔ 10)</div>
@@ -262,7 +246,6 @@
                     </div>
                 </div>
 
-                <!-- Layer 4 Block -->
                 <div class="arch-block" onclick="openArchModal('layer-4')">
                     <div>
                         <div class="arch-block-tag">Layer 4 (10 ➔ 10)</div>
@@ -275,7 +258,6 @@
                     </div>
                 </div>
 
-                <!-- Argmax Block -->
                 <div class="arch-block" onclick="openArchModal('argmax')">
                     <div>
                         <div class="arch-block-tag">Classification Decision</div>
@@ -290,7 +272,6 @@
             </div>
         </div>
 
-        <!-- Component Detail Modal Popup -->
         <div class="modal-overlay" id="archModal">
             <div class="modal-content">
                 <button class="modal-close" id="modalClose">✕</button>
@@ -319,7 +300,6 @@
             </div>
         </div>
 
-        <!-- End-to-End Pipeline Steps -->
         <div class="pipeline-flow">
             <div class="flow-step">
                 <span class="step-num">STAGE 01</span>
@@ -344,7 +324,6 @@
         </div>
     </section>
 
-    <!-- Real-Time In-Browser EEG Simulation & Apnea Detection Visualizer -->
     <section class="section container" id="simulator">
         <div class="section-header">
             <h2 class="section-title">Live EEG Streaming & Accelerator Simulation</h2>
@@ -373,7 +352,6 @@
                 </div>
             </div>
 
-            <!-- Oscilloscope Canvas Viewport -->
             <div class="canvas-wrapper">
                 <div class="canvas-header-overlay">
                     <span class="live-dot"></span>
@@ -383,9 +361,7 @@
                 <canvas id="eegCanvas" width="900" height="200"></canvas>
             </div>
 
-            <!-- Live Status & Layer Activation Pipeline -->
             <div class="sim-dashboard-grid">
-                <!-- Classification Result -->
                 <div class="sim-status-box">
                     <div class="sim-status-label">RTL Accelerator Decision</div>
                     <div id="simClassBadge" class="sim-class-badge normal">
@@ -395,7 +371,6 @@
                     <div class="sim-subdetail" id="simInferenceLatency">Inference Latency: 8.8 µs (880 Cycles @ 100MHz)</div>
                 </div>
 
-                <!-- AHI Clinical Tracker -->
                 <div class="sim-status-box">
                     <div class="sim-status-label">AHI Clinical Severity Tracker</div>
                     <div class="ahi-stat-row">
@@ -406,7 +381,6 @@
                     <div class="sim-subdetail" id="simConsecutiveText">Current Apnea Duration: 0.0s</div>
                 </div>
 
-                <!-- 4-Layer Activation Activity Meter -->
                 <div class="sim-status-box" style="grid-column: span 2;">
                     <div class="sim-status-label">Hardware Layer Activation Levels (Q3.13 PE Energy)</div>
                     <div class="layer-activity-grid">
@@ -432,7 +406,6 @@
         </div>
     </section>
 
-    <!-- Interactive Fixed-Point Q3.13 Quantization Explorer -->
     <section class="section container" id="quantization">
         <div class="section-header">
             <h2 class="section-title">Interactive Q3.13 Quantization Calculator</h2>
@@ -496,7 +469,6 @@
         </div>
     </section>
 
-    <!-- Target FPGA Board & Primitive Deep Dive Section -->
     <section class="section container" id="fpgaboard">
         <div class="section-header">
             <h2 class="section-title">Target FPGA Platform & Primitives</h2>
@@ -537,7 +509,6 @@
             </div>
         </div>
 
-        <!-- Dynamic FPGA Platform Resource Scalability Calculator -->
         <div class="quant-card" style="margin-top: 1.5rem;">
             <div class="section-header" style="text-align: left; margin-bottom: 1rem;">
                 <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">Dynamic FPGA Device Scalability Estimator</h3>
@@ -566,7 +537,6 @@
                 </div>
             </div>
 
-            <!-- Dynamic Resource Bars -->
             <div class="resource-grid" id="boardResourceGrid">
                 <div class="resource-card">
                     <div class="resource-header">
@@ -600,7 +570,6 @@
         </div>
     </section>
 
-    <!-- Results & Synthesis Section -->
     <section class="section container" id="results">
         <div class="section-header">
             <h2 class="section-title">Results & FPGA Synthesis Footprint</h2>
@@ -614,7 +583,6 @@
             <button class="tab-btn" data-tab="tab-confusion">Confusion Matrix & Threshold</button>
         </div>
 
-        <!-- Hardware Resource Tab -->
         <div class="tab-content active" id="tab-hardware">
             <div class="resource-grid">
                 <div class="resource-card">
@@ -663,7 +631,6 @@
             </div>
         </div>
 
-        <!-- Software Model Tab -->
         <div class="tab-content" id="tab-software">
             <div class="table-responsive">
                 <table>
@@ -710,7 +677,6 @@
             </div>
         </div>
 
-        <!-- Timing & Power Tab -->
         <div class="tab-content" id="tab-timing">
             <div class="table-responsive">
                 <table>
@@ -752,7 +718,6 @@
             </div>
         </div>
 
-        <!-- Confusion Matrix & Threshold Tab -->
         <div class="tab-content" id="tab-confusion">
             <div class="quant-card">
                 <div class="sim-controls-bar" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
@@ -769,7 +734,6 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: center;">
-                    <!-- 2x2 Matrix -->
                     <div>
                         <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700;">2x2 Confusion Matrix (Test Set: N = 1,200)</div>
                         <div class="confusion-grid">
@@ -787,7 +751,6 @@
                         </div>
                     </div>
 
-                    <!-- Metrics -->
                     <div class="quant-results-grid">
                         <div class="quant-stat">
                             <div class="quant-stat-label">Sensitivity (Recall)</div>
@@ -811,14 +774,12 @@
         </div>
     </section>
 
-    <!-- Execution Guide Section -->
     <section class="section container" id="execution">
         <div class="section-header">
             <h2 class="section-title">Execution & Deployment Guide</h2>
             <p class="section-desc">Run the full pipeline using automated launcher scripts or step-by-step commands in Vivado or Icarus Verilog.</p>
         </div>
 
-        <!-- Automated Launcher Scripts -->
         <div class="code-block">
             <div class="code-header">
                 <span>Automated Launcher Scripts (Linux, macOS, Windows)</span>
@@ -835,7 +796,6 @@ powershell -ExecutionPolicy Bypass -File .\run_all.ps1
 run_all.bat</code></pre>
         </div>
 
-        <!-- FOSS CLI Commands -->
         <div class="code-block">
             <div class="code-header">
                 <span>Open-Source Simulation (GNU Octave + Icarus Verilog + Yosys)</span>
@@ -857,7 +817,6 @@ yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"<
         </div>
     </section>
 
-    <!-- AXI Register Map Section -->
     <section class="section container" id="registers">
         <div class="section-header">
             <h2 class="section-title">AXI-Lite Register Interface Map</h2>
@@ -955,7 +914,6 @@ yosys -p "read_verilog -sv hardware/rtl/*.v; synth_xilinx -top zynet_top; stat"<
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <p><strong>NeuroSomno-HDL</strong> — Edge-Intelligent Biomedical FPGA Hardware Acceleration</p>

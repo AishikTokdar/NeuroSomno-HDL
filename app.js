@@ -1,7 +1,5 @@
-// NeuroSomno-HDL Interactive Web Application Script
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Tab Switching Handler
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -20,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. Interactive Architecture Diagram Modal Data
     const archData = {
         'ps-cpu': {
             title: 'Processing System (PS) — ARM Cortex-A9',
@@ -80,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Modal Control Functions
     const modalOverlay = document.getElementById('archModal');
     const modalCloseBtn = document.getElementById('modalClose');
 
@@ -97,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modalOverlay.classList.add('active');
 
-        // Highlight active block
         document.querySelectorAll('.arch-block').forEach(b => b.classList.remove('active'));
         const activeBlock = document.querySelector(`[onclick="openArchModal('${blockId}')"]`);
         if (activeBlock) activeBlock.classList.add('active');
@@ -115,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Code Copy to Clipboard
     window.copyCode = function(button, codeId) {
         const codeElement = document.getElementById(codeId);
         if (!codeElement) return;
@@ -136,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 4. Register Map Search Filter
     const searchInput = document.getElementById('regSearch');
     if (searchInput) {
         searchInput.addEventListener('keyup', (e) => {
@@ -154,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Animate Resource Progress Bars on Scroll
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -172,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(resourceGrid);
     }
 
-    // 6. Interactive Fixed-Point Q3.13 Quantization Calculator
     window.setQPreset = function(val) {
         const input = document.getElementById('qInputVal');
         if (input) {
@@ -226,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.recalcQ313();
     }
 
-    // 7. Real-Time In-Browser EEG Simulation & Apnea Detector Controller
     let simRunning = true;
     let simSpeed = 1;
     let simTimeSec = 0.0;
@@ -315,7 +305,6 @@ document.addEventListener('DOMContentLoaded', () => {
             timeTxt.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${frac}`;
         }
 
-        // Layer Activation Bars
         const l1 = document.getElementById('l1ActBar');
         const l2 = document.getElementById('l2ActBar');
         const l3 = document.getElementById('l3ActBar');
@@ -347,7 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const dt = (1.0 / 60.0) * simSpeed;
             simTimeSec += dt;
 
-            // Check if patient is currently in an apnea interval
             let isApnea = false;
             if (simSubject === 'mild') {
                 const cycle = simTimeSec % 70;
@@ -368,18 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 inApneaEvent = false;
             }
 
-            // Generate synthetic EEG sample
             const t = simTimeSec;
             let val;
             if (isApnea) {
-                // Flatlined/attenuated amplitude during apnea
                 val = 0.12 * Math.sin(2 * Math.PI * 8 * t) + (Math.random() - 0.5) * 0.08;
             } else {
-                // Normal cortical rhythm: 10 Hz alpha wave + 2 Hz slow delta
                 val = Math.sin(2 * Math.PI * 10 * t) + 0.45 * Math.sin(2 * Math.PI * 2 * t + 0.3) + (Math.random() - 0.5) * 0.25;
             }
 
-            // Map val [-2.0, 2.0] to canvas pixel y [10, 190]
             const yPixel = 100 - val * 45;
             bufferPoints.shift();
             bufferPoints.push(yPixel);
@@ -389,11 +373,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Draw Canvas Grid & Oscilloscope Trace
         ctx.fillStyle = '#06090e';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Draw Grid Lines
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
         ctx.lineWidth = 1;
         for (let x = 0; x < canvas.width; x += 40) {
@@ -409,7 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.stroke();
         }
 
-        // Draw Center Baseline
         ctx.strokeStyle = 'rgba(59, 130, 246, 0.2)';
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
@@ -418,7 +399,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Draw Glowing Waveform
         const dx = canvas.width / (bufferPoints.length - 1);
         ctx.beginPath();
         ctx.moveTo(0, bufferPoints[0]);
@@ -441,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(renderSimulationFrame);
     }
 
-    // 8. Dynamic Multi-Board FPGA Resource Scalability Estimator
     const boardDB = {
         'zedboard': { name: 'ZedBoard (XC7Z020)', lut: 53200, ff: 106400, dsp: 220, bram: 140 },
         'pynqz2':   { name: 'PYNQ-Z2 (XC7Z020)', lut: 53200, ff: 106400, dsp: 220, bram: 140 },
@@ -494,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elBramBar) elBramBar.style.width = `${Math.min(100, bramPct)}%`;
     };
 
-    // 9. Clinical Confusion Matrix & Threshold Tuning Controller
     window.recalcConfusion = function() {
         const slider = document.getElementById('thresholdSlider');
         const disp = document.getElementById('threshDisplay');
@@ -504,7 +482,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (disp) disp.innerText = tau.toFixed(2);
 
         // N = 1200 total (1000 Normal, 200 Apnea)
-        // Shifting threshold changes sensitivity vs specificity
         const totalPos = 200;
         const totalNeg = 1000;
 
@@ -541,12 +518,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elF1) elF1.innerText = f1.toFixed(3);
     };
 
-    // Initial trigger
     window.recalcBoardResources();
     window.recalcConfusion();
 });
 
 
 
-
-// Real-time canvas visualizer enabled
