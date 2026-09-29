@@ -34,33 +34,39 @@ Predicted Class (0: Normal / 1: Apnea)
 
 ## Detailed Module Descriptions
 
-*   **`neuron.v`**: Computes Multiply-Accumulate (MAC) operations, loads bias, and applies ReLU/Sigmoid activation functions. Features saturation logic (`+32767`/`-32768`) to prevent overflow wrap-around.
-*   **`weight_memory.v`**: Dual-port BRAM blocks loaded with weight parameter arrays during startup using `$readmemb`.
-*   **`sig_rom.v`**: ROM lookup table for Sigmoid activation using input index shifting:
+*   **[`neuron.v`](rtl/neuron.v)**: Computes Multiply-Accumulate (MAC) operations, loads bias, and applies ReLU/Sigmoid activation functions. Features saturation logic (`+32767`/`-32768`) to prevent overflow wrap-around.
+*   **[`weight_memory.v`](rtl/weight_memory.v)**: Dual-port BRAM blocks loaded with weight parameter arrays during startup using `$readmemb`.
+*   **[`sig_rom.v`](rtl/sig_rom.v)**: ROM lookup table for Sigmoid activation using input index shifting:
     ```verilog
     wire [9:0] index = i_data[15:6] + 10'd512;
     ```
-*   **`relu.v`**: Saturated Rectified Linear Unit activation block.
-*   **`layer1.v` to `layer4.v`**: Serialized layers that manage parallel execution of neuron compute elements and stream data forward.
-*   **`find_max_out.v`**: Sequential argmax block that computes final class ID from Layer 4 output values.
-*   **`axi_lite_wrapper.v`**: Interfacing register map for weight loading, triggering, and control flow.
+*   **[`relu.v`](rtl/relu.v)**: Saturated Rectified Linear Unit activation block.
+*   **[`layer1.v`](rtl/layer1.v) to [`layer4.v`](rtl/layer4.v)**: Serialized layers that manage parallel execution of neuron compute elements and stream data forward.
+*   **[`find_max_out.v`](rtl/find_max_out.v)**: Sequential argmax block that computes final class ID from Layer 4 output values.
+*   **[`zynet_top.v`](rtl/zynet_top.v)**: Top-level neural network accelerator integrating Layer 1–4 pipelines with streaming input buffers.
+*   **[`axi_lite_wrapper.v`](rtl/axi_lite_wrapper.v)**: Interfacing register map for weight loading, triggering, and control flow.
+*   **[`ahi_tracker.v`](rtl/ahi_tracker.v)**: Real-time Apnea-Hypopnea Index clinical accumulator, severity classifier, and hypoxia duration alarm.
+*   **[`conv1d_pe.v`](rtl/conv1d_pe.v)**: Streaming 1D Convolution Processing Element with sliding window sample buffer and parallel multiplier tree.
+*   **[`maxpool1d.v`](rtl/maxpool1d.v)**: Streaming 1D Max Pooling module with configurable window size and stride.
+*   **[`iir_notch_50hz.v`](rtl/iir_notch_50hz.v)**: Digital 2nd-order Direct-Form II Transposed IIR Notch filter for powerline hum elimination.
+*   **[`iir_bandpass.v`](rtl/iir_bandpass.v)**: Digital 4th-order cascaded Biquad bandpass filter isolating 0.5–45 Hz physiological EEG cortical rhythms.
 
 ---
 
-## Testbench Execution Sequence (`tb_top_sim.v`)
+## Testbench Execution Sequence ([`tb_top_sim.v`](tb/tb_top_sim.v))
 
 The main testbench simulates the ARM host behavior using the following AXI transaction sequence:
 1.  **Reset**: Asserts reset to reset the state machines and counters.
 2.  **Trigger Network**: Writes `32'h2` (Start bit) to `REG_CTRL` via AXI-Lite to configure the accelerator to stream data mode.
 3.  **Stream Data**: Streams 784 16-bit elements of a test sample sequentially using the AXI-Stream interface.
 4.  **Wait for Interrupt**: Pools the physical interrupt pin `intr` (or registers status bit `1` of `REG_STATUS`) to detect that classification is complete.
-5.  **Read Prediction**: Reads `REG_NNOUT` to capture the predicted class (0/1) and compares it with `test_labels.txt` to calculate accuracy.
+5.  **Read Prediction**: Reads `REG_NNOUT` to capture the predicted class (0/1) and compares it with [`test_labels.txt`](mif/test_labels.txt) to calculate accuracy.
 
 ---
 
 ## Simulation & Execution Guide
 
-For full step-by-step instructions on running simulations and synthesis using either **Xilinx Vivado** (Primary Default) or **100% Open-Source Tools** (Icarus Verilog + GTKWave + Yosys), see the main [Execution Guide in README.md](file:///d:/Repositories/NeuroSomno-HDL/README.md#complete-step-by-step-execution-guide).
+For full step-by-step instructions on running simulations and synthesis using either **Xilinx Vivado** (Primary Default) or **100% Open-Source Tools** (Icarus Verilog + GTKWave + Yosys), see the main [Execution Guide in README.md](../README.md#complete-step-by-step-execution-guide).
 
 ---
 

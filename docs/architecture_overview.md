@@ -83,12 +83,14 @@ The AXI-Lite registers allow the PS to monitor and program the network parameter
 | **7** | `32'h1C` | W | `REG_BWEN`  | **Bit [0]:** Bias write enable strobe (1 = write, 0 = idle)<br>**Bits [31:1]:** Reserved |
 | **8** | `32'h20` | R | `REG_NNOUT` | **Bits [3:0]:** Argmax classification output (0 = Normal, 1 = Apnea)<br>**Bits [31:4]:** Reserved |
 | **9** | `32'h24` | R | `REG_STATUS`| **Bit [0]:** Inference Done flag (1 = Done, 0 = Running)<br>**Bit [1]:** Interrupt Pending flag (`intr` pin state)<br>**Bits [31:2]:** Reserved |
+| **10** | `32'h28` | R | `REG_AHI_COUNT` | **Bits [15:0]:** Total qualified clinical apnea episodes accumulated<br>**Bits [31:16]:** Reserved |
+| **11** | `32'h2C` | R | `REG_AHI_SEV`   | **Bits [1:0]:** AASM Sleep Apnea Severity (0=Normal, 1=Mild, 2=Moderate, 3=Severe)<br>**Bits [31:2]:** Reserved |
 
 ---
 
 ## 4. Layer Serialization FSM
 
-Each layer (e.g., `layer1.v`) coordinates the execution of its parallel neuron array and serializes the resulting outputs to stream to the next layer:
+Each layer (e.g., [`layer1.v`](../hardware/rtl/layer1.v)) coordinates the execution of its parallel neuron array and serializes the resulting outputs to stream to the next layer:
 
 ```mermaid
 stateDiagram-v2
@@ -110,6 +112,21 @@ stateDiagram-v2
 
 Each single neuron PE computes MAC operations in a three-stage pipeline to optimize clock speeds:
 
-*   **Cycle $N$:** Address `raddr` is applied to `weight_memory` ROM.
+*   **Cycle $N$:** Address `raddr` is applied to [`weight_memory.v`](../hardware/rtl/weight_memory.v) ROM.
 *   **Cycle $N+1$:** `w_data` (weight) and input `i_data` are latched; multiplication `(s_x * s_w)` is calculated.
 *   **Cycle $N+2$:** Product is right-shifted by 13 bits (`>>> 13`) and added to the accumulator: `acc <= acc + prod`.
+
+---
+
+## 6. Streaming 1D-CNN Acceleration Pipeline
+
+To support raw 2816-sample EEG biosignals without resolution-reducing interpolation, the architecture includes hardware-native 1D Convolution ([`conv1d_pe.v`](../hardware/rtl/conv1d_pe.v)) and 1D Max Pooling ([`maxpool1d.v`](../hardware/rtl/maxpool1d.v)) engines:
+
+```
+Raw EEG Stream ──> [Sliding Window Shift Register] ──> [Parallel Multiplier Tree] ──> [Accumulation & Saturation] ──> [1D MaxPool]
+```
+
+*   **Sliding Window Buffer:** Retains the latest $K$ samples (e.g. $K=10$ or $K=30$) in a shift-register ring, shifting on each clock cycle when `i_valid` is asserted.
+*   **Parallel Multiplier Tree:** Computes simultaneous 16-bit signed Q3.13 dot products between the sliding window buffer and kernel parameters.
+*   **Streaming Max-Pooling:** Downsamples temporal dimensionality by tracking running maximums across adjacent windows ($P=2$, Stride $S=2$).
+
