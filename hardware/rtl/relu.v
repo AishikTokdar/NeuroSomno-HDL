@@ -11,4 +11,4 @@ module relu (
             o_data = i_data[15:0];
         end
     end
-end
+endmodule
