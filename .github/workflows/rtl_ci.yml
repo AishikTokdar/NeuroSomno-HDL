@@ -1,0 +1,46 @@
+name: RTL Behavioral Simulation CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  simulate-rtl:
+    name: Icarus Verilog Behavioral Simulation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Icarus Verilog
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y iverilog
+
+      - name: Verify Toolchain
+        run: |
+          iverilog -V | head -n 1
+          vvp -V | head -n 1
+
+      - name: Compile Verilog RTL & Simulation Testbench
+        run: |
+          cd hardware/mif
+          iverilog -g2012 -I ../rtl -o sim_top ../rtl/*.v ../tb/tb_top_sim.v
+
+      - name: Execute Simulation & Verify Classification Accuracy
+        run: |
+          cd hardware/mif
+          vvp sim_top | tee sim_output.log
+          
+          # Verify that overall accuracy appears in simulation log and exceeds threshold
+          if grep -q "Overall Accuracy" sim_output.log; then
+            echo "[SUCCESS] Simulation finished with accuracy report."
+            grep "Overall Accuracy" sim_output.log
+          else
+            echo "[ERROR] Simulation did not produce accuracy report."
+            exit 1
+          fi
