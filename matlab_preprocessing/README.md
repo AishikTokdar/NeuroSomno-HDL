@@ -1,24 +1,24 @@
-# ⚙️ MATLAB Preprocessing & Model Training Details
+# MATLAB Preprocessing & Model Training Details
 
 This directory contains the MATLAB R2023b scripts used to process raw EEG signals, train the neural network classifiers, and export quantized parameters for hardware simulation.
 
 ---
 
-## 📋 Detailed Script Specifications
+## Detailed Script Specifications
 
 | Script | Inputs | Outputs | Purpose & Logic |
 | :--- | :--- | :--- | :--- |
-| **`extract_channels.m`** | Raw EDF table loaded via `edfread`. | `C3-A2` and `C4-A1` channel vectors. | Isolates raw continuous time-series EEG channels by header pattern matching. |
-| **`preprocess_eeg.m`** | Raw `.edf` recordings in `dataset/`. | `<subject>_C3A2.mat`, `<subject>_C4A1.mat`, and labels. | Applies a 50Hz notch filter (IIR) and a 0.5-45Hz Butterworth 4th-order bandpass filter. Fallback mode generates synthetic signals if empty. |
-| **`segment_eeg.m`** | Filtered signal channels and labels. | Partitioned train, validation, and test datasets. | Extracts 11s sliding windows (1408 samples per channel) with 10s overlap. Performs z-score normalization and concatenates channels to 2816 features. |
-| **`normalize_zscore.m`** | Input vector `X`. | Normalized vector `X_norm`. | Computes zero-mean, unit-variance conversion: $X_{norm} = \frac{X - \mu}{\sigma}$. |
-| **`handle_imbalance.m`** | Unbalanced training partitions. | Balanced training partitions. | Generates minority class (apnea) samples using SMOTE k-NN interpolation ($k=5$). |
-| **`train_1dcnn.m`** | Balanced training and validation data. | `global_model.mat` and `fcn_model.mat`. | Trains the 15-layer hybrid 1D-CNN and the hardware-targeted 30-30-10-10 FCN classifier (using downsampled 784-sample features). |
-| **`extract_weights.m`** | `fcn_model.mat` and test partitions. | Quantized `.mif` weight files and simulation data. | Converts weights/biases using `fi(..., 1, 16, 13)` signed fixed-point format, generates `sig_rom.mem` LUT, and writes simulation vectors. |
+| **[`extract_channels.m`](extract_channels.m)** | Raw EDF table loaded via `edfread`. | `C3-A2` and `C4-A1` channel vectors. | Isolates raw continuous time-series EEG channels by header pattern matching. |
+| **[`preprocess_eeg.m`](preprocess_eeg.m)** | Raw `.edf` recordings in [`../dataset/`](../dataset/README.md). | `<subject>_C3A2.mat`, `<subject>_C4A1.mat`, and labels. | Applies a 50Hz notch filter (IIR) and a 0.5-45Hz Butterworth 4th-order bandpass filter. Fallback mode generates synthetic signals if empty. |
+| **[`segment_eeg.m`](segment_eeg.m)** | Filtered signal channels and labels. | Partitioned train, validation, and test datasets. | Extracts 11s sliding windows (1408 samples per channel) with 10s overlap. Performs z-score normalization and concatenates channels to 2816 features. |
+| **[`normalize_zscore.m`](normalize_zscore.m)** | Input vector `X`. | Normalized vector `X_norm`. | Computes zero-mean, unit-variance conversion: $X_{norm} = \frac{X - \mu}{\sigma}$. |
+| **[`handle_imbalance.m`](handle_imbalance.m)** | Unbalanced training partitions. | Balanced training partitions. | Generates minority class (apnea) samples using SMOTE k-NN interpolation ($k=5$). |
+| **[`train_1dcnn.m`](train_1dcnn.m)** | Balanced training and validation data. | `global_model.mat` and `fcn_model.mat`. | Trains the 15-layer hybrid 1D-CNN and the hardware-targeted 30-30-10-10 FCN classifier (using downsampled 784-sample features). |
+| **[`extract_weights.m`](extract_weights.m)** | `fcn_model.mat` and test partitions. | Quantized `.mif` weight files and simulation data. | Converts weights/biases using `fi(..., 1, 16, 13)` signed fixed-point format, generates `sig_rom.mem` LUT, and writes simulation vectors. |
 
 ---
 
-## 📈 Preprocessing & Filtering Mathematics
+## Preprocessing & Filtering Mathematics
 
 ### 1. IIR Notch Filter (50 Hz)
 To suppress powerline hum, a notch filter is designed:
@@ -42,19 +42,17 @@ Where:
 
 ---
 
-## 🛠️ Prerequisites & Toolbox Dependencies
+## Software Prerequisites & Alternative Suites
 
-Ensure you have the following toolboxes installed in your MATLAB environment:
-*   **Deep Learning Toolbox** (for neural net construction and training)
-*   **Fixed-Point Designer** (for fixed-point representation and validation)
-*   **Signal Processing Toolbox** (for notch and butterworth filtering)
-*   **MATLAB add-on:** `edfread` (only required if importing raw PhysioNet `.edf` files)
+*   **MATLAB R2023b (Primary Default):** Requires *Deep Learning Toolbox*, *Fixed-Point Designer*, and *Signal Processing Toolbox*.
+*   **GNU Octave (Open-Source Free Alternative):** 100% compatible for executing filtering, segmentation, SMOTE, and weight extraction scripts via CLI.
+*   **Python 3.x / PyTorch Pipeline (Zero Proprietary Tools):** Full standalone alternative located in [`python_pipeline/`](../python_pipeline/) utilizing `numpy`, `scipy`, `scikit-learn`, and `torch`.
 
 ---
 
-## 🔄 Step-by-Step Run Order
+## Step-by-Step Run Order
 
-Open MATLAB and execute the scripts in the following order:
+For complete step-by-step instructions for both MATLAB and GNU Octave CLI execution, see [Phase 2 of the main Execution Guide in README.md](../README.md#phase-2-signal-preprocessing--quantization).
 
 ```matlab
 % Step 1: Preprocess raw channels or generate synthetic fallback signals
@@ -74,4 +72,4 @@ run('extract_weights.m')
 ```
 
 > [!TIP]
-> All files required for Vivado simulation are automatically exported to the `../hardware/mif/` folder upon running the final step.
+> All files required for Vivado or Icarus Verilog simulation are automatically exported to the [`../hardware/mif/`](../hardware/mif/README.md) folder upon running the final step.
