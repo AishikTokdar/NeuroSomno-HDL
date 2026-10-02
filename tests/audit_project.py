@@ -101,6 +101,17 @@ class ProjectAudit(unittest.TestCase):
             self.assertFalse(report['valid'])
             self.assertTrue(any('w_1_0.mif: checksum' in error for error in report['errors']))
 
+    def test_memory_checksums_ignore_mif_line_endings(self):
+        from validate_memory import validate_assets
+        with tempfile.TemporaryDirectory() as tmp:
+            self.memory_fixture(tmp)
+            for name, separator in [('w_1_0.mif', b'\r\n'), ('w_1_1.mif', b'\r')]:
+                path = Path(tmp)/name
+                lines = path.read_text(encoding='ascii').splitlines()
+                path.write_bytes(separator.join(line.encode('ascii') for line in lines) + separator)
+            report = validate_assets(tmp)
+            self.assertTrue(report['valid'], report['errors'])
+
     def test_source_syntax(self):
         for path in [*ROOT.glob("python_pipeline/*.py"), *ROOT.glob("embedded/**/*.py")]:
             ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
