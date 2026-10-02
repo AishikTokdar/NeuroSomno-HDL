@@ -33,7 +33,9 @@ module zynet_top (
     wire [15:0] bias_wdata;
     wire bias_wen;
     wire [3:0] out_class;
-    wire out_done;
+    wire [15:0] ahi_count;
+    wire [1:0] ahi_sev;
+    wire ahi_alarm_intr;
     axi_lite_wrapper axil (
         .S_AXI_ACLK(clk),
         .S_AXI_ARESETN(!rst),
@@ -64,9 +66,19 @@ module zynet_top (
         .o_bias_wen(bias_wen),
         .i_class(out_class),
         .i_done(out_done),
-        .i_ahi_count(16'd0),
-        .i_ahi_sev(2'd0),
+        .i_ahi_count(ahi_count),
+        .i_ahi_sev(ahi_sev),
         .intr(intr)
+    );
+    ahi_tracker ahi_inst (
+        .clk(clk),
+        .rst(net_rst),
+        .i_valid(out_done),
+        .i_class(out_class),
+        .clr_counter(soft_rst),
+        .o_ahi_count(ahi_count),
+        .o_severity(ahi_sev),
+        .o_alarm_intr(ahi_alarm_intr)
     );
     reg running;
     always @(posedge clk or posedge rst) begin

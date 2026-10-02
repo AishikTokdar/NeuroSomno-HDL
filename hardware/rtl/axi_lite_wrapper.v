@@ -28,6 +28,8 @@ module axi_lite_wrapper (
     output reg o_bias_wen,
     input [3:0] i_class,
     input i_done,
+    input [15:0] i_ahi_count,
+    input [1:0] i_ahi_sev,
     output reg intr
 );
     reg [31:0] reg_ctrl;
@@ -123,6 +125,8 @@ module axi_lite_wrapper (
                     4'd5: S_AXI_RDATA <= reg_bval;
                     4'd8: S_AXI_RDATA <= reg_nn_out;
                     4'd9: S_AXI_RDATA <= {30'd0, intr, reg_done};
+                    4'd10: S_AXI_RDATA <= {16'd0, i_ahi_count};
+                    4'd11: S_AXI_RDATA <= {30'd0, i_ahi_sev};
                     default: S_AXI_RDATA <= 0;
                 endcase
             end
