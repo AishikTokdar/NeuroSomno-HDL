@@ -14,13 +14,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'python_pipeline/requirements.txt'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Install verification tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y iverilog yosys gcc
+          sudo apt-get install -y --no-install-recommends iverilog yosys gcc
           python -m pip install -r python_pipeline/requirements.txt
       - name: Verify regressions, all layer outputs, drivers and synthesis
         run: python scripts/verify_project.py --synthesize

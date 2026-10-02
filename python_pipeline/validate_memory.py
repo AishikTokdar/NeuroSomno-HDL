@@ -33,7 +33,8 @@ def validate_assets(mif_dir='hardware/mif', checkpoint=None):
         errors.append(f'Missing active parameter file: {missing}')
     for name, path in sorted(found.items()):
         role = 'active' if name in expected else 'obsolete' if name in legacy else 'unexpected'
-        record = {'file':name, 'role':role, 'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        sha = hashlib.sha256(path.read_text(encoding='ascii').replace('\r\n', '\n').encode('ascii')).hexdigest()
+        record = {'file':name, 'role':role, 'sha256':sha}
         try:
             values = read_words(path)
             size = expected.get(name, 1 if name.startswith('b_') else 10)

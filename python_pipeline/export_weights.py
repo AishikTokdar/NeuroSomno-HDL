@@ -91,7 +91,7 @@ def export_model_weights(model_path="models/fcn_model.pt", mif_dir="hardware/mif
                    'checkpoint_sha256': checksum,
                    'active_parameters': int(parameters.size),
                    'parameter_sha256': {f'{kind}_{layer}_{n}.mif': hashlib.sha256(
-                       (Path(mif_dir)/f'{kind}_{layer}_{n}.mif').read_bytes()).hexdigest()
+                       (Path(mif_dir)/f'{kind}_{layer}_{n}.mif').read_text(encoding='ascii').replace('\r\n', '\n').encode('ascii')).hexdigest()
                        for layer,w,b in layers for n in range(len(b)) for kind in ('w','b')},
                    'clipped_parameters': int(clipped.sum()),
                    'max_unclipped_rounding_error': float(errors.max()) if errors.size else None,

@@ -1,0 +1,12 @@
+# Ensure consistent LF line endings across all platforms
+* text=auto eol=lf
+*.mif text eol=lf
+*.txt text eol=lf
+*.v text eol=lf
+*.py text eol=lf
+*.m text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
