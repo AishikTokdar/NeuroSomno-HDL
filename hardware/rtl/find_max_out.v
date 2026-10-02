@@ -1,45 +1,17 @@
-module find_max_out (
-    input clk,
-    input rst,
-    input i_valid,
-    input [15:0] i_data,
-    output reg o_valid,
-    output reg [3:0] o_class
-);
-    reg signed [15:0] max_val;
-    reg [3:0] max_idx;
-    reg [3:0] cnt;
+// Binary logits, normal=0, apnea=1. Ties choose normal (numpy argmax).
+module find_max_out(input clk,input rst,input i_valid,input [15:0] i_data,
+                    output reg o_valid,output reg [3:0] o_class);
+    reg have_first;
+    reg signed [15:0] first;
     always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            max_val <= -16'sh8000;
-            max_idx <= 0;
-            cnt <= 0;
-            o_valid <= 0;
-            o_class <= 0;
-        end else begin
-            o_valid <= 0;
-            if (i_valid) begin
-                if (cnt == 0) begin
-                    max_val <= i_data;
-                    max_idx <= 0;
-                    cnt <= 1;
-                end else begin
-                    if ($signed(i_data) > $signed(max_val)) begin
-                        max_val <= i_data;
-                        max_idx <= cnt;
-                    end
-                    if (cnt == 9) begin
-                        cnt <= 0;
-                        o_valid <= 1;
-                        // Output mapping: Neuron 9 = Apnea (1), default = Normal (0)
-                        if ($signed(i_data) > $signed(max_val)) begin
-                            o_class <= 4'd1;
-                        end else begin
-                            o_class <= (max_idx == 4'd9) ? 4'd1 : 4'd0;
-                        end
-                    end else begin
-                        cnt <= cnt + 1;
-                    end
+        if (rst) begin have_first<=0; first<=0; o_valid<=0; o_class<=0; end
+        else begin
+            o_valid<=0;
+            if(i_valid) begin
+                if(!have_first) begin first<=i_data; have_first<=1; end
+                else begin
+                    have_first<=0; o_valid<=1;
+                    o_class<=($signed(i_data)>first) ? 4'd1 : 4'd0;
                 end
             end
         end

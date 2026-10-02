@@ -18,6 +18,7 @@ module conv1d_pe #(
     reg signed [DATA_WIDTH-1:0] window [0:KERNEL_SIZE-1];
     reg [$clog2(KERNEL_SIZE+1)-1:0] fill_count;
     reg window_full;
+    reg window_valid;
 
     wire signed [DATA_WIDTH-1:0] weights [0:KERNEL_SIZE-1];
     genvar k;
@@ -32,10 +33,13 @@ module conv1d_pe #(
         if (rst) begin
             fill_count <= 0;
             window_full <= 0;
+            window_valid <= 0;
             for (i = 0; i < KERNEL_SIZE; i = i + 1) begin
                 window[i] <= 0;
             end
-        end else if (i_valid) begin
+        end else begin
+            window_valid <= i_valid && fill_count >= KERNEL_SIZE-1;
+            if (i_valid) begin
             for (i = KERNEL_SIZE - 1; i > 0; i = i - 1) begin
                 window[i] <= window[i-1];
             end
@@ -48,9 +52,10 @@ module conv1d_pe #(
                 end
             end
         end
+        end
     end
 
-    reg signed [31:0] products [0:KERNEL_SIZE-1];
+    reg signed [2*DATA_WIDTH-1:0] products [0:KERNEL_SIZE-1];
     reg prod_valid;
     always @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -59,8 +64,8 @@ module conv1d_pe #(
                 products[i] <= 0;
             end
         end else begin
-            prod_valid <= i_valid && window_full;
-            if (i_valid && window_full) begin
+            prod_valid <= window_valid;
+            if (window_valid) begin
                 for (i = 0; i < KERNEL_SIZE; i = i + 1) begin
                     products[i] <= (window[i] * weights[i]) >>> FRAC_BITS;
                 end
@@ -68,14 +73,14 @@ module conv1d_pe #(
         end
     end
 
-    reg signed [31:0] sum_acc;
+    reg signed [63:0] sum_acc;
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             o_valid <= 0;
             o_data  <= 0;
             sum_acc <= 0;
         end else if (prod_valid) begin
-            sum_acc = {{16{bias[DATA_WIDTH-1]}}, bias};
+            sum_acc = $signed(bias);
             for (i = 0; i < KERNEL_SIZE; i = i + 1) begin
                 sum_acc = sum_acc + products[i];
             end
@@ -83,8 +88,8 @@ module conv1d_pe #(
             // ReLU clamping and 16-bit signed saturation
             if (sum_acc < 0) begin
                 o_data <= 16'sh0000;
-            end else if (sum_acc > 32767) begin
-                o_data <= 16'sh7FFF;
+            end else if (sum_acc > (2**(DATA_WIDTH-1)-1)) begin
+                o_data <= {1'b0,{(DATA_WIDTH-1){1'b1}}};
             end else begin
                 o_data <= sum_acc[DATA_WIDTH-1:0];
             end

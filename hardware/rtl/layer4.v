@@ -13,16 +13,16 @@ module layer4 (
     input bias_wen,
     input [15:0] bias_wdata
 );
-    wire [15:0] n_out [0:9];
-    wire n_valid [0:9];
+    wire [15:0] n_out [0:1];
+    wire n_valid [0:1];
     genvar i;
     generate
-        for (i = 0; i < 10; i = i + 1) begin: g_neurons
+        for (i = 0; i < 2; i = i + 1) begin: g_neurons
             neuron #(
                 .layerNo(4),
                 .neuronNo(i),
                 .numWeight(10),
-                .actType("sigmoid")
+                .actType("linear")
             ) n_inst (
                 .clk(clk),
                 .rst(rst),
@@ -38,7 +38,7 @@ module layer4 (
             );
         end
     endgenerate
-    reg [15:0] outputs [0:9];
+    reg [15:0] outputs [0:1];
     reg [3:0] shift_cnt;
     reg state;
     always @(posedge clk or posedge rst) begin
@@ -52,7 +52,7 @@ module layer4 (
             if (state == 0) begin
                 if (n_valid[0]) begin
                     integer j;
-                    for (j = 0; j < 10; j = j + 1) begin
+                    for (j = 0; j < 2; j = j + 1) begin
                         outputs[j] <= n_out[j];
                     end
                     shift_cnt <= 0;
@@ -62,7 +62,7 @@ module layer4 (
                 o_data <= outputs[shift_cnt];
                 o_valid <= 1;
                 shift_cnt <= shift_cnt + 1;
-                if (shift_cnt == 9) begin
+                if (shift_cnt == 1) begin
                     state <= 0;
                 end
             end

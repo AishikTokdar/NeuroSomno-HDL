@@ -1,6 +1,7 @@
 if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
     cd('..');
 end
+addpath(fullfile(pwd, 'matlab_preprocessing'));
 load('dataset/eeg_train_balanced.mat', 'eeg_train');
 load('dataset/train_labels_balanced.mat', 'train_labels');
 load('dataset/eeg_valid.mat', 'eeg_valid');
@@ -43,8 +44,8 @@ X_valid_fcn = zeros(size(eeg_valid, 1), 784);
 for i = 1:size(eeg_valid, 1)
     X_valid_fcn(i, :) = interp1(1:2816, eeg_valid(i, :), linspace(1, 2816, 784));
 end
-Y_train_fcn = categorical(train_labels);
-Y_valid_fcn = categorical(valid_labels);
+Y_train_fcn = categorical(train_labels, [0 1], {'normal','apnea'});
+Y_valid_fcn = categorical(valid_labels, [0 1], {'normal','apnea'});
 fcn_layers = [
     featureInputLayer(784, 'Normalization', 'none')
     fullyConnectedLayer(30, 'Name', 'fc1')
@@ -53,8 +54,7 @@ fcn_layers = [
     reluLayer('Name', 'relu2')
     fullyConnectedLayer(10, 'Name', 'fc3')
     sigmoidLayer('Name', 'sigmoid1')
-    fullyConnectedLayer(10, 'Name', 'fc4')
-    sigmoidLayer('Name', 'sigmoid2')
+    fullyConnectedLayer(2, 'Name', 'fc4')
     softmaxLayer('Name', 'softmax')
     classificationLayer('Name', 'classoutput')
 ];

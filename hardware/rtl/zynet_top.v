@@ -9,6 +9,7 @@ module zynet_top (
     input S_AXI_AWVALID,
     output S_AXI_AWREADY,
     input [31:0] S_AXI_WDATA,
+    input [3:0] S_AXI_WSTRB,
     input S_AXI_WVALID,
     output S_AXI_WREADY,
     output [1:0] S_AXI_BRESP,
@@ -24,6 +25,10 @@ module zynet_top (
     output intr
 );
     wire soft_rst;
+    wire out_done;
+    wire net_rst;
+    reg frame_abort;
+    wire done_intr;
     wire start;
     wire [3:0] layer_sel;
     wire [5:0] neuron_sel;
@@ -43,6 +48,7 @@ module zynet_top (
         .S_AXI_AWVALID(S_AXI_AWVALID),
         .S_AXI_AWREADY(S_AXI_AWREADY),
         .S_AXI_WDATA(S_AXI_WDATA),
+        .S_AXI_WSTRB(S_AXI_WSTRB),
         .S_AXI_WVALID(S_AXI_WVALID),
         .S_AXI_WREADY(S_AXI_WREADY),
         .S_AXI_BRESP(S_AXI_BRESP),
@@ -68,7 +74,7 @@ module zynet_top (
         .i_done(out_done),
         .i_ahi_count(ahi_count),
         .i_ahi_sev(ahi_sev),
-        .intr(intr)
+        .intr(done_intr)
     );
     ahi_tracker ahi_inst (
         .clk(clk),
@@ -80,20 +86,25 @@ module zynet_top (
         .o_severity(ahi_sev),
         .o_alarm_intr(ahi_alarm_intr)
     );
+    assign intr = done_intr || ahi_alarm_intr;
     reg running;
+    reg [9:0] input_count;
+    assign net_rst = rst || soft_rst || frame_abort;
     always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            running <= 0;
-        end else begin
-            if (start) begin
-                running <= 1;
-            end else if (out_done) begin
-                running <= 0;
+        if (rst) begin running<=0; input_count<=0; frame_abort<=0; end
+        else begin
+            frame_abort<=0;
+            if(soft_rst || frame_abort) begin running<=0; input_count<=0; end
+            else if(start && !running) begin running<=1; input_count<=0; end
+            else if(out_done) begin running<=0; input_count<=0; end
+            else if(s_axis_tvalid && s_axis_tready) begin
+                if(s_axis_tlast != (input_count==783)) begin
+                    running<=0; input_count<=0; frame_abort<=1;
+                end else input_count<=input_count+1;
             end
         end
     end
-    assign s_axis_tready = running;
-    wire net_rst = rst || soft_rst;
+    assign s_axis_tready = running && input_count < 784 && !rst && !soft_rst;
     wire l1_valid;
     wire [15:0] l1_data;
     layer1 l1 (

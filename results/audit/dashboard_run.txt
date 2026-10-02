@@ -1,0 +1,3 @@
+Archived log: audit/dashboard_run.txt
+See results/archive/raw_logs.tar.gz for the complete original output.
+Current results: results/verification/summary.json

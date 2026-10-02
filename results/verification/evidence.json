@@ -1,0 +1,132 @@
+{
+  "audit_ahi_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module ahi_tracker declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:5\n",
+  "audit_ahi": "EVENTS_AT_10=1\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-4kp65vhq\\audit_ahi.v:9: $finish called at 120000 (1ps)\n",
+  "audit_axi_bytes_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_axi_bytes": "READ=123456ab\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-pu7lhftj\\audit_axi_bytes.v:34: $finish called at 185000 (1ps)\n",
+  "audit_axi_read_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_axi_read": "FIRST=123\nHELD=123\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-fpyggvwp\\audit_axi_read.v:25: $finish called at 140000 (1ps)\n",
+  "audit_axi_write_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_axi_write": "ACCEPTED=2 RESPONSES=2\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-ezlcfm82\\audit_axi_write.v:30: $finish called at 220000 (1ps)\n",
+  "bandpass_gain_.1_10_60hz": [
+    0.0015124169671935066,
+    1.000077134131688,
+    0.0014146725811007741
+  ],
+  "audit_conv_compile": "",
+  "audit_conv": "CONV=300\nCONV=500\nCOUNT=2\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-rb2maall\\audit_conv.v:14: $finish called at 120000 (1ps)\n",
+  "emulator_fixture": {
+    "correct": 30,
+    "total": 30,
+    "predictions": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "labels": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "audit_event_rate_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module ahi_tracker declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:5\n",
+  "audit_event_rate": "AT_HOUR count=5 grade=1\nAT_TWO_HOURS count=5 grade=0\nLONG_EVENT count=6 alarm=1 duration=300\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-jji8l0dr\\audit_event_rate.v:19: $finish called at 75020000 (1ps)\n",
+  "export_classifier": {
+    "trained": 1,
+    "exported": 1
+  },
+  "audit_iir_notch_50hz_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module iir_biquad declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_biquad.v:3\n       :   -- module iir_notch_50hz declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:2\n",
+  "audit_iir_notch_50hz": "FILTER=966\nFILTER=-1399\nFILTER=31569\nFILTER=-30012\nFILTER=-1892\nFILTER=-852\nFILTER=3036\nFILTER=-3741\nFILTER=2757\nFILTER=-631\nFILTER=-1628\nFILTER=3019\nFILTER=-2992\nFILTER=1654\nFILTER=318\nFILTER=-2017\nFILTER=2716\nFILTER=-2177\nFILTER=719\nFILTER=955\nFILTER=-2097\nFILTER=2241\nFILTER=-1393\nFILTER=-9\nFILTER=1312\nFILTER=-1952\nFILTER=1692\nFILTER=-708\nFILTER=-520\nFILTER=1436\nFILTER=-1661\nFILTER=1142\nFILTER=-158\nFILTER=-829\nFILTER=1385\nFILTER=-1296\nFILTER=644\nFILTER=246\nFILTER=-968\nFILTER=1216\nFILTER=-914\nFILTER=231\nFILTER=507\nFILTER=-973\nFILTER=980\nFILTER=-557\nFILTER=-82\nFILTER=641\nFILTER=-881\nFILTER=718\nFILTER=-252\nFILTER=-293\nFILTER=672\nFILTER=-731\nFILTER=465\nFILTER=-14\nFILTER=-413\nFILTER=629\nFILTER=-555\nFILTER=242\nFILTER=155\nFILTER=-458\nFILTER=539\nFILTER=-379\nFILTER=63\nFILTER=259\nFILTER=-446\nFILTER=424\nFILTER=-218\nFILTER=-70\nFILTER=307\nFILTER=-394\nFILTER=302\nFILTER=-84\nFILTER=-157\nFILTER=312\nFILTER=-320\nFILTER=187\nFILTER=19\nFILTER=-203\nFILTER=285\nFILTER=-237\nFILTER=88\nFILTER=89\nFILTER=-215\nFILTER=238\nFILTER=-156\nFILTER=11\nFILTER=129\nFILTER=-203\nFILTER=182\nFILTER=-83\nFILTER=-46\nFILTER=146\nFILTER=-176\nFILTER=126\nFILTER=-25\nFILTER=-81\nFILTER=144\nFILTER=-140\nFILTER=74\nFILTER=19\nFILTER=-98\nFILTER=128\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-8ikhfekn\\audit_iir_notch_50hz.v:114: $finish called at 2200000 (1ps)\n",
+  "audit_iir_bandpass_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module iir_bandpass declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_bandpass.v:2\n       :   -- module iir_biquad declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_biquad.v:3\n",
+  "audit_iir_bandpass": "FILTER=269\nFILTER=226\nFILTER=8052\nFILTER=11289\nFILTER=-14413\nFILTER=-17042\nFILTER=11004\nFILTER=1722\nFILTER=-7180\nFILTER=5297\nFILTER=-626\nFILTER=-2315\nFILTER=2526\nFILTER=-1071\nFILTER=-391\nFILTER=875\nFILTER=-679\nFILTER=30\nFILTER=175\nFILTER=-373\nFILTER=11\nFILTER=-86\nFILTER=-243\nFILTER=-90\nFILTER=-189\nFILTER=-223\nFILTER=-183\nFILTER=-245\nFILTER=-253\nFILTER=-256\nFILTER=-291\nFILTER=-300\nFILTER=-316\nFILTER=-338\nFILTER=-351\nFILTER=-369\nFILTER=-387\nFILTER=-403\nFILTER=-420\nFILTER=-437\nFILTER=-454\nFILTER=-471\nFILTER=-488\nFILTER=-505\nFILTER=-522\nFILTER=-539\nFILTER=-556\nFILTER=-573\nFILTER=-590\nFILTER=-607\nFILTER=-624\nFILTER=-641\nFILTER=-658\nFILTER=-675\nFILTER=-692\nFILTER=-709\nFILTER=-726\nFILTER=-743\nFILTER=-760\nFILTER=-777\nFILTER=-794\nFILTER=-811\nFILTER=-828\nFILTER=-845\nFILTER=-862\nFILTER=-879\nFILTER=-896\nFILTER=-913\nFILTER=-930\nFILTER=-947\nFILTER=-964\nFILTER=-981\nFILTER=-998\nFILTER=-1015\nFILTER=-1032\nFILTER=-1049\nFILTER=-1066\nFILTER=-1083\nFILTER=-1100\nFILTER=-1117\nFILTER=-1134\nFILTER=-1150\nFILTER=-1166\nFILTER=-1181\nFILTER=-1196\nFILTER=-1210\nFILTER=-1224\nFILTER=-1237\nFILTER=-1250\nFILTER=-1262\nFILTER=-1274\nFILTER=-1286\nFILTER=-1297\nFILTER=-1308\nFILTER=-1318\nFILTER=-1328\nFILTER=-1338\nFILTER=-1347\nFILTER=-1356\nFILTER=-1365\nFILTER=-1374\nFILTER=-1382\nFILTER=-1390\nFILTER=-1398\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-u8lx6ole\\audit_iir_bandpass.v:114: $finish called at 2200000 (1ps)\n",
+  "audit_reset_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:2: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_bandpass.v:2: warning: timescale for iir_bandpass inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_biquad.v:3: warning: timescale for iir_biquad inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:2: warning: timescale for iir_notch_50hz inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nwarning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module ahi_tracker declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:5\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_reset": "Sample 0: Pred = 0, Act = 0\nSample 1: Pred = 0, Act = 0\nSample 2: Pred = 0, Act = 0\nSample 3: Pred = 1, Act = 1\nSample 4: Pred = 0, Act = 0\nSample 5: Pred = 0, Act = 0\nSample 6: Pred = 0, Act = 0\nSample 7: Pred = 0, Act = 0\nSample 8: Pred = 0, Act = 0\nSample 9: Pred = 1, Act = 1\nSample 10: Pred = 0, Act = 0\nSample 11: Pred = 0, Act = 0\nSample 12: Pred = 0, Act = 0\nSample 13: Pred = 0, Act = 0\nSample 14: Pred = 0, Act = 0\nSample 15: Pred = 1, Act = 1\nSample 16: Pred = 0, Act = 0\nSample 17: Pred = 0, Act = 0\nSample 18: Pred = 0, Act = 0\nSample 19: Pred = 0, Act = 0\nSample 20: Pred = 0, Act = 0\nSample 21: Pred = 1, Act = 1\nSample 22: Pred = 0, Act = 0\nSample 23: Pred = 0, Act = 0\nSample 24: Pred = 0, Act = 0\nSample 25: Pred = 0, Act = 0\nSample 26: Pred = 0, Act = 0\nSample 27: Pred = 1, Act = 1\nSample 28: Pred = 0, Act = 0\nSample 29: Pred = 0, Act = 0\nOverall Accuracy: 100.000000\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-445rcprj\\audit_reset.v:101: $finish called at 287155000 (1ps)\n",
+  "audit_pool_compile": "",
+  "audit_pool": "POOL=200\nPOOL=300\nCOUNT=2\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-27w4umto\\audit_pool.v:14: $finish called at 100000 (1ps)\n",
+  "audit_neuron_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module neuron declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1\n       :   -- module relu declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1\n       :   -- module sig_rom declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1\n       :   -- module weight_memory declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1\n",
+  "audit_neuron": "WARNING: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:26: $readmemb(w_1_0.mif): Too many words in the file for the requested range [0:2].\nRESULT=2800\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-9exwwuwg\\audit_neuron.v:19: $finish called at 200000 (1ps)\n",
+  "notch_poles": [
+    [
+      -0.7468261718750001,
+      0.6119653957251446
+    ],
+    [
+      -0.7468261718750001,
+      -0.6119653957251446
+    ]
+  ],
+  "tb_top_sim_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:2: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_bandpass.v:2: warning: timescale for iir_bandpass inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_biquad.v:3: warning: timescale for iir_biquad inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:2: warning: timescale for iir_notch_50hz inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nwarning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module ahi_tracker declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:5\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "tb_top_sim": "Sample 0: Pred = 0, Act = 0\nSample 1: Pred = 0, Act = 0\nSample 2: Pred = 0, Act = 0\nSample 3: Pred = 1, Act = 1\nSample 4: Pred = 0, Act = 0\nSample 5: Pred = 0, Act = 0\nSample 6: Pred = 0, Act = 0\nSample 7: Pred = 0, Act = 0\nSample 8: Pred = 0, Act = 0\nSample 9: Pred = 1, Act = 1\nSample 10: Pred = 0, Act = 0\nSample 11: Pred = 0, Act = 0\nSample 12: Pred = 0, Act = 0\nSample 13: Pred = 0, Act = 0\nSample 14: Pred = 0, Act = 0\nSample 15: Pred = 1, Act = 1\nSample 16: Pred = 0, Act = 0\nSample 17: Pred = 0, Act = 0\nSample 18: Pred = 0, Act = 0\nSample 19: Pred = 0, Act = 0\nSample 20: Pred = 0, Act = 0\nSample 21: Pred = 1, Act = 1\nSample 22: Pred = 0, Act = 0\nSample 23: Pred = 0, Act = 0\nSample 24: Pred = 0, Act = 0\nSample 25: Pred = 0, Act = 0\nSample 26: Pred = 0, Act = 0\nSample 27: Pred = 1, Act = 1\nSample 28: Pred = 0, Act = 0\nSample 29: Pred = 0, Act = 0\nOverall Accuracy: 100.000000\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-mhwje0ag\\tb_top_sim.v:88: $finish called at 286745000 (1ps)\n",
+  "pynq_fallback": {
+    "actual": 0,
+    "emulator_expected": 0
+  },
+  "audit_top_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:2: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_bandpass.v:2: warning: timescale for iir_bandpass inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_biquad.v:3: warning: timescale for iir_biquad inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:2: warning: timescale for iir_notch_50hz inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:3: ...: The inherited timescale is here.\nwarning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module ahi_tracker declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:5\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_top": "Sample 0: Pred = 0, Act = 0\nSample 1: Pred = 0, Act = 0\nSample 2: Pred = 0, Act = 0\nSample 3: Pred = 1, Act = 1\nSample 4: Pred = 0, Act = 0\nSample 5: Pred = 0, Act = 0\nSample 6: Pred = 0, Act = 0\nSample 7: Pred = 0, Act = 0\nSample 8: Pred = 0, Act = 0\nSample 9: Pred = 1, Act = 1\nSample 10: Pred = 0, Act = 0\nSample 11: Pred = 0, Act = 0\nSample 12: Pred = 0, Act = 0\nSample 13: Pred = 0, Act = 0\nSample 14: Pred = 0, Act = 0\nSample 15: Pred = 1, Act = 1\nSample 16: Pred = 0, Act = 0\nSample 17: Pred = 0, Act = 0\nSample 18: Pred = 0, Act = 0\nSample 19: Pred = 0, Act = 0\nSample 20: Pred = 0, Act = 0\nSample 21: Pred = 1, Act = 1\nSample 22: Pred = 0, Act = 0\nSample 23: Pred = 0, Act = 0\nSample 24: Pred = 0, Act = 0\nSample 25: Pred = 0, Act = 0\nSample 26: Pred = 0, Act = 0\nSample 27: Pred = 1, Act = 1\nSample 28: Pred = 0, Act = 0\nSample 29: Pred = 0, Act = 0\nOverall Accuracy: 100.000000\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-vxlz2lk9\\audit_top.v:87: $finish called at 286745000 (1ps)\n",
+  "environment": {
+    "python": "3.14.7 | packaged by Anaconda, Inc. | (main, Aug 14 2026, 10:12:46) [MSC v.1942 64 bit (AMD64)]",
+    "iverilog": "C:\\Users\\AISHIK~1\\AppData\\Local\\Temp/neurosomno-tools/ucrt64/bin/iverilog.exe",
+    "vvp": "C:\\Users\\AISHIK~1\\AppData\\Local\\Temp/neurosomno-tools/ucrt64/bin/vvp.exe",
+    "baseline_commit": "79d9d16d472c9209b7b8bb77c7d68d55815d2960"
+  },
+  "summary": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "details": []
+  }
+}

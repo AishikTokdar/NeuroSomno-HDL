@@ -1,0 +1,32 @@
+{
+  "regressions": {
+    "tests": 29,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "details": []
+  },
+  "rtl_parity": {
+    "frames": 30,
+    "neuron_outputs_compared": 2160,
+    "mismatches": 0,
+    "correct_labels": 30,
+    "input_gaps": true,
+    "data": "synthetic regression fixtures"
+  },
+  "memory_assets": {
+    "valid": true,
+    "mif_files_checked": 144,
+    "active_files": 144,
+    "active_parameters": 24812,
+    "obsolete_files": [],
+    "checkpoint": "compared every active word",
+    "manifest_checksums": true,
+    "errors": []
+  },
+  "dashboard": "5 functional checks; mock DOM, no rendering test",
+  "c_driver": "compiled and executed with mock MMIO/transport",
+  "synthesis": "Yosys structural check",
+  "vendor_timing_power_and_physical_board": "not verified",
+  "real_patient_accuracy": "not verified"
+}

@@ -13,20 +13,24 @@ module weight_memory #(
     input [15:0] wdata
 );
     reg [15:0] mem [0:numWeight-1];
-    reg [8*32-1:0] resolved_mif_file;
+    localparam [7:0] layer_digit = 48 + layerNo;
+    localparam [7:0] tens_digit = 48 + neuronNo/10;
+    localparam [7:0] ones_digit = 48 + neuronNo%10;
+    localparam [8*32-1:0] resolved_mif_file = neuronNo<10 ?
+        {"w_",layer_digit,"_",ones_digit,".mif"} :
+        {"w_",layer_digit,"_",tens_digit,ones_digit,".mif"};
     initial begin
         if (mifFile != "") begin
             $readmemb(mifFile, mem);
         end else begin
-            $sformat(resolved_mif_file, "w_%0d_%0d.mif", layerNo, neuronNo);
             $readmemb(resolved_mif_file, mem);
         end
     end
     always @(posedge clk) begin
-        if (ren) begin
+        if (ren && raddr < numWeight) begin
             rdata <= mem[raddr];
         end
-        if (wen) begin
+        if (wen && waddr < numWeight) begin
             mem[waddr] <= wdata;
         end
     end

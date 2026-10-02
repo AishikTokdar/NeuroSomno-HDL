@@ -41,26 +41,24 @@ class Hybrid1DCNN(nn.Module):
         return out
 
 class NeuroSomnoFCN(nn.Module):
-    """4-Layer Fully Connected Hardware-Aligned Network (784-30-30-10-10)."""
+    """4-Layer Fully Connected Hardware-Aligned Network (784-30-30-10-2)."""
     def __init__(self, num_classes=2):
         super(NeuroSomnoFCN, self).__init__()
+        if num_classes != 2:
+            raise ValueError('Hardware classifier requires exactly two classes')
         self.fc1 = nn.Linear(784, 30)
         self.relu1 = nn.ReLU()
         self.fc2 = nn.Linear(30, 30)
         self.relu2 = nn.ReLU()
         self.fc3 = nn.Linear(30, 10)
         self.sig3 = nn.Sigmoid()
-        self.fc4 = nn.Linear(10, 10)
-        self.sig4 = nn.Sigmoid()
-        self.out_head = nn.Linear(10, num_classes)
+        self.fc4 = nn.Linear(10, num_classes)
 
     def forward(self, x):
         x = self.relu1(self.fc1(x))
         x = self.relu2(self.fc2(x))
         x = self.sig3(self.fc3(x))
-        x = self.sig4(self.fc4(x))
-        logits = self.out_head(x)
-        return logits
+        return self.fc4(x)
 
 def apply_smote(X, Y, k_neighbors=5):
     """Applies SMOTE neighborhood interpolation on minority class (Apnea = 1)."""
@@ -124,17 +122,28 @@ def compute_metrics(y_true, y_pred):
 
 def train_and_evaluate(dataset_path="dataset/eeg_data_split.npz", models_dir="models"):
     """Trains both 1D-CNN and FCN models, printing comparative metrics."""
+    np.random.seed(42)
+    torch.manual_seed(42)
     os.makedirs(models_dir, exist_ok=True)
     if not os.path.exists(dataset_path):
         print("[INFO] Dataset not found, running preprocessing first...")
         from preprocess_eeg import run_preprocessing_pipeline
-        run_preprocessing_pipeline()
+        from pathlib import Path
+        run_preprocessing_pipeline(str(Path(dataset_path).parent), dataset_path)
         
     data = np.load(dataset_path)
+    keys = ['subjects_' + split for split in ('train', 'val', 'test')]
+    if any(key not in data for key in keys):
+        raise ValueError('Dataset needs patient provenance; regenerate patient-disjoint splits')
+    groups = [set(data[key]) for key in keys]
+    if any(groups[i] & groups[j] for i,j in [(0,1),(0,2),(1,2)]):
+        raise ValueError('Patients overlap between training, validation and test')
     X_train, Y_train = data['X_train'], data['Y_train']
     X_val, Y_val = data['X_val'], data['Y_val']
     X_test, Y_test = data['X_test'], data['Y_test']
     
+    if set(np.unique(Y_train)) != {0, 1}:
+        raise ValueError('Training requires annotated examples of both classes')
     print(f"[INFO] Raw Class Distribution: Normal(0)={np.sum(Y_train==0)}, Apnea(1)={np.sum(Y_train==1)}")
     X_train_bal, Y_train_bal = apply_smote(X_train, Y_train)
     print(f"[INFO] After SMOTE Balancing: Total={len(X_train_bal)}, Balanced 50/50")
@@ -173,7 +182,7 @@ def train_and_evaluate(dataset_path="dataset/eeg_data_split.npz", models_dir="mo
     print(f"[CNN RESULTS] Accuracy: {cnn_metrics['accuracy']:.2f}% | Balanced Acc: {cnn_metrics['balanced_acc']:.2f}% | F1: {cnn_metrics['f1']:.4f}")
     torch.save(cnn_model.state_dict(), os.path.join(models_dir, "cnn_model.pt"))
 
-    print("\n--- Training Hardware-Target FCN (784-30-30-10-10) ---")
+    print("\n--- Training Hardware-Target FCN (784-30-30-10-2) ---")
     X_train_fcn = downsample_signals(X_train_bal, 784)
     X_test_fcn = downsample_signals(X_test, 784)
     

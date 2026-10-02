@@ -1,0 +1,8 @@
+{
+  "frames": 30,
+  "neuron_outputs_compared": 2160,
+  "mismatches": 0,
+  "correct_labels": 30,
+  "input_gaps": true,
+  "data": "synthetic regression fixtures"
+}

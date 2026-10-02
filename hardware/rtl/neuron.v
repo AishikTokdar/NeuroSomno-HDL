@@ -35,13 +35,18 @@ module neuron #(
         .wdata(wdata)
     );
     reg signed [15:0] bias_mem [0:0];
-    reg [8*32-1:0] resolved_bias_mif_file;
+    // Constant expressions are supported by both simulation and synthesis.
+    localparam [7:0] layer_digit = 48 + layerNo;
+    localparam [7:0] tens_digit = 48 + neuronNo/10;
+    localparam [7:0] ones_digit = 48 + neuronNo%10;
+    localparam [8*32-1:0] bias_file = neuronNo<10 ?
+        {"b_",layer_digit,"_",ones_digit,".mif"} :
+        {"b_",layer_digit,"_",tens_digit,ones_digit,".mif"};
     initial begin
         if (biasMifFile != "") begin
             $readmemb(biasMifFile, bias_mem);
         end else begin
-            $sformat(resolved_bias_mif_file, "b_%0d_%0d.mif", layerNo, neuronNo);
-            $readmemb(resolved_bias_mif_file, bias_mem);
+            $readmemb(bias_file, bias_mem);
         end
     end
     always @(posedge clk) begin
@@ -57,14 +62,21 @@ module neuron #(
     wire signed [15:0] s_w = w_data;
     reg signed [31:0] prod;
     reg prod_valid;
-    always @(posedge clk) begin
-        if (i_valid) begin
-            s_x_reg <= i_data;
-            prod <= (i_data * s_w) >>> 13;
+    reg read_valid;
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            s_x_reg <= 0;
+            read_valid <= 0;
+            prod_valid <= 0;
+            prod <= 0;
+        end else begin
+            read_valid <= i_valid && state == 0 && raddr < numWeight;
+            if (i_valid && state == 0 && raddr < numWeight)
+                s_x_reg <= i_data;
+            prod_valid <= read_valid;
+            if (read_valid)
+                prod <= (s_x_reg * s_w) >>> 13;
         end
-    end
-    always @(posedge clk) begin
-        prod_valid <= i_valid;
     end
     reg signed [31:0] acc_bias;
     wire signed [15:0] acc_bias_sat = (acc_bias > 32767) ? 16'h7FFF :
@@ -93,7 +105,7 @@ module neuron #(
         end else begin
             o_valid <= 0;
             if (state == 0) begin
-                if (i_valid) begin
+                if (i_valid && raddr < numWeight) begin
                     raddr <= raddr + 1;
                 end
                 if (prod_valid) begin
@@ -105,8 +117,8 @@ module neuron #(
                     end
                 end
             end else if (state == 1) begin
-                if (actType == "relu") begin
-                    o_data <= relu_out;
+                if (actType != "sigmoid") begin
+                    o_data <= (actType == "relu") ? relu_out : acc_bias_sat;
                     o_valid <= 1;
                     raddr <= 0;
                     acc <= 0;

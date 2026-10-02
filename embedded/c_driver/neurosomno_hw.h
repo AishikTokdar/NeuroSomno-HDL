@@ -2,6 +2,7 @@
 #define NEUROSOMNO_HW_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 // Base address for AXI-Lite accelerator registers in Zynq memory map
 #define NEUROSOMNO_BASE_ADDR   0x43C00000
@@ -42,5 +43,15 @@ int  NeuroSomno_IsDone(void);
 uint32_t NeuroSomno_GetPredictedClass(void);
 uint16_t NeuroSomno_GetAHICount(void);
 AHI_Severity_t NeuroSomno_GetSeverity(void);
+
+/* The platform supplies a bounded synchronous 784-word stream/DMA transfer
+ * (16-bit words, TLAST on the last word) and a monotonic microsecond clock.
+ * Returns 0 on success, -1 invalid arguments, -2 timeout, -3 transport failure.
+ * Calls are serial; sample values are already quantized signed Q3.13. */
+typedef int (*NeuroSomno_StreamFn)(const int16_t *, size_t, void *);
+typedef uint64_t (*NeuroSomno_ClockFn)(void *);
+int NeuroSomno_Predict(const int16_t *samples, size_t count, uint32_t *prediction,
+                      uint64_t timeout_us, NeuroSomno_StreamFn send,
+                      NeuroSomno_ClockFn clock_us, void *context);
 
 #endif // NEUROSOMNO_HW_H

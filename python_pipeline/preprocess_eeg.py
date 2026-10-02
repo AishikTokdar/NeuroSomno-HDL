@@ -5,7 +5,7 @@ Processes raw EDF or synthetic EEG signals with 50 Hz IIR notch filter,
 """
 
 import os
-import glob
+from pathlib import Path
 import numpy as np
 from scipy import signal
 
@@ -43,38 +43,46 @@ def normalize_zscore(window):
 
 def generate_synthetic_patient(patient_id=1, duration_sec=600, fs=FS):
     """Generate structured synthetic EEG matching UCDDB characteristics for testing."""
-    np.random.seed(42 + patient_id)
+    rng = np.random.default_rng(42 + patient_id)
     t = np.arange(0, duration_sec, 1.0 / fs)
     # Baseline normal rhythm: 10 Hz alpha wave + 2 Hz delta wave + noise
-    c3 = np.sin(2 * np.pi * 10 * t) + 0.5 * np.sin(2 * np.pi * 2 * t) + 0.1 * np.random.randn(len(t))
-    c4 = np.sin(2 * np.pi * 10 * t + np.pi / 4) + 0.5 * np.sin(2 * np.pi * 2 * t) + 0.1 * np.random.randn(len(t))
+    c3 = np.sin(2 * np.pi * 10 * t) + 0.5 * np.sin(2 * np.pi * 2 * t) + 0.1 * rng.standard_normal(len(t))
+    c4 = np.sin(2 * np.pi * 10 * t + np.pi / 4) + 0.5 * np.sin(2 * np.pi * 2 * t) + 0.1 * rng.standard_normal(len(t))
     
     labels = np.zeros(duration_sec, dtype=np.int32)
     # Inject apnea events: 30-second windows with reduced amplitude every 120 seconds
     for idx in range(60, duration_sec - 30, 120):
-        c3[idx * fs : (idx + 30) * fs] = 0.1 * np.random.randn(30 * fs)
-        c4[idx * fs : (idx + 30) * fs] = 0.1 * np.random.randn(30 * fs)
+        c3[idx * fs : (idx + 30) * fs] = 0.1 * rng.standard_normal(30 * fs)
+        c4[idx * fs : (idx + 30) * fs] = 0.1 * rng.standard_normal(30 * fs)
         labels[idx : idx + 30] = 1
         
     return c3, c4, labels
 
 def segment_signals(c3_filt, c4_filt, labels, fs=FS):
     """Segment continuous signals into 11-second overlapping windows (2816 samples)."""
+    c3_filt, c4_filt, labels = map(np.asarray, (c3_filt, c4_filt, labels))
     n_samples = len(c3_filt)
-    num_windows = (n_samples - WINDOW_SAMPLES) // STRIDE_SAMPLES + 1
+    window_samples, stride_samples = int(WINDOW_SEC * fs), int(STRIDE_SEC * fs)
+    if fs <= 100 or n_samples != len(c4_filt) or n_samples < window_samples:
+        raise ValueError('Aligned channels of at least 11 seconds at fs > 100 Hz required')
+    if labels.ndim != 1 or len(labels) < n_samples // fs or not np.isin(labels, [0, 1]).all():
+        raise ValueError('Annotations must supply one binary label per second')
+    if not np.isfinite(c3_filt).all() or not np.isfinite(c4_filt).all():
+        raise ValueError('Channels must be finite')
+    num_windows = (n_samples - window_samples) // stride_samples + 1
     
     segments = []
     window_labels = []
     
     for i in range(num_windows):
-        start = i * STRIDE_SAMPLES
-        end = start + WINDOW_SAMPLES
+        start = i * stride_samples
+        end = start + window_samples
         
         c3_win = normalize_zscore(c3_filt[start:end])
         c4_win = normalize_zscore(c4_filt[start:end])
         seg = np.concatenate([c3_win, c4_win])  # 1408 + 1408 = 2816 features
         
-        label_idx = min(int(start / fs) + 2, len(labels) - 1)
+        label_idx = int((end - 1) / fs)
         lbl = int(labels[label_idx])
         
         segments.append(seg)
@@ -83,73 +91,63 @@ def segment_signals(c3_filt, c4_filt, labels, fs=FS):
     return np.array(segments, dtype=np.float32), np.array(window_labels, dtype=np.int64)
 
 def run_preprocessing_pipeline(dataset_dir="dataset", output_file="dataset/eeg_data_split.npz"):
-    """Main execution function loading EDF files or generating synthetic verification data."""
+    """Split patients before windowing; EDFs require explicit *_labels.npy annotations.
+
+    Recording names sharing the prefix before '_' belong to the same patient.
+    Annotation arrays contain exactly one 0/1 label per whole second at 128 Hz.
+    No EDF files means an explicitly reported three-patient synthetic smoke set.
+    """
     os.makedirs(dataset_dir, exist_ok=True)
-    edf_files = glob.glob(os.path.join(dataset_dir, "*.edf"))
-    
-    all_X, all_Y = [], []
-    
-    if len(edf_files) == 0:
-        print("[INFO] No external .edf files found in dataset/. Generating 3 synthetic patient records...")
+    edf_files = sorted(str(p) for p in Path(dataset_dir).iterdir() if p.suffix.lower() == '.edf')
+    patients = {}
+    if not edf_files:
+        print('[INFO] SYNTHETIC smoke data: three patients; not clinical validation.')
         for pid in range(1, 4):
-            c3_raw, c4_raw, labels = generate_synthetic_patient(patient_id=pid)
-            c3_filt = apply_filters(c3_raw)
-            c4_filt = apply_filters(c4_raw)
-            x_seg, y_seg = segment_signals(c3_filt, c4_filt, labels)
-            all_X.append(x_seg)
-            all_Y.append(y_seg)
+            patients[str(pid)] = [generate_synthetic_patient(patient_id=pid)]
     else:
-        print(f"[INFO] Found {len(edf_files)} EDF recordings. Loading with MNE...")
-        try:
-            import mne
-            for edf_path in edf_files:
-                raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
-                ch_names = [ch.upper() for ch in raw.ch_names]
-                c3_idx = next((i for i, name in enumerate(ch_names) if 'C3' in name), 0)
-                c4_idx = next((i for i, name in enumerate(ch_names) if 'C4' in name), 1)
-                
-                raw.resample(FS)
-                data = raw.get_data()
-                c3_raw = data[c3_idx]
-                c4_raw = data[c4_idx]
-                c3_filt = apply_filters(c3_raw)
-                c4_filt = apply_filters(c4_raw)
-                
-                labels = np.zeros(len(c3_raw) // FS, dtype=np.int32)
-                x_seg, y_seg = segment_signals(c3_filt, c4_filt, labels)
-                all_X.append(x_seg)
-                all_Y.append(y_seg)
-        except ImportError:
-            print("[WARNING] MNE library not installed. Falling back to synthetic generator...")
-            for pid in range(1, 4):
-                c3_raw, c4_raw, labels = generate_synthetic_patient(patient_id=pid)
-                c3_filt = apply_filters(c3_raw)
-                c4_filt = apply_filters(c4_raw)
-                x_seg, y_seg = segment_signals(c3_filt, c4_filt, labels)
-                all_X.append(x_seg)
-                all_Y.append(y_seg)
+        import mne
+        for edf_path in edf_files:
+            annotation = Path(edf_path).with_name(Path(edf_path).stem + '_labels.npy')
+            if not annotation.is_file():
+                raise FileNotFoundError(f'Required apnea annotations missing: {annotation}')
+            raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
+            names = [ch.upper() for ch in raw.ch_names]
+            indices = []
+            for channel in ('C3', 'C4'):
+                matches = [i for i, name in enumerate(names) if channel in name]
+                if len(matches) != 1:
+                    raise ValueError(f'{edf_path}: expected exactly one {channel} channel')
+                indices.append(matches[0])
+            raw.resample(FS)
+            channels = raw.get_data(picks=indices)
+            labels = np.load(annotation, allow_pickle=False)
+            if labels.shape != (channels.shape[1] // FS,) or not np.isin(labels, [0, 1]).all():
+                raise ValueError(f'{annotation}: one binary label per second required')
+            patient = Path(edf_path).stem.split('_')[0]
+            patients.setdefault(patient, []).append((channels[0], channels[1], labels))
+    identifiers = sorted(patients)
+    if len(identifiers) < 3:
+        raise ValueError('At least three independent patients required for train/validation/test splits')
+    identifiers = np.random.default_rng(42).permutation(identifiers)
+    n = len(identifiers)
+    n_test = max(1, round(n * 0.1))
+    n_val = max(1, round(n * 0.1))
+    groups = {'train': identifiers[:n-n_val-n_test],
+              'val': identifiers[n-n_val-n_test:n-n_test], 'test': identifiers[n-n_test:]}
+    output = {'synthetic': np.array(not bool(edf_files)), 'sample_rate': np.array(FS)}
+    for split, ids in groups.items():
+        windows, targets, subjects = [], [], []
+        for pid in ids:
+            for c3, c4, labels in patients[pid]:
+                x, y = segment_signals(apply_filters(c3), apply_filters(c4), labels)
+                windows.append(x); targets.append(y); subjects.extend([pid] * len(y))
+        output['X_' + split] = np.vstack(windows)
+        output['Y_' + split] = np.concatenate(targets)
+        output['subjects_' + split] = np.array(subjects)
+        print(f'[INFO] {split}: {len(subjects)} windows from patients {list(ids)}')
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(output_file, **output)
+    print(f'[SUCCESS] Saved patient-separated biosignals to {output_file}')
 
-    X = np.vstack(all_X)
-    Y = np.concatenate(all_Y)
-    
-    n_samples = len(X)
-    indices = np.random.permutation(n_samples)
-    train_cut = int(0.80 * n_samples)
-    val_cut = train_cut + int(0.10 * n_samples)
-    
-    train_idx = indices[:train_cut]
-    val_idx = indices[train_cut:val_cut]
-    test_idx = indices[val_cut:]
-    
-    np.savez_compressed(
-        output_file,
-        X_train=X[train_idx], Y_train=Y[train_idx],
-        X_val=X[val_idx], Y_val=Y[val_idx],
-        X_test=X[test_idx], Y_test=Y[test_idx]
-    )
-    
-    print(f"[SUCCESS] Dataset partitioned: Train={len(train_idx)}, Val={len(val_idx)}, Test={len(test_idx)}")
-    print(f"[SUCCESS] Saved preprocessed biosignals to {output_file}")
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     run_preprocessing_pipeline()

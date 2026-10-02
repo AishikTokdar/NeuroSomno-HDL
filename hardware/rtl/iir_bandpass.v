@@ -1,50 +1,13 @@
-`timescale 1ns / 1ps
-
-module iir_bandpass #(
-    parameter DATA_WIDTH = 16,
-    parameter FRAC_BITS  = 13
-) (
-    input wire clk,
-    input wire rst,
-    input wire i_valid,
-    input wire signed [DATA_WIDTH-1:0] i_data,
-    output reg o_valid,
-    output reg signed [DATA_WIDTH-1:0] o_data
-);
-
-    // Cascaded Biquad Section 1 (Low cutoff 0.5 Hz highpass component)
-    // Coeffs in Q3.13: b0=7900, b1=-15800, b2=7900, a1=-15700, a2=7700
-    localparam signed [DATA_WIDTH-1:0] B1_B0 = 16'sh1EDC;
-    localparam signed [DATA_WIDTH-1:0] B1_B1 = -16'sh3DB8;
-    localparam signed [DATA_WIDTH-1:0] B1_B2 = 16'sh1EDC;
-    localparam signed [DATA_WIDTH-1:0] B1_A1 = -16'sh3D54;
-    localparam signed [DATA_WIDTH-1:0] B1_A2 = 16'sh1E14;
-
-    reg signed [31:0] s1_d1, s1_d2;
-    wire signed [31:0] s1_y_acc = (i_data * B1_B0) + s1_d1;
-    wire signed [DATA_WIDTH-1:0] s1_out = s1_y_acc[FRAC_BITS +: DATA_WIDTH];
-
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            s1_d1   <= 0;
-            s1_d2   <= 0;
-            o_valid <= 0;
-            o_data  <= 0;
-        end else if (i_valid) begin
-            s1_d1 <= (i_data * B1_B1) - (s1_out * B1_A1) + s1_d2;
-            s1_d2 <= (i_data * B1_B2) - (s1_out * B1_A2);
-
-            if (s1_y_acc > 32'sd268427264) begin
-                o_data <= 16'sh7FFF;
-            end else if (s1_y_acc < -32'sd268435456) begin
-                o_data <= 16'sh8000;
-            end else begin
-                o_data <= s1_out;
-            end
-            o_valid <= 1;
-        end else begin
-            o_valid <= 0;
-        end
-    end
-
+// Generated from scipy.signal at fs=128 Hz; causal streaming filter.
+module iir_bandpass #(parameter DATA_WIDTH=16, FRAC_BITS=13)(
+input clk,input rst,input i_valid,input signed [DATA_WIDTH-1:0] i_data,
+output o_valid,output signed [DATA_WIDTH-1:0] o_data);
+    wire [4:0] valid;
+    wire signed [DATA_WIDTH-1:0] data [0:4];
+    assign valid[0]=i_valid; assign data[0]=i_data;
+    assign o_valid=valid[4]; assign o_data=data[4];
+    iir_biquad #(.DATA_WIDTH(DATA_WIDTH),.FRAC_BITS(FRAC_BITS),.B0(2207),.B1(4413),.B2(2207),.A1(5527),.A2(1195)) section_0(clk,rst,valid[0],data[0],valid[1],data[1]);
+    iir_biquad #(.DATA_WIDTH(DATA_WIDTH),.FRAC_BITS(FRAC_BITS),.B0(8192),.B1(16384),.B2(8192),.A1(7468),.A2(4368)) section_1(clk,rst,valid[1],data[1],valid[2],data[2]);
+    iir_biquad #(.DATA_WIDTH(DATA_WIDTH),.FRAC_BITS(FRAC_BITS),.B0(8192),.B1(-16384),.B2(8192),.A1(-16013),.A2(7826)) section_2(clk,rst,valid[2],data[2],valid[3],data[3]);
+    iir_biquad #(.DATA_WIDTH(DATA_WIDTH),.FRAC_BITS(FRAC_BITS),.B0(8192),.B1(-16384),.B2(8192),.A1(-16228),.A2(8041)) section_3(clk,rst,valid[3],data[3],valid[4],data[4]);
 endmodule

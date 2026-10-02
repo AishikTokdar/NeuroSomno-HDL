@@ -1,0 +1,30 @@
+{
+  "tool": "Yosys 0.66",
+  "target": "Xilinx 7-series core, no IO pads",
+  "routed": false,
+  "dsp48e1": 88,
+  "ramb18e1": 40,
+  "flip_flops": 13837,
+  "lut_cells": 15776,
+  "estimated_logic_cells": 11102,
+  "cell_counts": {
+    "BUFG": 1,
+    "CARRY4": 1922,
+    "DSP48E1": 88,
+    "FDCE": 10789,
+    "FDPE": 72,
+    "FDRE": 2976,
+    "INV": 474,
+    "LUT1": 36,
+    "LUT2": 6039,
+    "LUT3": 1601,
+    "LUT4": 1636,
+    "LUT5": 4669,
+    "LUT6": 1795,
+    "MUXF7": 193,
+    "MUXF8": 38,
+    "RAM32M": 126,
+    "RAMB18E1": 40
+  },
+  "log_sha256": "891b8327e53ec2d69a89e47009267813e04234a1586be037b1c9279669e887af"
+}

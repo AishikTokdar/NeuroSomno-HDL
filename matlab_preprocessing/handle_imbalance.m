@@ -1,12 +1,14 @@
 if exist('../LICENSE', 'file') || exist('../dataset', 'dir')
     cd('..');
 end
+addpath(fullfile(pwd, 'matlab_preprocessing'));
 load('dataset/eeg_train.mat', 'eeg_train');
 load('dataset/train_labels.mat', 'train_labels');
 X_0 = eeg_train(train_labels == 0, :);
 X_1 = eeg_train(train_labels == 1, :);
 n0 = size(X_0, 1);
 n1 = size(X_1, 1);
+assert(n0>0 && n1>0, 'Both annotated classes are required');
 if n1 < n0
     diff = n0 - n1;
     X_synthetic = zeros(diff, size(eeg_train, 2));
@@ -16,7 +18,11 @@ if n1 < n0
         sample = X_1(idx, :);
         dists = sum((X_1 - sample).^2, 2);
         [~, sortedIdx] = sort(dists);
-        neighborIdx = sortedIdx(randi([2, min(k+1, n1)]));
+        if n1 == 1
+            neighborIdx = 1;
+        else
+            neighborIdx = sortedIdx(randi([2, min(k+1, n1)]));
+        end
         neighbor = X_1(neighborIdx, :);
         X_synthetic(i, :) = sample + rand() * (neighbor - sample);
     end

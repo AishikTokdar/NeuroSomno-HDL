@@ -1,0 +1,185 @@
+{
+  "audit_ahi_compile": "",
+  "audit_ahi": "EVENTS_AT_10=0\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-6ra05e16\\audit_ahi.v:9: $finish called at 120000 (1ps)\n",
+  "audit_axi_read_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_axi_read": "FIRST=123\nHELD=2\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-7oveni6q\\audit_axi_read.v:25: $finish called at 150000 (1ps)\n",
+  "audit_axi_write_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module axi_lite_wrapper declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1\n",
+  "audit_axi_write": "ACCEPTED=2 RESPONSES=1\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-gsle7fy3\\audit_axi_write.v:30: $finish called at 210000 (1ps)\n",
+  "bandpass_gain_10hz_60hz": [
+    1.097180488247762,
+    1.0003074946304678
+  ],
+  "audit_conv_compile": "",
+  "audit_conv": "CONV=300\nCOUNT=1\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-_q2mife4\\audit_conv.v:14: $finish called at 120000 (1ps)\n",
+  "emulator_fixture": {
+    "correct": 25,
+    "total": 30,
+    "predictions": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "labels": [
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1,
+      0,
+      1
+    ]
+  },
+  "export_classifier": {
+    "trained": 1,
+    "exported": 0
+  },
+  "audit_pool_compile": "",
+  "audit_pool": "POOL=200\nCOUNT=1\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-6yds05xy\\audit_pool.v:14: $finish called at 100000 (1ps)\n",
+  "audit_neuron_compile": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module neuron declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1\n       :   -- module relu declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1\n       :   -- module sig_rom declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1\n       :   -- module weight_memory declared here: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1\n",
+  "audit_neuron": "WARNING: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:22: $readmemb(w_1_0.mif): Too many words in the file for the requested range [0:2].\nRESULT=xxxx\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-qbrdnwkm\\audit_neuron.v:19: $finish called at 200000 (1ps)\n",
+  "notch_poles": [
+    1.770071159930027,
+    -0.517019402117527
+  ],
+  "audit_original_handshake_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1: warning: timescale for axi_lite_wrapper inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:1: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-pxqxfg5p\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\n",
+  "audit_original_handshake": "FATAL: C:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-pxqxfg5p\\audit_original_handshake.v:3: No inference completion within 2000 clocks\n       Time: 20000000  Scope: audit_original_handshake\n",
+  "tb_top_sim_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1: warning: timescale for axi_lite_wrapper inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:1: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:68: warning: implicit definition of wire 'out_done'.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: warning: implicit definition of wire 'net_rst'.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: error: Unable to bind wire/reg/memory `net_rst' in `tb_top_sim.uut'\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:96:      : A symbol with that name was declared here. Check for declaration after use.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: error: Failed to elaborate input port 'rst' expression (net_rst) in instance uut.ahi_inst of module: ahi_tracker.\n2 error(s) during elaboration.\n",
+  "pynq_fallback": {
+    "actual": 0,
+    "emulator_expected": 1
+  },
+  "audit_top_compile": "D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1: warning: timescale for axi_lite_wrapper inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:1: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-ulbauzpt\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\n",
+  "audit_top": "L1_FIRST=xxxx\nSample           0: Pred =  0, Act =  0\nL1_FIRST=0000\nSample           1: Pred =  0, Act =  1\nL1_FIRST=0000\nSample           2: Pred =  0, Act =  0\nL1_FIRST=0000\nSample           3: Pred =  0, Act =  1\nL1_FIRST=0000\nSample           4: Pred =  0, Act =  0\nL1_FIRST=0000\nSample           5: Pred =  0, Act =  1\nL1_FIRST=0000\nSample           6: Pred =  0, Act =  0\nL1_FIRST=0000\nSample           7: Pred =  0, Act =  1\nL1_FIRST=0000\nSample           8: Pred =  0, Act =  0\nL1_FIRST=0000\nSample           9: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          10: Pred =  0, Act =  0\nL1_FIRST=0af0\nSample          11: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          12: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          13: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          14: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          15: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          16: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          17: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          18: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          19: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          20: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          21: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          22: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          23: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          24: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          25: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          26: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          27: Pred =  0, Act =  1\nL1_FIRST=0000\nSample          28: Pred =  0, Act =  0\nL1_FIRST=0000\nSample          29: Pred =  0, Act =  1\nOverall Accuracy: 50.000000\nC:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-ulbauzpt\\audit_top.v:88: $finish called at 269950000 (1ps)\n",
+  "environment": {
+    "python": "3.14.7 | packaged by Anaconda, Inc. | (main, Aug 14 2026, 10:12:46) [MSC v.1942 64 bit (AMD64)]",
+    "iverilog": "C:\\Users\\AISHIK~1\\AppData\\Local\\Temp/neurosomno-tools/ucrt64/bin/iverilog.exe",
+    "vvp": "C:\\Users\\AISHIK~1\\AppData\\Local\\Temp/neurosomno-tools/ucrt64/bin/vvp.exe",
+    "baseline_commit": "79d9d16d472c9209b7b8bb77c7d68d55815d2960"
+  },
+  "summary": {
+    "tests": 20,
+    "failures": 16,
+    "errors": 1,
+    "skipped": 0,
+    "details": [
+      [
+        "test_ahi_tenth_second_counts_event (__main__.ProjectAudit.test_ahi_tenth_second_counts_event)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 269, in test_ahi_tenth_second_counts_event\n    self.assertIn(\"EVENTS_AT_10=1\", output)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'EVENTS_AT_10=1' not found in 'EVENTS_AT_10=0\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-6ra05e16\\\\audit_ahi.v:9: $finish called at 120000 (1ps)\\n'\n"
+      ],
+      [
+        "test_axi_read_data_held_during_backpressure (__main__.ProjectAudit.test_axi_read_data_held_during_backpressure)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 338, in test_axi_read_data_held_during_backpressure\n    self.assertIn(\"HELD=123\", output)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'HELD=123' not found in 'FIRST=123\\nHELD=2\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-7oveni6q\\\\audit_axi_read.v:25: $finish called at 150000 (1ps)\\n'\n"
+      ],
+      [
+        "test_axi_write_responses_survive_backpressure (__main__.ProjectAudit.test_axi_write_responses_survive_backpressure)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 306, in test_axi_write_responses_survive_backpressure\n    self.assertIn(\"ACCEPTED=2 RESPONSES=2\", output)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'ACCEPTED=2 RESPONSES=2' not found in 'ACCEPTED=2 RESPONSES=1\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-gsle7fy3\\\\audit_axi_write.v:30: $finish called at 210000 (1ps)\\n'\n"
+      ],
+      [
+        "test_bandpass_rejects_60hz (__main__.ProjectAudit.test_bandpass_rejects_60hz)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 254, in test_bandpass_rejects_60hz\n    self.assertLess(abs(response[1]), abs(response[0])/2, \"45Hz lowpass stage missing\")\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: np.float64(1.0003074946304678) not less than np.float64(0.5485902441238811) : 45Hz lowpass stage missing\n"
+      ],
+      [
+        "test_conv_includes_last_window (__main__.ProjectAudit.test_conv_includes_last_window)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 218, in test_conv_includes_last_window\n    self.assertIn(\"COUNT=2\", output)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\nAssertionError: 'COUNT=2' not found in 'CONV=300\\nCOUNT=1\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-_q2mife4\\\\audit_conv.v:14: $finish called at 120000 (1ps)\\n'\n"
+      ],
+      [
+        "test_documented_fixture_accuracy (__main__.ProjectAudit.test_documented_fixture_accuracy)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 113, in test_documented_fixture_accuracy\n    self.assertGreaterEqual(count, 26, \"Documented 86.67%-90% requires at least 26/30\")\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 25 not greater than or equal to 26 : Documented 86.67%-90% requires at least 26/30\n"
+      ],
+      [
+        "test_emulator_rejects_short_input (__main__.ProjectAudit.test_emulator_rejects_short_input)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 118, in test_emulator_rejects_short_input\n    with self.assertRaises(ValueError):\n         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\nAssertionError: ValueError not raised\n"
+      ],
+      [
+        "test_export_preserves_trained_classifier (__main__.ProjectAudit.test_export_preserves_trained_classifier)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 382, in test_export_preserves_trained_classifier\n    self.assertEqual(hardware_pred, model_pred, \"Export silently discards out_head\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 0 != 1 : Export silently discards out_head\n"
+      ],
+      [
+        "test_maxpool_stride_one (__main__.ProjectAudit.test_maxpool_stride_one)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 239, in test_maxpool_stride_one\n    self.assertIn(\"COUNT=2\", output)\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\nAssertionError: 'COUNT=2' not found in 'POOL=200\\nCOUNT=1\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-6yds05xy\\\\audit_pool.v:14: $finish called at 100000 (1ps)\\n'\n"
+      ],
+      [
+        "test_neuron_known_dot_product (__main__.ProjectAudit.test_neuron_known_dot_product)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 198, in test_neuron_known_dot_product\n    self.assertIn(\"RESULT=2800\", output, \"1*1 + .5*(-2) + 2*.5 + .25 must equal 1.25 (10240)\")\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'RESULT=2800' not found in 'WARNING: D:\\\\Repositories\\\\NeuroSomno-HDL\\\\hardware\\\\rtl\\\\weight_memory.v:22: $readmemb(w_1_0.mif): Too many words in the file for the requested range [0:2].\\nRESULT=xxxx\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-qbrdnwkm\\\\audit_neuron.v:19: $finish called at 200000 (1ps)\\n' : 1*1 + .5*(-2) + 2*.5 + .25 must equal 1.25 (10240)\n"
+      ],
+      [
+        "test_notch_stability (__main__.ProjectAudit.test_notch_stability)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 245, in test_notch_stability\n    self.assertTrue(np.all(np.abs(poles) < 1), f\"Unstable poles: {poles}\")\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: np.False_ is not true : Unstable poles: [ 1.77007116 -0.5170194 ]\n"
+      ],
+      [
+        "test_original_handshake_after_declaration_workaround (__main__.ProjectAudit.test_original_handshake_after_declaration_workaround)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 170, in test_original_handshake_after_declaration_workaround\n    output = simulate(\"audit_original_handshake\", \"`timescale 1ns/1ps\\n\" + source,\n                      [p.name for p in (ROOT / \"hardware/rtl\").glob(\"*.v\")],\n                      overrides={\"zynet_top.v\": top})\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 70, in simulate\n    raise AssertionError(EVIDENCE[name])\nAssertionError: FATAL: C:\\Users\\AISHIK~1\\AppData\\Local\\Temp\\neurosomno-audit-pxqxfg5p\\audit_original_handshake.v:3: No inference completion within 2000 clocks\n       Time: 20000000  Scope: audit_original_handshake\n\n"
+      ],
+      [
+        "test_original_top_bench_completes (__main__.ProjectAudit.test_original_top_bench_completes)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 134, in test_original_top_bench_completes\n    output = simulate(\"tb_top_sim\", \"`timescale 1ns/1ps\\n\" + source,\n                      [p.name for p in (ROOT / \"hardware/rtl\").glob(\"*.v\")])\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 64, in simulate\n    raise AssertionError(EVIDENCE[name + \"_compile\"])\nAssertionError: D:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\axi_lite_wrapper.v:1: warning: timescale for axi_lite_wrapper inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\ahi_tracker.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\find_max_out.v:1: warning: timescale for find_max_out inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\conv1d_pe.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer1.v:1: warning: timescale for layer1 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer2.v:1: warning: timescale for layer2 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer3.v:1: warning: timescale for layer3 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\layer4.v:1: warning: timescale for layer4 inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\iir_notch_50hz.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\neuron.v:1: warning: timescale for neuron inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\relu.v:1: warning: timescale for relu inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\sig_rom.v:1: warning: timescale for sig_rom inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\weight_memory.v:1: warning: timescale for weight_memory inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:1: warning: timescale for zynet_top inherited from another file.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\maxpool1d.v:6: ...: The inherited timescale is here.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:68: warning: implicit definition of wire 'out_done'.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: warning: implicit definition of wire 'net_rst'.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: error: Unable to bind wire/reg/memory `net_rst' in `tb_top_sim.uut'\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:96:      : A symbol with that name was declared here. Check for declaration after use.\nD:\\Repositories\\NeuroSomno-HDL\\hardware\\rtl\\zynet_top.v:75: error: Failed to elaborate input port 'rst' expression (net_rst) in instance uut.ahi_inst of module: ahi_tracker.\n2 error(s) during elaboration.\n\n"
+      ],
+      [
+        "test_pynq_fallback_uses_samples (__main__.ProjectAudit.test_pynq_fallback_uses_samples)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 353, in test_pynq_fallback_uses_samples\n    self.assertEqual(actual, expected)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\nAssertionError: 0 != 1\n"
+      ],
+      [
+        "test_pynq_timeout_raises (__main__.ProjectAudit.test_pynq_timeout_raises)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 360, in test_pynq_timeout_raises\n    with self.assertRaises(TimeoutError):\n         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^\nAssertionError: TimeoutError not raised\n"
+      ],
+      [
+        "test_top_with_handshake_held_has_known_predictions (__main__.ProjectAudit.test_top_with_handshake_held_has_known_predictions)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 159, in test_top_with_handshake_held_has_known_predictions\n    self.assertNotIn(\"L1_FIRST=xxxx\", output, \"Neuron arithmetic emits unknown values\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'L1_FIRST=xxxx' unexpectedly found in 'L1_FIRST=xxxx\\nSample           0: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample           1: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample           2: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample           3: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample           4: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample           5: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample           6: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample           7: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample           8: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample           9: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          10: Pred =  0, Act =  0\\nL1_FIRST=0af0\\nSample          11: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          12: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          13: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          14: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          15: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          16: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          17: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          18: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          19: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          20: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          21: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          22: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          23: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          24: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          25: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          26: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          27: Pred =  0, Act =  1\\nL1_FIRST=0000\\nSample          28: Pred =  0, Act =  0\\nL1_FIRST=0000\\nSample          29: Pred =  0, Act =  1\\nOverall Accuracy: 50.000000\\nC:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-audit-ulbauzpt\\\\audit_top.v:88: $finish called at 269950000 (1ps)\\n' : Neuron arithmetic emits unknown values\n"
+      ],
+      [
+        "test_export_handles_small_test_split (__main__.ProjectAudit.test_export_handles_small_test_split)",
+        "Traceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 129, in test_export_handles_small_test_split\n    export_test_vectors(str(tmp / \"data.npz\"), str(tmp / \"mif\"))\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Repositories\\NeuroSomno-HDL\\python_pipeline\\export_weights.py\", line 100, in export_test_vectors\n    fd.write(f\"{float_to_q3_13_bin(X_fcn[i, j])}\\n\")\n                                   ~~~~~^^^^^^\nIndexError: index 2 is out of bounds for axis 0 with size 2\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\shutil.py\", line 701, in _rmtree_unsafe\n    os.unlink(fullname)\n    ~~~~~~~~~^^^^^^^^^^\nPermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-small-export-m_3hf9fb\\\\data.npz'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Repositories\\NeuroSomno-HDL\\tests\\audit_project.py\", line 124, in test_export_handles_small_test_split\n    with tempfile.TemporaryDirectory(prefix=\"neurosomno-small-export-\") as tmp:\n         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\tempfile.py\", line 972, in __exit__\n    self.cleanup()\n    ~~~~~~~~~~~~^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\tempfile.py\", line 976, in cleanup\n    self._rmtree(self.name, ignore_errors=self._ignore_cleanup_errors)\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\tempfile.py\", line 956, in _rmtree\n    _shutil.rmtree(name, onexc=onexc)\n    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\shutil.py\", line 852, in rmtree\n    _rmtree_impl(path, dir_fd, onexc)\n    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\shutil.py\", line 705, in _rmtree_unsafe\n    onexc(os.unlink, fullname, err)\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\Aishik Tokdar\\miniconda3\\Lib\\tempfile.py\", line 931, in onexc\n    _os.unlink(path)\n    ~~~~~~~~~~^^^^^^\nPermissionError: [WinError 32] The process cannot access the file because it is being used by another process: 'C:\\\\Users\\\\AISHIK~1\\\\AppData\\\\Local\\\\Temp\\\\neurosomno-small-export-m_3hf9fb\\\\data.npz'\n"
+      ]
+    ]
+  }
+}

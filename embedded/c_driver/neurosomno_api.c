@@ -11,7 +11,7 @@ void NeuroSomno_Init(uintptr_t base_addr) {
 
 void NeuroSomno_SoftReset(void) {
     accel_base[REG_CTRL_OFFSET / 4] = CTRL_SOFT_RST_MASK;
-    for (volatile int i = 0; i < 100; i++);
+    for (volatile int i = 0; i < 100; i++); // Brief delay
     accel_base[REG_CTRL_OFFSET / 4] = 0;
 }
 
@@ -33,4 +33,35 @@ uint16_t NeuroSomno_GetAHICount(void) {
 
 AHI_Severity_t NeuroSomno_GetSeverity(void) {
     return (AHI_Severity_t)(accel_base[REG_AHI_SEV_OFFSET / 4] & 0x03);
+}
+
+int NeuroSomno_Predict(const int16_t *samples, size_t count, uint32_t *prediction,
+                      uint64_t timeout_us, NeuroSomno_StreamFn send,
+                      NeuroSomno_ClockFn clock_us, void *context) {
+    if (!samples || count != 784 || !prediction || !timeout_us || !send || !clock_us)
+        return -1;
+    uint64_t start_us = clock_us(context);
+    NeuroSomno_StartInference();
+    while (NeuroSomno_IsDone()) {
+        if (clock_us(context) - start_us >= timeout_us) {
+            NeuroSomno_SoftReset();
+            return -2;
+        }
+    }
+    if (send(samples, count, context) != 0) {
+        NeuroSomno_SoftReset();
+        return -3;
+    }
+    while (!NeuroSomno_IsDone()) {
+        if (clock_us(context) - start_us >= timeout_us) {
+            NeuroSomno_SoftReset();
+            return -2;
+        }
+    }
+    if (clock_us(context) - start_us >= timeout_us) {
+        NeuroSomno_SoftReset();
+        return -2;
+    }
+    *prediction = NeuroSomno_GetPredictedClass();
+    return 0;
 }

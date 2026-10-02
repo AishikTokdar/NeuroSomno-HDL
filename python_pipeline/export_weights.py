@@ -5,6 +5,9 @@ and exports .mif, sig_rom.mem, and simulation test vectors test_data.txt / test_
 """
 
 import os
+import json
+import hashlib
+from pathlib import Path
 import numpy as np
 import torch
 
@@ -42,13 +45,13 @@ def export_model_weights(model_path="models/fcn_model.pt", mif_dir="hardware/mif
     os.makedirs(mif_dir, exist_ok=True)
     
     if not os.path.exists(model_path):
-        print(f"[INFO] Model checkpoint {model_path} not found. Running training first...")
-        from train_model import train_and_evaluate
-        train_and_evaluate()
-        
+        raise FileNotFoundError(f'{model_path}: train the binary model before exporting')
     from train_model import NeuroSomnoFCN
     model = NeuroSomnoFCN()
-    model.load_state_dict(torch.load(model_path, map_location='cpu'))
+    state = torch.load(model_path, map_location='cpu', weights_only=True)
+    if 'out_head.weight' in state or tuple(state['fc4.weight'].shape) != (2, 10):
+        raise ValueError('Legacy checkpoint uses a different classifier; retrain the binary model')
+    model.load_state_dict(state)
     model.eval()
     
     layers = [
@@ -75,21 +78,42 @@ def export_model_weights(model_path="models/fcn_model.pt", mif_dir="hardware/mif
             
     print(f"[SUCCESS] Exported {total_mifs} parameter MIF files to {mif_dir}/")
     generate_sigmoid_rom(os.path.join(mif_dir, "sig_rom.mem"))
+    parameters = np.concatenate([part.ravel().astype(np.float64) for _,w,b in layers for part in (w,b)])
+    rounded = np.rint(parameters * 8192)
+    clipped = (rounded < MIN_INT) | (rounded > MAX_INT)
+    errors = np.abs(parameters[~clipped] - rounded[~clipped]/8192)
+    with open(model_path, 'rb') as checkpoint:
+        checksum = hashlib.sha256(checkpoint.read()).hexdigest()
+    with open(os.path.join(mif_dir, 'manifest.json'), 'w') as manifest:
+        json.dump({'architecture': [784, 30, 30, 10, 2],
+                   'activations': ['relu', 'relu', 'sigmoid', 'linear'],
+                   'classes': ['normal', 'apnea'], 'format': 'signed Q3.13',
+                   'checkpoint_sha256': checksum,
+                   'active_parameters': int(parameters.size),
+                   'parameter_sha256': {f'{kind}_{layer}_{n}.mif': hashlib.sha256(
+                       (Path(mif_dir)/f'{kind}_{layer}_{n}.mif').read_bytes()).hexdigest()
+                       for layer,w,b in layers for n in range(len(b)) for kind in ('w','b')},
+                   'clipped_parameters': int(clipped.sum()),
+                   'max_unclipped_rounding_error': float(errors.max()) if errors.size else None,
+                   }, manifest, indent=2)
+
 
 def export_test_vectors(dataset_path="dataset/eeg_data_split.npz", mif_dir="hardware/mif", num_samples=30):
     """Exports behavioral simulation test vectors matching tb_top_sim testbench."""
     os.makedirs(mif_dir, exist_ok=True)
     if not os.path.exists(dataset_path):
-        from preprocess_eeg import run_preprocessing_pipeline
-        run_preprocessing_pipeline()
-        
+        raise FileNotFoundError(f'{dataset_path}: preprocess annotated data first')
     data = np.load(dataset_path)
     X_test = data['X_test']
     Y_test = data['Y_test']
+    if len(X_test) != len(Y_test) or num_samples <= 0 or len(X_test) == 0:
+        raise ValueError('Nonempty aligned test data and positive sample count required')
+    num_samples = min(num_samples, len(X_test))
     
     from train_model import downsample_signals
-    X_fcn = downsample_signals(X_test[:num_samples], 784)
-    Y_sub = Y_test[:num_samples]
+    indices = np.linspace(0, len(X_test)-1, num_samples, dtype=int)
+    X_fcn = downsample_signals(X_test[indices], 784)
+    Y_sub = Y_test[indices]
     
     data_file = os.path.join(mif_dir, "test_data.txt")
     labels_file = os.path.join(mif_dir, "test_labels.txt")

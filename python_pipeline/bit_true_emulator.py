@@ -1,12 +1,10 @@
 """
 NeuroSomno-HDL: Bit-True Hardware RTL Golden Emulator in Python
-Simulates the exact fixed-point arithmetic, MAC pipelines, ROM LUT lookups,
-and serialization flow of the Verilog accelerator (zynet_top.v).
-Ensures 100% bit-accurate parity with Vivado and Icarus Verilog simulation.
+Integer arithmetic reference for the Verilog accelerator (zynet_top.v).
+RTL parity must be measured separately with verify_rtl.py.
 """
 
 import os
-import glob
 import numpy as np
 
 def load_mif_array(filepath):
@@ -16,6 +14,8 @@ def load_mif_array(filepath):
         for line in f:
             line = line.strip()
             if line:
+                if len(line) != 16 or set(line) - {'0', '1'}:
+                    raise ValueError(f'Invalid 16-bit binary word in {filepath}')
                 raw = int(line, 2)
                 if raw & 0x8000:
                     raw -= 0x10000
@@ -23,7 +23,7 @@ def load_mif_array(filepath):
     return np.array(vals, dtype=np.int32)
 
 class BitTrueNeuron:
-    """Cycle-accurate model of hardware/rtl/neuron.v."""
+    """Integer arithmetic reference for hardware/rtl/neuron.v."""
     def __init__(self, weights, bias, act_type="relu", sig_lut=None):
         self.weights = weights  # shape (num_weights,), int32
         self.bias = bias        # int32
@@ -32,6 +32,10 @@ class BitTrueNeuron:
 
     def compute(self, x_stream):
         """Computes MAC over stream of 16-bit signed inputs."""
+        if len(x_stream) != len(self.weights):
+            raise ValueError('Input length does not match neuron weights')
+        if any(int(x) != x or not -32768 <= int(x) <= 32767 for x in x_stream):
+            raise ValueError('Expected signed 16-bit Q3.13 integers')
         acc = 0
         for x, w in zip(x_stream, self.weights):
             prod = (int(x) * int(w)) >> 13
@@ -63,7 +67,7 @@ class BitTrueNetwork:
         self.l1 = self._build_layer(1, 30, 784, "relu")
         self.l2 = self._build_layer(2, 30, 30, "relu")
         self.l3 = self._build_layer(3, 10, 30, "sigmoid")
-        self.l4 = self._build_layer(4, 10, 10, "sigmoid")
+        self.l4 = self._build_layer(4, 2, 10, "linear")
 
     def _load_sigmoid_rom(self):
         sig_path = os.path.join(self.mif_dir, "sig_rom.mem")
@@ -75,7 +79,10 @@ class BitTrueNetwork:
             w_file = os.path.join(self.mif_dir, f"w_{layer_idx}_{n}.mif")
             b_file = os.path.join(self.mif_dir, f"b_{layer_idx}_{n}.mif")
             w = load_mif_array(w_file)
-            b = load_mif_array(b_file)[0]
+            bias_words = load_mif_array(b_file)
+            if len(w) != num_inputs or len(bias_words) != 1:
+                raise ValueError(f'Invalid parameter dimensions for layer {layer_idx}, neuron {n}')
+            b = bias_words[0]
             neurons.append(BitTrueNeuron(w, b, act_type, self.sig_lut))
         return neurons
 
@@ -86,10 +93,7 @@ class BitTrueNetwork:
         l3_out = [n.compute(l2_out) for n in self.l3]
         l4_out = [n.compute(l3_out) for n in self.l4]
         
-        # Argmax decision logic matching hardware find_max_out.v:
-        # Neuron 9 is Apnea (1); Neuron 2 / default is Normal (0)
-        max_idx = int(np.argmax(l4_out))
-        predicted_class = 1 if max_idx == 9 else 0
+        predicted_class = int(np.argmax(l4_out))
         return predicted_class, l4_out
 
 def run_testbench_verification(mif_dir="hardware/mif"):
@@ -98,13 +102,14 @@ def run_testbench_verification(mif_dir="hardware/mif"):
     labels_file = os.path.join(mif_dir, "test_labels.txt")
     
     if not os.path.exists(data_file) or not os.path.exists(labels_file):
-        print(f"[ERROR] Test vector files not found in {mif_dir}")
-        return
+        raise FileNotFoundError(f"Test vector files not found in {mif_dir}")
         
     print(f"[INFO] Initializing Bit-True RTL Emulator from {mif_dir}...")
     net = BitTrueNetwork(mif_dir)
     
     raw_data = load_mif_array(data_file)
+    if len(raw_data) == 0 or len(raw_data) % 784:
+        raise ValueError('Test vectors must contain complete 784-word frames')
     num_samples = len(raw_data) // 784
     
     labels = []
@@ -113,6 +118,8 @@ def run_testbench_verification(mif_dir="hardware/mif"):
             if line.strip():
                 labels.append(int(line.strip(), 2))
                 
+    if len(labels) != num_samples or any(y not in (0, 1) for y in labels):
+        raise ValueError('One binary label required for each test frame')
     correct = 0
     print(f"\n--- Running Bit-True Parity Simulation ({num_samples} Samples) ---")
     for i in range(num_samples):
@@ -126,7 +133,8 @@ def run_testbench_verification(mif_dir="hardware/mif"):
         
     acc = (correct * 100.0) / num_samples
     print(f"\n[EMULATOR ACCURACY] {acc:.2f}% ({correct}/{num_samples} correct)")
-    print(f"[PARITY CHECK] Bit-true software emulator matches Verilog HDL RTL simulation perfectly.")
+    print("[INFO] Arithmetic reference only; use verify_rtl.py for measured RTL parity.")
+    return correct, num_samples
 
 if __name__ == "__main__":
     run_testbench_verification()

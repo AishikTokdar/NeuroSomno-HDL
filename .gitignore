@@ -43,3 +43,24 @@ __pycache__/
 *.pyo
 .env
 venv/
+
+# Reproducible local training outputs
+models/*.pt
+dataset/*.npz
+
+# Generated verification logs and local caches
+.cache/
+.pytest_cache/
+
+# Redundant documentation consolidated into README
+dataset/README.md
+docs/synthesis_and_accuracy_validation.md
+docs/project_audit.md
+docs/repair_verification.md
+embedded/README.md
+hardware/README.md
+hardware/mif/README.md
+matlab_preprocessing/README.md
+python_pipeline/README.md
+results/README.md
+
