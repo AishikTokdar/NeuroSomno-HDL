@@ -1,6 +1,6 @@
 """
 NeuroSomno-HDL: PyTorch Model Training & SMOTE Class Balancing Suite
-Trains the 15-layer Hybrid 1D-CNN on full 2816-sample signals,
+Trains the three-convolution software 1D-CNN on full 2816-sample signals,
 and the hardware-aligned 784-input Quantized FCN model.
 """
 
@@ -13,7 +13,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from scipy.interpolate import interp1d
 
 class Hybrid1DCNN(nn.Module):
-    """15-layer 1D Convolutional Neural Network matching MATLAB global_model architecture."""
+    """Software 1D-CNN with three convolution stages and global-average pooling."""
     def __init__(self, num_classes=2):
         super(Hybrid1DCNN, self).__init__()
         self.features = nn.Sequential(
@@ -151,7 +151,7 @@ def train_and_evaluate(dataset_path="dataset/eeg_data_split.npz", models_dir="mo
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] Training execution device: {device}")
     
-    print("\n--- Training 15-Layer Hybrid 1D-CNN (Full 2816 Resolution) ---")
+    print("\n--- Training Software 1D-CNN (Full 2816 Resolution) ---")
     cnn_model = Hybrid1DCNN().to(device)
     train_loader = DataLoader(
         TensorDataset(torch.from_numpy(X_train_bal).unsqueeze(1), torch.from_numpy(Y_train_bal)),
