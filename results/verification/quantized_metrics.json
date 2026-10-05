@@ -1,0 +1,29 @@
+{
+  "evaluation": "integer arithmetic reference; not a full-split RTL simulation",
+  "data": "synthetic",
+  "test_windows": 590,
+  "subjects": [
+    "1"
+  ],
+  "format": "signed Q3.13",
+  "metrics": {
+    "accuracy": 98.98305084745745,
+    "balanced_acc": 97.99999999999956,
+    "sensitivity": 95.99999999999936,
+    "specificity": 99.99999999999977,
+    "precision": 99.99999999999932,
+    "f1": 0.9795918367341875,
+    "confusion": {
+      "tn": 440,
+      "fp": 0,
+      "fn": 6,
+      "tp": 144
+    }
+  },
+  "checkpoint_sha256": "fb27eb60525e6ab43f18b2d0f87907e1e7e1fa08772527d506cc1c00507664d6",
+  "dataset_sha256": "35a2fc036ce1d8172aa7cc5b05460a321408e4690d75902da89d863b5baa0dfc",
+  "floating_point_comparison": {
+    "windows": 590,
+    "different_class_decisions": 0
+  }
+}

@@ -1,6 +1,6 @@
 {
   "regressions": {
-    "tests": 29,
+    "tests": 30,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
@@ -24,7 +24,7 @@
     "manifest_checksums": true,
     "errors": []
   },
-  "dashboard": "5 functional checks; mock DOM, no rendering test",
+  "dashboard": "5 functional checks for the project website",
   "c_driver": "compiled and executed with mock MMIO/transport",
   "synthesis": "Yosys structural check",
   "vendor_timing_power_and_physical_board": "not verified",

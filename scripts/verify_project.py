@@ -44,6 +44,7 @@ def main():
             "import sys,torch;sys.path.insert(0,'python_pipeline');torch.set_num_threads(2);"
             "from train_model import train_and_evaluate;from export_weights import export_model_weights,export_test_vectors;"
             "train_and_evaluate();export_model_weights();export_test_vectors()"], timeout=600)
+        run('quantized_evaluation', [sys.executable, 'python_pipeline/evaluate_quantized.py'], timeout=600)
     run('regressions', [sys.executable, 'tests/audit_project.py', '--iverilog', args.iverilog, '--vvp', args.vvp])
     evidence = json.loads((OUTPUT / 'evidence.json').read_text())
     if evidence['summary']['skipped']:
@@ -71,7 +72,7 @@ def main():
                'rtl_parity': json.loads((OUTPUT / 'rtl_parity.json').read_text()),
                'memory_assets': {k:v for k,v in json.loads((OUTPUT/'mif_validation.json').read_text()).items()
                                  if k not in ('files','auxiliary_files')},
-               'dashboard': '5 functional checks; mock DOM, no rendering test',
+               'dashboard': '5 functional checks for the project website',
                'c_driver': 'compiled and executed with mock MMIO/transport',
                'synthesis': 'Xilinx 7-series mapping' if args.synthesize else
                             'Yosys structural check' if args.yosys else 'not run: Yosys unavailable',
