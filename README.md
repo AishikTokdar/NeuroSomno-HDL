@@ -257,6 +257,29 @@ Overall Accuracy: 90.000000 (or 86.666667)
 
 ---
 
+#### Phase 4: Embedded Edge Deployment (PYNQ / ARM Cortex-A9)
+
+##### Option A: PYNQ-Z2 Python Overlay Driver
+Stream inference requests directly from Python on the Zynq ARM Processing System:
+```python
+from embedded.pynq.neurosomno_overlay import NeuroSomnoOverlay
+overlay = NeuroSomnoOverlay("neurosomno.bit")
+prediction = overlay.predict_sample(test_vector_784)
+telemetry = overlay.get_clinical_telemetry()
+print(f"Apnea Episodes: {telemetry['ahi_episodes']}, Severity: {telemetry['severity_grade']}")
+```
+
+##### Option B: Standalone C API (ARM Cortex-A9 Bare-Metal)
+Include `embedded/c_driver/neurosomno_hw.h` in your Vivado Vitis firmware project:
+```c
+NeuroSomno_Init(NEUROSOMNO_BASE_ADDR);
+NeuroSomno_StartInference();
+while (!NeuroSomno_IsDone());
+uint32_t result = NeuroSomno_GetPredictedClass();
+```
+
+---
+
 ## Visualizing Waveforms in Vivado
 
 For visual waveform setup in Vivado GUI, see the signal trace guide in [Hardware RTL & Simulation Reference](hardware/README.md#visualizing-waveforms).
