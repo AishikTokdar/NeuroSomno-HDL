@@ -1,74 +1,95 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="NeuroSomno-HDL architecture, measured software results and verification limits.">
-<title>NeuroSomno-HDL | Verification results</title>
-<link rel="stylesheet" href="style.css">
-<script src="app.js" defer></script>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="NeuroSomno-HDL: EEG signal processing, neural-network training and fixed-point inference on a Zynq-7000 FPGA architecture.">
+<meta name="theme-color" content="#0b0f17"><title>NeuroSomno-HDL | EEG classification on an FPGA</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f17'/%3E%3Cpath d='M3 17h5l3-9 5 17 4-13 3 5h6' fill='none' stroke='%235eabff' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css"><script src="app.js" defer></script>
 </head>
 <body>
-<header>
-<p class="eyebrow">Experimental EEG classification</p>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="navbar" aria-label="Main navigation">
+<a class="brand" href="#overview"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M2 17h6l3-9 5 17 4-13 3 5h7"/></svg>NeuroSomno<span class="brand-badge">HDL</span></a>
+<button class="menu-toggle" id="menu-toggle" aria-controls="nav-links" aria-expanded="false" aria-label="Open navigation">Menu</button>
+<div class="nav-links" id="nav-links"><a href="#pipeline">Pipeline</a><a href="#architecture">Architecture</a><a href="#results">Results</a><a href="#hardware">FPGA</a><a href="#get-started">Get started</a></div>
+<a class="github-link" href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" rel="noopener noreferrer">View source <span aria-hidden="true">↗</span></a>
+</nav>
+<main id="main">
+<header class="hero container" id="overview">
+<div class="hero-copy"><p class="eyebrow">EEG classification / FPGA implementation</p>
 <h1>NeuroSomno-HDL</h1>
-<p>A fixed-point FPGA inference core with Python training and software verification.</p>
-<nav aria-label="Page sections"><a href="#results">Results</a><a href="#memory">Memory files</a><a href="#usage">Run checks</a><a href="#quantization">Q3.13 tool</a></nav>
+<p class="hero-lead">A fixed-point neural network for classifying sleep apnea from EEG signals.</p>
+<p class="hero-description">The project covers EEG preprocessing, model training in PyTorch, and a four-layer classifier in Verilog for Zynq-7000. This page explains how the pieces fit together and what the current results show.</p>
+<div class="hero-actions"><a class="button primary" href="#architecture">Network architecture <span aria-hidden="true">→</span></a><a class="button secondary" href="#results">Model results</a></div>
+<div class="hero-tags"><span>Verilog HDL</span><span>PyTorch</span><span>Q3.13 arithmetic</span><span>Zynq-7000</span></div></div>
+<figure class="overview-diagram" aria-label="Software preprocessing and FPGA inference path">
+<div class="diagram-heading">Inference path</div>
+<div class="diagram-stage"><span class="diagram-location">Python</span><strong>C3 + C4 EEG</strong><span>128 Hz · 11-second windows</span></div>
+<div class="diagram-connector" aria-hidden="true">↓</div>
+<div class="diagram-stage"><span class="diagram-location">Preprocessing</span><strong>Filter, normalize, interpolate</strong><span>784 signed Q3.13 values</span></div>
+<div class="diagram-connector" aria-hidden="true">↓</div>
+<div class="diagram-stage fpga-stage"><span class="diagram-location">Verilog / FPGA</span><strong>30 → 30 → 10 → 2</strong><span>ReLU · ReLU · sigmoid · linear</span></div>
+<figcaption>Two output scores: normal and apnea.<br>The larger score determines the class.</figcaption>
+</figure>
 </header>
-<main>
-<p class="notice">All accuracy figures below use synthetic data. Physical operation, routed timing, power and real-patient accuracy remain unverified.</p>
-<section id="results" aria-labelledby="results-heading">
-<h2 id="results-heading">Measured results</h2>
-<p id="load-status" role="status">Saved result snapshot. Loading the latest reports.</p>
-<table><caption>Software and RTL verification</caption><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody>
-<tr><td>Regression suite</td><td id="regression-result">29 / 29 passed</td></tr>
-<tr><td>Neuron outputs compared</td><td id="parity-result">2,160; zero mismatches</td></tr>
-<tr><td>Synthetic RTL classifications</td><td id="classification-result">30 / 30 correct</td></tr>
-<tr><td>Results-page checks</td><td>5 / 5 passed; mock DOM</td></tr>
-<tr><td>C driver</td><td>Compiled and tested with mock registers and transport</td></tr>
-</tbody></table>
-<table><caption>Software models: 590 held-out windows from a separate synthetic subject</caption><thead><tr><th>Metric</th><th>CNN</th><th>FCN</th></tr></thead><tbody>
-<tr><td>Accuracy</td><td id="cnn-accuracy">97.63%</td><td id="fcn-accuracy">98.98%</td></tr>
-<tr><td>Balanced accuracy</td><td id="cnn-balanced_acc">95.33%</td><td id="fcn-balanced_acc">98.00%</td></tr>
-<tr><td>Sensitivity</td><td id="cnn-sensitivity">90.67%</td><td id="fcn-sensitivity">96.00%</td></tr>
-<tr><td>Specificity</td><td id="cnn-specificity">100.00%</td><td id="fcn-specificity">100.00%</td></tr>
-<tr><td>Precision</td><td id="cnn-precision">100.00%</td><td id="fcn-precision">100.00%</td></tr>
-<tr><td>F1</td><td id="cnn-f1">0.9510</td><td id="fcn-f1">0.9796</td></tr>
-<tr><td>TN / FP / FN / TP</td><td id="cnn-confusion">440 / 0 / 14 / 136</td><td id="fcn-confusion">440 / 0 / 6 / 144</td></tr>
-</tbody></table>
-<table><caption>Yosys 0.66 mapping to Xilinx 7-series cells; not a routed implementation</caption><thead><tr><th>Resource</th><th>Count</th></tr></thead><tbody>
-<tr><td>DSP48E1</td><td id="synthesis-dsp48e1">88</td></tr>
-<tr><td>RAMB18E1</td><td id="synthesis-ramb18e1">40</td></tr>
-<tr><td>Flip-flops</td><td id="synthesis-flip_flops">13,837</td></tr>
-<tr><td>LUT cells</td><td id="synthesis-lut_cells">15,776</td></tr>
-<tr><td>Estimated logic cells</td><td id="synthesis-estimated_logic_cells">11,102</td></tr>
-</tbody></table>
-<p><a href="results/verification/summary.json">Verification summary</a> · <a href="results/verification/model_metrics.json">Model metrics</a> · <a href="results/verification/synthesis_summary.json">Synthesis summary</a> · <a href="results/archive/raw_logs.tar.gz">Archived raw logs</a></p>
+<section class="metrics-strip container" aria-label="Project at a glance"><div><strong id="hero-accuracy">98.98<span>%</span></strong><span>FCN software accuracy</span><small>590 synthetic test windows</small></div><div><strong>72</strong><span>Parallel neuron units</span><small>Four fully connected layers</small></div><div><strong>16<span>-bit</span></strong><span>Fixed-point arithmetic</span><small>Signed Q3.13 representation</small></div><div><strong>88</strong><span>DSP48E1 cells</span><small>Yosys Xilinx 7-series mapping</small></div></section>
+
+<section class="section container" id="pipeline">
+<div class="section-heading"><p class="eyebrow">Signal processing</p><h2>Preparing the EEG input</h2><p>Python prepares each EEG window before it reaches the FPGA. The accelerator receives a vector of 784 values and returns scores for normal and apnea.</p></div>
+<div class="pipeline-grid">
+<article class="step-card"><span class="step-number">01</span><h3>Acquire &amp; clean</h3><p>Read C3 and C4 EEG channels, resample to 128 Hz, suppress 50 Hz interference and retain the 0.5–45 Hz band.</p></article>
+<article class="step-card"><span class="step-number">02</span><h3>Window &amp; normalize</h3><p>Create 11-second windows at a one-second stride. Normalize each channel, combine 2,816 values, then interpolate to 784 inputs.</p></article>
+<article class="step-card"><span class="step-number">03</span><h3>Learn &amp; quantize</h3><p>Train a software CNN and a separate compact FCN. Export the FCN weights with convergent rounding into signed Q3.13 arithmetic.</p></article>
+<article class="step-card"><span class="step-number">04</span><h3>Stream &amp; classify</h3><p>Send a 784-word vector into the accelerator. Four dense layers produce two signed scores; the larger score selects the class.</p></article>
+</div>
+<div class="signal-panel"><div class="signal-intro"><p class="eyebrow">Filter example</p><h3>Before and after filtering</h3><p>A notch removes powerline interference, a bandpass retains the target EEG range, and normalization puts each window on a comparable scale.</p><div class="segmented" role="group" aria-label="Signal processing stage"><button class="active" data-signal="raw" aria-pressed="true">Raw signal</button><button data-signal="filtered" aria-pressed="false">Filtered</button><button data-signal="normalized" aria-pressed="false">Normalized</button></div><p class="small muted">An illustrative synthetic signal, processed with the project's Python filters. This is not a patient recording.</p></div><figure class="signal-figure"><div class="plot-label"><strong id="signal-title">Raw signal</strong><span>2 seconds / 128 samples per second</span></div><svg id="signal-plot" viewBox="0 0 700 220" role="img" aria-label="Synthetic EEG signal across a two-second window"><defs><pattern id="signal-grid" width="70" height="44" patternUnits="userSpaceOnUse"><path d="M70 0H0V44" fill="none" stroke="#26334a" stroke-width="1"/></pattern></defs><rect width="700" height="220" fill="url(#signal-grid)"/><path id="signal-path" d="M0.00 110.00 L2.75 79.65 L5.49 83.12 L8.24 50.21 L10.98 67.80 L13.73 77.34 L16.47 80.13 L19.22 123.04 L21.96 117.60 L24.71 137.46 L27.45 143.25 L30.20 113.83 L32.94 120.50 L35.69 81.19 L38.43 64.62 L41.18 62.79 L43.92 34.75 L46.67 62.79 L49.41 64.62 L52.16 81.19 L54.90 120.50 L57.65 113.83 L60.39 143.25 L63.14 137.46 L65.88 117.60 L68.63 123.04 L71.37 80.13 L74.12 77.34 L76.86 67.80 L79.61 50.21 L82.35 83.12 L85.10 79.65 L87.84 110.00 L90.59 140.35 L93.33 136.88 L96.08 169.79 L98.82 152.20 L101.57 142.66 L104.31 139.87 L107.06 96.96 L109.80 102.40 L112.55 82.54 L115.29 76.75 L118.04 106.17 L120.78 99.50 L123.53 138.81 L126.27 155.38 L129.02 157.21 L131.76 185.25 L134.51 157.21 L137.25 155.38 L140.00 138.81 L142.75 99.50 L145.49 106.17 L148.24 76.75 L150.98 82.54 L153.73 102.40 L156.47 96.96 L159.22 139.87 L161.96 142.66 L164.71 152.20 L167.45 169.79 L170.20 136.88 L172.94 140.35 L175.69 110.00 L178.43 79.65 L181.18 83.12 L183.92 50.21 L186.67 67.80 L189.41 77.34 L192.16 80.13 L194.90 123.04 L197.65 117.60 L200.39 137.46 L203.14 143.25 L205.88 113.83 L208.63 120.50 L211.37 81.19 L214.12 64.62 L216.86 62.79 L219.61 34.75 L222.35 62.79 L225.10 64.62 L227.84 81.19 L230.59 120.50 L233.33 113.83 L236.08 143.25 L238.82 137.46 L241.57 117.60 L244.31 123.04 L247.06 80.13 L249.80 77.34 L252.55 67.80 L255.29 50.21 L258.04 83.12 L260.78 79.65 L263.53 110.00 L266.27 140.35 L269.02 136.88 L271.76 169.79 L274.51 152.20 L277.25 142.66 L280.00 139.87 L282.75 96.96 L285.49 102.40 L288.24 82.54 L290.98 76.75 L293.73 106.17 L296.47 99.50 L299.22 138.81 L301.96 155.38 L304.71 157.21 L307.45 185.25 L310.20 157.21 L312.94 155.38 L315.69 138.81 L318.43 99.50 L321.18 106.17 L323.92 76.75 L326.67 82.54 L329.41 102.40 L332.16 96.96 L334.90 139.87 L337.65 142.66 L340.39 152.20 L343.14 169.79 L345.88 136.88 L348.63 140.35 L351.37 110.00 L354.12 79.65 L356.86 83.12 L359.61 50.21 L362.35 67.80 L365.10 77.34 L367.84 80.13 L370.59 123.04 L373.33 117.60 L376.08 137.46 L378.82 143.25 L381.57 113.83 L384.31 120.50 L387.06 81.19 L389.80 64.62 L392.55 62.79 L395.29 34.75 L398.04 62.79 L400.78 64.62 L403.53 81.19 L406.27 120.50 L409.02 113.83 L411.76 143.25 L414.51 137.46 L417.25 117.60 L420.00 123.04 L422.75 80.13 L425.49 77.34 L428.24 67.80 L430.98 50.21 L433.73 83.12 L436.47 79.65 L439.22 110.00 L441.96 140.35 L444.71 136.88 L447.45 169.79 L450.20 152.20 L452.94 142.66 L455.69 139.87 L458.43 96.96 L461.18 102.40 L463.92 82.54 L466.67 76.75 L469.41 106.17 L472.16 99.50 L474.90 138.81 L477.65 155.38 L480.39 157.21 L483.14 185.25 L485.88 157.21 L488.63 155.38 L491.37 138.81 L494.12 99.50 L496.86 106.17 L499.61 76.75 L502.35 82.54 L505.10 102.40 L507.84 96.96 L510.59 139.87 L513.33 142.66 L516.08 152.20 L518.82 169.79 L521.57 136.88 L524.31 140.35 L527.06 110.00 L529.80 79.65 L532.55 83.12 L535.29 50.21 L538.04 67.80 L540.78 77.34 L543.53 80.13 L546.27 123.04 L549.02 117.60 L551.76 137.46 L554.51 143.25 L557.25 113.83 L560.00 120.50 L562.75 81.19 L565.49 64.62 L568.24 62.79 L570.98 34.75 L573.73 62.79 L576.47 64.62 L579.22 81.19 L581.96 120.50 L584.71 113.83 L587.45 143.25 L590.20 137.46 L592.94 117.60 L595.69 123.04 L598.43 80.13 L601.18 77.34 L603.92 67.80 L606.67 50.21 L609.41 83.12 L612.16 79.65 L614.90 110.00 L617.65 140.35 L620.39 136.88 L623.14 169.79 L625.88 152.20 L628.63 142.66 L631.37 139.87 L634.12 96.96 L636.86 102.40 L639.61 82.54 L642.35 76.75 L645.10 106.17 L647.84 99.50 L650.59 138.81 L653.33 155.38 L656.08 157.21 L658.82 185.25 L661.57 157.21 L664.31 155.38 L667.06 138.81 L669.80 99.50 L672.55 106.17 L675.29 76.75 L678.04 82.54 L680.78 102.40 L683.53 96.96 L686.27 139.87 L689.02 142.66 L691.76 152.20 L694.51 169.79 L697.25 136.88 L700.00 140.35" fill="none" stroke="#61b5ff" stroke-width="2" stroke-linejoin="round"/></svg><figcaption><span>0.0 s</span><span>1.0 s</span><span>2.0 s</span></figcaption></figure></div>
 </section>
-<section id="memory" aria-labelledby="memory-heading">
-<h2 id="memory-heading">Memory validation</h2>
-<p id="memory-result">144 MIF files checked: 144 active, 0 obsolete. Active parameters: 24,812.</p>
-<p id="memory-status">Active parameters match the quantized model checkpoint.</p>
-<p>The obsolete output files have been removed. The validator lists each active file, its word count, value range and checksum.</p>
-<p><a href="results/verification/mif_validation.json">Full memory report</a> · <a href="hardware/mif/manifest.json">Export manifest</a></p>
+
+<section class="section architecture-section" id="architecture"><div class="container">
+<div class="section-heading"><p class="eyebrow">Network architecture</p><h2>784 inputs, four dense layers</h2><p>Each neuron reuses a multiplier across its input vector. Neurons within a layer work in parallel; their outputs are then serialized into the next stage.</p></div>
+<div class="architecture-flow" role="group" aria-label="Select a network layer">
+<div class="input-node"><span class="node-label">INPUT</span><strong>784</strong><small>Q3.13 words</small></div><span class="flow-arrow" aria-hidden="true">→</span>
+<button class="layer-node active" data-layer="1" aria-pressed="true"><span class="node-label">LAYER 01</span><strong>30</strong><small>ReLU</small></button><span class="flow-arrow" aria-hidden="true">→</span>
+<button class="layer-node" data-layer="2" aria-pressed="false"><span class="node-label">LAYER 02</span><strong>30</strong><small>ReLU</small></button><span class="flow-arrow" aria-hidden="true">→</span>
+<button class="layer-node" data-layer="3" aria-pressed="false"><span class="node-label">LAYER 03</span><strong>10</strong><small>Sigmoid</small></button><span class="flow-arrow" aria-hidden="true">→</span>
+<button class="layer-node" data-layer="4" aria-pressed="false"><span class="node-label">LAYER 04</span><strong>2</strong><small>Linear</small></button>
+</div>
+<div class="layer-detail" aria-live="polite"><div><span class="card-tag" id="layer-module">layer1.v / neuron.v</span><h3 id="layer-title">Layer 1: learning the input representation</h3><p id="layer-description">Thirty neurons each accumulate 784 signed products, add a bias and apply ReLU. Synchronous weight reads are aligned with the input stream before multiplication.</p><code class="formula" id="layer-formula">y = ReLU(Σ((x × w) &gt;&gt;&gt; 13) + b)</code></div><dl class="layer-specs"><div><dt>Inputs per neuron</dt><dd id="layer-inputs">784</dd></div><div><dt>Output neurons</dt><dd id="layer-outputs">30</dd></div><div><dt>Activation</dt><dd id="layer-activation">ReLU</dd></div><div><dt>Weights + biases</dt><dd id="layer-parameters">23,550</dd></div></dl></div>
+<div class="architecture-notes"><article><h3>Training and export</h3><p>The FCN used for training has the same four layers as the RTL: 30, 30, 10 and 2 neurons. All four layers are included in the fixed-point export.</p></article><article><h3>Host interface</h3><p>AXI-Stream carries the input vector. AXI-Lite provides control and class readout. A host processor manages the inference sequence.</p></article><article><h3>Other blocks in the repository</h3><p>The software CNN and standalone convolution, pooling and IIR blocks support exploration. They are not wired into the deployed FCN top.</p></article></div>
+</div></section>
+
+<section class="section container" id="results">
+<div class="section-heading"><p class="eyebrow">Model evaluation</p><h2>Results on the held-out set</h2><p>Training, validation and testing use different synthetic subjects. The held-out set has 590 windows: 440 normal and 150 apnea-labeled examples.</p></div>
+<div class="result-summary"><article><span class="result-model">SOFTWARE CNN</span><strong id="cnn-score">97.63<span>%</span></strong><p>Accuracy on 590 held-out windows</p><div class="mini-metric"><span>Sensitivity</span><b id="cnn-recall">90.67%</b></div><div class="mini-metric"><span>F1 score</span><b id="cnn-f1">0.9510</b></div></article><article class="featured-result"><span class="result-model">HARDWARE-TARGET FCN / FLOATING POINT</span><strong id="fcn-score">98.98<span>%</span></strong><p>Accuracy on the same 590 windows</p><div class="mini-metric"><span>Sensitivity</span><b id="fcn-recall">96.00%</b></div><div class="mini-metric"><span>F1 score</span><b id="fcn-f1">0.9796</b></div></article><article><span class="result-model">Q3.13 INTEGER REFERENCE</span><strong id="quantized-score">98.98<span>%</span></strong><p>Integer arithmetic over all 590 windows</p><div class="mini-metric"><span>Sensitivity</span><b id="quantized-recall">96.00%</b></div><div class="mini-metric"><span>F1 score</span><b id="quantized-f1">0.9796</b></div></article></div>
+<div class="results-workspace"><div class="results-toolbar"><h3>Metrics and classification errors</h3><div class="segmented" role="group" aria-label="Choose results view"><button class="active" data-results-view="metrics" aria-pressed="true">Metrics</button><button data-results-view="confusion" aria-pressed="false">Confusion matrix</button></div></div>
+<div id="metrics-view" class="table-scroll"><table><caption class="sr-only">Model performance on 590 synthetic held-out windows</caption><thead><tr><th>Metric</th><th>CNN / float</th><th>FCN / float</th><th>FCN / Q3.13 reference</th></tr></thead><tbody id="metrics-body"><tr><td>Accuracy</td><td>97.63%</td><td>98.98%</td><td>98.98%</td></tr><tr><td>Balanced accuracy</td><td>95.33%</td><td>98.00%</td><td>98.00%</td></tr><tr><td>Sensitivity</td><td>90.67%</td><td>96.00%</td><td>96.00%</td></tr><tr><td>Specificity</td><td>100.00%</td><td>100.00%</td><td>100.00%</td></tr><tr><td>Precision</td><td>100.00%</td><td>100.00%</td><td>100.00%</td></tr><tr><td>F1 score</td><td>0.9510</td><td>0.9796</td><td>0.9796</td></tr></tbody></table></div>
+<div id="confusion-view" hidden><div class="confusion-grid"><div><h4>CNN / floating point</h4><div class="matrix"><span class="matrix-label">Actual / predicted</span><span class="matrix-label">Normal</span><span class="matrix-label">Apnea</span><span class="matrix-label">Normal</span><div class="matrix-cell good"><strong id="cnn-tn">440</strong><span>True negative</span></div><div class="matrix-cell error"><strong id="cnn-fp">0</strong><span>False positive</span></div><span class="matrix-label">Apnea</span><div class="matrix-cell error"><strong id="cnn-fn">14</strong><span>False negative</span></div><div class="matrix-cell good"><strong id="cnn-tp">136</strong><span>True positive</span></div></div></div><div><h4>FCN / Q3.13 integer reference</h4><div class="matrix"><span class="matrix-label">Actual / predicted</span><span class="matrix-label">Normal</span><span class="matrix-label">Apnea</span><span class="matrix-label">Normal</span><div class="matrix-cell good"><strong id="quantized-tn">440</strong><span>True negative</span></div><div class="matrix-cell error"><strong id="quantized-fp">0</strong><span>False positive</span></div><span class="matrix-label">Apnea</span><div class="matrix-cell error"><strong id="quantized-fn">6</strong><span>False negative</span></div><div class="matrix-cell good"><strong id="quantized-tp">144</strong><span>True positive</span></div></div></div></div></div>
+<div class="results-explained"><p><strong>Why sensitivity matters:</strong> accuracy includes the larger normal class. Sensitivity focuses on correctly recognizing apnea-labeled windows; the FCN identifies 144 of 150 in this dataset.</p><p><strong>What fixed point changed:</strong> the Q3.13 arithmetic reference makes the same class decisions as the floating-point FCN across this held-out split. RTL simulation separately covers 30 frames, with 30 correct classes.</p></div></div>
+<p class="research-note"><span class="note-label">Dataset limitations</span>These are synthetic-data results, not clinical performance estimates. EEG alone, patient generalization and deployment behavior require further study. The 590-window integer result is software arithmetic evaluation; it is not a 590-frame RTL run.</p>
+<p class="data-source" id="results-source">Source: recorded model evaluation and Yosys synthesis results. <a href="https://github.com/AishikTokdar/NeuroSomno-HDL/tree/main/results/verification" target="_blank" rel="noopener noreferrer">Evaluation data</a></p>
 </section>
-<section id="usage" aria-labelledby="usage-heading">
-<h2 id="usage-heading">Architecture and commands</h2>
-<p>The active FCN is <code>784 -&gt; 30 -&gt; 30 -&gt; 10 -&gt; 2</code>, with ReLU, ReLU, sigmoid and linear outputs. Class 0 is normal; class 1 is apnea. The software CNN and standalone streaming blocks are separate.</p>
-<pre><code>python -m pip install -r python_pipeline/requirements.txt
-python scripts/verify_project.py
-python scripts/verify_project.py --synthesize
-python python_pipeline/validate_memory.py --checkpoint models/fcn_model.pt</code></pre>
-<p>Verification needs Icarus Verilog, Node.js and GCC on PATH. Add Yosys for synthesis. No board is required for these checks. See <a href="README.md">README</a> and <a href="docs/architecture_overview.md">interface documentation</a>.</p>
-</section>
-<section id="quantization" aria-labelledby="quantization-heading">
-<h2 id="quantization-heading">Q3.13 conversion</h2>
-<p>Signed 16-bit range: -4 to 3.9998779296875. Uses convergent rounding and saturation.</p>
-<label for="q-input">Floating-point value</label><input id="q-input" type="number" value="1" step="any">
-<p id="q-status" role="status"></p>
-<dl><dt>Hexadecimal word</dt><dd id="q-hex">0x2000</dd><dt>Decoded value</dt><dd id="q-decoded">1</dd><dt>Absolute error, including clipping</dt><dd id="q-error">0</dd></dl>
-</section>
+
+<section class="section hardware-section" id="hardware"><div class="container hardware-grid"><div class="hardware-story"><p class="eyebrow">FPGA implementation</p><h2>Resource use on Zynq-7000</h2><p>The design targets the XC7Z020 on ZedBoard. Each neuron uses a multiply-accumulate unit; block RAM stores weights and activation tables. The figures below compare the mapped core with the device capacity.</p><div class="device-card"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="25" y="25" width="50" height="50" rx="5"/><rect x="35" y="35" width="30" height="30" rx="2"/><path d="M35 12v13m15-13v13m15-13v13M35 75v13m15-13v13m15-13v13M12 35h13M12 50h13M12 65h13M75 35h13M75 50h13M75 65h13"/></svg><div><strong>XC7Z020</strong><span>ZedBoard / Zynq-7000 target</span><small>ARM processing system + FPGA fabric</small></div></div><p class="small muted">Mapped with Yosys 0.66 to Xilinx 7-series cells, without IO pads. Routed utilization, timing and power are not measured here.</p></div><div class="resource-panel"><div class="panel-heading"><h3>Mapped core resources</h3><span class="card-tag">CORE SYNTHESIS</span></div>
+<div class="resource"><div><span>DSP48E1 multipliers</span><strong id="dsp-count">88 <small>/ 220</small></strong></div><div class="resource-track"><span style="--fill:40%"></span></div><p>Parallel multiply-accumulate arithmetic</p></div>
+<div class="resource"><div><span>Block RAM / 18 Kb units</span><strong id="bram-count">40 <small>/ 280</small></strong></div><div class="resource-track"><span style="--fill:14.29%"></span></div><p>Parameter storage and inferred ROMs</p></div>
+<div class="resource"><div><span>Lookup-table cells</span><strong id="lut-count">15,776 <small>/ 53,200</small></strong></div><div class="resource-track"><span style="--fill:29.65%"></span></div><p>Activation, control and interconnect logic</p></div>
+<div class="resource"><div><span>Flip-flop cells</span><strong id="ff-count">13,837 <small>/ 106,400</small></strong></div><div class="resource-track"><span style="--fill:13.00%"></span></div><p>Pipeline, accumulator and serializer registers</p></div>
+<div class="resource-footnote"><strong>11,102</strong><span>estimated logic cells<br>Distinct from the LUT primitive count.</span></div>
+</div></div></section>
+
+<section class="section container" id="quantization"><div class="quantization-grid"><div><p class="eyebrow">Fixed-point arithmetic</p><h2>Representing values in Q3.13</h2><p>Q3.13 represents each number with one sign bit, two integer bits and 13 fractional bits. The same signed integer operations are used by the reference model and the RTL.</p><div class="quant-facts"><div><strong>1 / 8,192</strong><span>Resolution</span></div><div><strong>−4 to +3.99988</strong><span>Representable range</span></div><div><strong>24,812</strong><span>Weights and biases</span></div></div><p class="small muted">The current export clips no model parameters. MAC outputs saturate to the signed 16-bit range; values outside it lose magnitude information.</p></div><div class="calculator"><div class="panel-heading"><h3>Explore Q3.13</h3><span class="card-tag">INTERACTIVE</span></div><label for="q-input">Floating-point value</label><input id="q-input" type="number" value="0.785" step="any"><div class="preset-row"><button data-preset="0.5">0.5</button><button data-preset="-1.25">−1.25</button><button data-preset="3.99">3.99</button><button data-preset="6">Clipping example</button></div><div class="bit-word" id="q-bits" aria-label="16-bit word"></div><div class="bit-legend"><span>Sign</span><span>Integer</span><span>Fraction / 13 bits</span></div><dl><div><dt>Hexadecimal</dt><dd id="q-hex">0x191F</dd></div><div><dt>Decoded value</dt><dd id="q-decoded">0.7850341796875</dd></div><div><dt>Absolute error</dt><dd id="q-error">0.0000341796875</dd></div></dl><p id="q-status" class="small" role="status">Convergent rounding, signed two's-complement encoding.</p></div></div></section>
+
+<section class="section get-started-section" id="get-started"><div class="container start-grid"><div><p class="eyebrow">Running the project</p><h2>Try the inference example</h2><p>Start with the supplied inference example, explore the Python training pipeline, or step through the Verilog data path. The core can be simulated entirely in software.</p><div class="start-links"><a class="button primary" href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" rel="noopener noreferrer">Browse the repository <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/AishikTokdar/NeuroSomno-HDL#quick-start" target="_blank" rel="noopener noreferrer">Read the setup guide →</a></div><p class="small muted">Physical deployment still needs a board-specific PS/DMA design, bitstream, clock and reset integration, and vendor timing/power analysis. MATLAB requires its vendor toolboxes.</p></div><div class="code-window"><div class="code-window-bar"><span>terminal / inference example</span><button id="copy-command" type="button" aria-label="Copy setup commands">Copy</button></div><pre><code id="setup-command"><span class="code-comment"># Get the source</span>
+git clone https://github.com/AishikTokdar/NeuroSomno-HDL.git
+cd NeuroSomno-HDL
+
+<span class="code-comment"># Install the Python pipeline</span>
+python -m pip install -r python_pipeline/requirements.txt
+
+<span class="code-comment"># Run the supplied fixed-point inference example</span>
+python python_pipeline/bit_true_emulator.py</code></pre></div></div></section>
 </main>
-<footer><a href="README.md#results-and-metrics">Results & Verification</a> · <a href="LICENSE">MIT License</a></footer>
+<footer class="footer container"><a class="brand" href="#overview">NeuroSomno<span class="brand-badge">HDL</span></a><p>An open-source EEG classification project.</p><div><a href="https://github.com/AishikTokdar/NeuroSomno-HDL" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://github.com/AishikTokdar/NeuroSomno-HDL/blob/main/docs/architecture_overview.md" target="_blank" rel="noopener noreferrer">Architecture documentation</a><a href="LICENSE">MIT License</a></div></footer>
 </body>
 </html>
