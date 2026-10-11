@@ -22,6 +22,8 @@
             <li><a href="#overview">Overview</a></li>
             <li><a href="#foss-tools">Open Source Suite</a></li>
             <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#simulator">Live Simulator</a></li>
+            <li><a href="#quantization">Quantization Tool</a></li>
             <li><a href="#fpgaboard">ZedBoard FPGA</a></li>
             <li><a href="#results">Results & Synthesis</a></li>
             <li><a href="#execution">Execution Guide</a></li>
@@ -342,6 +344,158 @@
         </div>
     </section>
 
+    <!-- Real-Time In-Browser EEG Simulation & Apnea Detection Visualizer -->
+    <section class="section container" id="simulator">
+        <div class="section-header">
+            <h2 class="section-title">Live EEG Streaming & Accelerator Simulation</h2>
+            <p class="section-desc">Experience real-time biosignal acquisition and hardware neural network inference running directly in the browser.</p>
+        </div>
+
+        <div class="sim-card">
+            <div class="sim-controls-bar">
+                <div class="sim-control-group">
+                    <label for="simSubject">Patient Case:</label>
+                    <select id="simSubject" class="sim-select" onchange="changeSimSubject()">
+                        <option value="normal">Subject 01 — Normal Respiration (Healthy Control)</option>
+                        <option value="mild">Subject 02 — Mild Obstructive Apnea (AHI ~8/hr)</option>
+                        <option value="severe" selected>Subject 03 — Severe Obstructive Apnea (AHI ~34/hr)</option>
+                    </select>
+                </div>
+                <div class="sim-btn-group">
+                    <button id="simPlayBtn" class="btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;" onclick="toggleSimPlay()">Pause Stream</button>
+                    <button class="btn-secondary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;" onclick="resetSimStream()">Reset</button>
+                </div>
+                <div class="sim-speed-group">
+                    <span style="font-size: 0.8rem; color: var(--text-dim);">Speed:</span>
+                    <button class="preset-btn active" id="spd1" onclick="setSimSpeed(1)">1x</button>
+                    <button class="preset-btn" id="spd2" onclick="setSimSpeed(2)">2x</button>
+                    <button class="preset-btn" id="spd5" onclick="setSimSpeed(5)">5x</button>
+                </div>
+            </div>
+
+            <!-- Oscilloscope Canvas Viewport -->
+            <div class="canvas-wrapper">
+                <div class="canvas-header-overlay">
+                    <span class="live-dot"></span>
+                    <span>CHANNEL: C3-A2 EEG • SAMPLING RATE: 128 Hz • BANDPASS: 0.5–45 Hz</span>
+                    <span id="simTimeElapsed" style="margin-left: auto; font-family: var(--font-mono);">00:00.0</span>
+                </div>
+                <canvas id="eegCanvas" width="900" height="200"></canvas>
+            </div>
+
+            <!-- Live Status & Layer Activation Pipeline -->
+            <div class="sim-dashboard-grid">
+                <!-- Classification Result -->
+                <div class="sim-status-box">
+                    <div class="sim-status-label">RTL Accelerator Decision</div>
+                    <div id="simClassBadge" class="sim-class-badge normal">
+                        <span class="status-indicator"></span>
+                        <span id="simClassText">NORMAL RESPIRATION</span>
+                    </div>
+                    <div class="sim-subdetail" id="simInferenceLatency">Inference Latency: 8.8 µs (880 Cycles @ 100MHz)</div>
+                </div>
+
+                <!-- AHI Clinical Tracker -->
+                <div class="sim-status-box">
+                    <div class="sim-status-label">AHI Clinical Severity Tracker</div>
+                    <div class="ahi-stat-row">
+                        <span class="ahi-count-big" id="simAhiCount">0</span>
+                        <span class="ahi-count-unit">Events / Hr</span>
+                        <span class="ahi-sev-tag normal" id="simAhiSev">NORMAL</span>
+                    </div>
+                    <div class="sim-subdetail" id="simConsecutiveText">Current Apnea Duration: 0.0s</div>
+                </div>
+
+                <!-- 4-Layer Activation Activity Meter -->
+                <div class="sim-status-box" style="grid-column: span 2;">
+                    <div class="sim-status-label">Hardware Layer Activation Levels (Q3.13 PE Energy)</div>
+                    <div class="layer-activity-grid">
+                        <div class="layer-act-item">
+                            <div class="layer-act-label"><span>Layer 1 (30 ReLU)</span><span id="l1ActVal">65%</span></div>
+                            <div class="layer-act-track"><div class="layer-act-bar" id="l1ActBar" style="width: 65%;"></div></div>
+                        </div>
+                        <div class="layer-act-item">
+                            <div class="layer-act-label"><span>Layer 2 (30 ReLU)</span><span id="l2ActVal">52%</span></div>
+                            <div class="layer-act-track"><div class="layer-act-bar" id="l2ActBar" style="width: 52%;"></div></div>
+                        </div>
+                        <div class="layer-act-item">
+                            <div class="layer-act-label"><span>Layer 3 (10 Sigmoid)</span><span id="l3ActVal">40%</span></div>
+                            <div class="layer-act-track"><div class="layer-act-bar" id="l3ActBar" style="width: 40%;"></div></div>
+                        </div>
+                        <div class="layer-act-item">
+                            <div class="layer-act-label"><span>Layer 4 (10 Sigmoid)</span><span id="l4ActVal">28%</span></div>
+                            <div class="layer-act-track"><div class="layer-act-bar" id="l4ActBar" style="width: 28%;"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Fixed-Point Q3.13 Quantization Explorer -->
+    <section class="section container" id="quantization">
+        <div class="section-header">
+            <h2 class="section-title">Interactive Q3.13 Quantization Calculator</h2>
+            <p class="section-desc">Inspect how continuous IEEE-754 floating-point neural parameters convert into 16-bit signed Q3.13 fixed-point words inside the hardware multipliers.</p>
+        </div>
+
+        <div class="quant-card">
+            <div class="quant-input-row">
+                <div class="quant-input-group">
+                    <label for="qInputVal" style="display: block; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.4rem;">Floating-Point Input Value (-4.0 to +3.999):</label>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <input type="number" id="qInputVal" step="0.001" value="0.785" class="quant-input">
+                        <button class="btn-primary" style="padding: 0.65rem 1.25rem; font-size: 0.85rem;" onclick="recalcQ313()">Convert</button>
+                    </div>
+                </div>
+                <div class="quant-presets">
+                    <span style="font-size: 0.8rem; color: var(--text-dim); margin-right: 0.25rem;">Presets:</span>
+                    <button class="preset-btn" onclick="setQPreset(0.785)">0.785</button>
+                    <button class="preset-btn" onclick="setQPreset(-1.234)">-1.234</button>
+                    <button class="preset-btn" onclick="setQPreset(3.999)">+3.999</button>
+                    <button class="preset-btn" onclick="setQPreset(-4.000)">-4.000</button>
+                </div>
+            </div>
+
+            <div class="quant-bitfield-container">
+                <div class="quant-bitfield-label">16-Bit Q3.13 Word Breakdown:</div>
+                <div class="bitfield-grid">
+                    <div class="bit-chunk bit-sign">
+                        <div class="bit-chunk-header">SIGN [15]</div>
+                        <div class="bit-chunk-bits" id="bitSign">0</div>
+                    </div>
+                    <div class="bit-chunk bit-int">
+                        <div class="bit-chunk-header">INTEGER [14:13]</div>
+                        <div class="bit-chunk-bits" id="bitInt">00</div>
+                    </div>
+                    <div class="bit-chunk bit-frac">
+                        <div class="bit-chunk-header">FRACTION [12:0] (Scale: 2^-13)</div>
+                        <div class="bit-chunk-bits" id="bitFrac">1100100011111</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quant-results-grid">
+                <div class="quant-stat">
+                    <div class="quant-stat-label">Hexadecimal Value</div>
+                    <div class="quant-stat-value" id="qHexVal">0x191F</div>
+                </div>
+                <div class="quant-stat">
+                    <div class="quant-stat-label">Scaled Integer (int16)</div>
+                    <div class="quant-stat-value" id="qIntVal">6431</div>
+                </div>
+                <div class="quant-stat">
+                    <div class="quant-stat-label">Reconstructed Float</div>
+                    <div class="quant-stat-value" id="qReconVal">0.785034</div>
+                </div>
+                <div class="quant-stat">
+                    <div class="quant-stat-label">Absolute Error (ε)</div>
+                    <div class="quant-stat-value" style="color: var(--accent-emerald);" id="qErrVal">0.000034</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Target FPGA Board & Primitive Deep Dive Section -->
     <section class="section container" id="fpgaboard">
         <div class="section-header">
@@ -382,6 +536,68 @@
                 </div>
             </div>
         </div>
+
+        <!-- Dynamic FPGA Platform Resource Scalability Calculator -->
+        <div class="quant-card" style="margin-top: 1.5rem;">
+            <div class="section-header" style="text-align: left; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">Dynamic FPGA Device Scalability Estimator</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0;">Evaluate how the accelerator fits across various commercial Xilinx Zynq & Artix FPGA fabrics.</p>
+            </div>
+
+            <div class="sim-controls-bar" style="margin-bottom: 1.25rem;">
+                <div class="sim-control-group">
+                    <label for="boardSelect">Select Target FPGA Board:</label>
+                    <select id="boardSelect" class="sim-select" onchange="recalcBoardResources()">
+                        <option value="zedboard" selected>ZedBoard (XC7Z020-CLG484) — 53.2k LUT, 220 DSP, 140 BRAM</option>
+                        <option value="pynqz2">PYNQ-Z2 (XC7Z020-CLG400) — 53.2k LUT, 220 DSP, 140 BRAM</option>
+                        <option value="basys3">Basys 3 (Artix-7 XC7A35T) — 20.8k LUT, 90 DSP, 50 BRAM</option>
+                        <option value="kria">Kria KV260 (UltraScale+ XCK26) — 117.1k LUT, 1248 DSP, 144 BRAM</option>
+                        <option value="ultra96">Ultra96-V2 (UltraScale+ ZU3EG) — 70.6k LUT, 360 DSP, 216 BRAM</option>
+                    </select>
+                </div>
+
+                <div class="sim-control-group">
+                    <label for="optimSelect">Architecture Mode:</label>
+                    <select id="optimSelect" class="sim-select" onchange="recalcBoardResources()">
+                        <option value="default">Baseline (160 DSPs, 6.3k LUT, 15 BRAM)</option>
+                        <option value="signed" selected>Signed Port Optimized (80 DSPs, 6.3k LUT, 15 BRAM)</option>
+                        <option value="int8">INT8 SIMD Packed (40 DSPs, 4.2k LUT, 7.5 BRAM)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Resource Bars -->
+            <div class="resource-grid" id="boardResourceGrid">
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Look-Up Tables (LUT)</span>
+                        <span class="resource-val" id="boardLutVal">6,290 / 53,200 (11.8%)</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="boardLutBar" style="width: 11.8%;"></div></div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Flip-Flops (FF)</span>
+                        <span class="resource-val" id="boardFfVal">6,653 / 106,400 (6.3%)</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="boardFfBar" style="width: 6.3%;"></div></div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">DSP48E1 Multiplier Slices</span>
+                        <span class="resource-val" id="boardDspVal">80 / 220 (36.4%)</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="boardDspBar" style="width: 36.4%; background: var(--accent-emerald);"></div></div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-header">
+                        <span class="resource-name">Block RAM (BRAM36)</span>
+                        <span class="resource-val" id="boardBramVal">15.0 / 140 (10.7%)</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="boardBramBar" style="width: 10.7%;"></div></div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Results & Synthesis Section -->
@@ -395,6 +611,7 @@
             <button class="tab-btn active" data-tab="tab-hardware">FPGA Resource Utilization</button>
             <button class="tab-btn" data-tab="tab-software">Software Model Performance</button>
             <button class="tab-btn" data-tab="tab-timing">Timing & Power Summary</button>
+            <button class="tab-btn" data-tab="tab-confusion">Confusion Matrix & Threshold</button>
         </div>
 
         <!-- Hardware Resource Tab -->
@@ -532,6 +749,64 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- Confusion Matrix & Threshold Tab -->
+        <div class="tab-content" id="tab-confusion">
+            <div class="quant-card">
+                <div class="sim-controls-bar" style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                    <div style="flex: 1; min-width: 280px;">
+                        <label for="thresholdSlider" style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); margin-bottom: 0.5rem;">
+                            <span>Classification Decision Threshold (τ):</span>
+                            <strong style="color: var(--accent-blue); font-family: var(--font-mono); font-size: 1rem;" id="threshDisplay">0.50</strong>
+                        </label>
+                        <input type="range" id="thresholdSlider" min="0.10" max="0.90" step="0.05" value="0.50" style="width: 100%; accent-color: var(--accent-blue);" oninput="recalcConfusion()">
+                    </div>
+                    <div style="font-size: 0.78rem; color: var(--text-muted); max-width: 380px;">
+                        Adjusting threshold τ tunes clinical sensitivity against false alarms for high-alert ICU versus routine home monitoring.
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: center;">
+                    <!-- 2x2 Matrix -->
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem; font-weight: 700;">2x2 Confusion Matrix (Test Set: N = 1,200)</div>
+                        <div class="confusion-grid">
+                            <div class="cm-cell cm-header"></div>
+                            <div class="cm-cell cm-header">Pred: Normal</div>
+                            <div class="cm-cell cm-header">Pred: Apnea</div>
+                            
+                            <div class="cm-cell cm-header">Act: Normal</div>
+                            <div class="cm-cell cm-val cm-tn" id="cmTN">998 (TN)</div>
+                            <div class="cm-cell cm-val cm-fp" id="cmFP">2 (FP)</div>
+                            
+                            <div class="cm-cell cm-header">Act: Apnea</div>
+                            <div class="cm-cell cm-val cm-fn" id="cmFN">33 (FN)</div>
+                            <div class="cm-cell cm-val cm-tp" id="cmTP">167 (TP)</div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics -->
+                    <div class="quant-results-grid">
+                        <div class="quant-stat">
+                            <div class="quant-stat-label">Sensitivity (Recall)</div>
+                            <div class="quant-stat-value" style="color: var(--accent-emerald);" id="cmRecall">83.5%</div>
+                        </div>
+                        <div class="quant-stat">
+                            <div class="quant-stat-label">Specificity</div>
+                            <div class="quant-stat-value" style="color: var(--accent-blue);" id="cmSpec">99.8%</div>
+                        </div>
+                        <div class="quant-stat">
+                            <div class="quant-stat-label">Balanced Accuracy</div>
+                            <div class="quant-stat-value" id="cmBalAcc">91.6%</div>
+                        </div>
+                        <div class="quant-stat">
+                            <div class="quant-stat-label">F1-Score</div>
+                            <div class="quant-stat-value" id="cmF1">0.851</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
