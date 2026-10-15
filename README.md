@@ -20,6 +20,7 @@ This repository provides a complete, hardware-independent simulation pipeline th
 *   **Author:** Aishik Tokdar
 *   **Repository URL:** [https://github.com/AishikTokdar/NeuroSomno-HDL](https://github.com/AishikTokdar/NeuroSomno-HDL)
 *   **Live Interactive Dashboard:** [https://aishiktokdar.github.io/NeuroSomno-HDL/](https://aishiktokdar.github.io/NeuroSomno-HDL/)
+*   **Live Interactive Dashboard:** [https://aishiktokdar.github.io/NeuroSomno-HDL/](https://aishiktokdar.github.io/NeuroSomno-HDL/)
 
 ---
 

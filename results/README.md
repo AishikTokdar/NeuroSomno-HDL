@@ -55,4 +55,4 @@ A clock constraint of **10.000 ns** (100 MHz clock frequency) was applied to the
 *   **Maximum Target Frequency (Fmax):** $\approx \mathbf{171.12\text{ MHz}}$
 
 > [!NOTE]
-> The ~10% drop in accuracy in the hardware compared to MATLAB (from 99.62% to 89.00%) is a standard consequence of 16-bit signed fixed-point quantization (Q3.13 format) constraints. Note that the default Vivado testbench (`tb_top_sim.v`) only runs a subset of 30 samples to minimize simulation time, which will output either **86.67%** or **90.00%** accuracy in the console, corresponding to this 89.00% overall quantized model performance.
+> The ~10% drop in accuracy in the hardware compared to MATLAB (from 99.62% to 89.00%) is a standard consequence of 16-bit signed fixed-point quantization (Q3.13 format) constraints. Note that the default Vivado testbench ([`tb_top_sim.v`](../hardware/tb/tb_top_sim.v)) only runs a subset of 30 samples to minimize simulation time, which will output either **86.67%** or **90.00%** accuracy in the console, corresponding to this 89.00% overall quantized model performance.
