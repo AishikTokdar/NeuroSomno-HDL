@@ -4,7 +4,7 @@ An experimental edge-intelligent EEG sleep apnea classifier featuring PyTorch tr
 
 The active inference hardware implements a **784-30-30-10-2 fully connected neural network (FCN)** with signed 16-bit Q3.13 fixed-point arithmetic. Class output `0` corresponds to normal respiration, and class output `1` corresponds to an apnea event.
 
-All software verification tests, bit-true arithmetic checks, and synthesis cell mappings pass. Physical FPGA board deployment, vendor place-and-route timing closure, and real-patient clinical trials remain open engineering milestones.
+The software regression suite, integer/RTL comparisons and synthesis mapping pass. MATLAB execution, physical board integration, vendor place-and-route timing/power analysis and annotated real-patient evaluation remain unverified.
 
 ---
 
@@ -45,20 +45,20 @@ All validation figures reflect evaluation against synthetic biosignal datasets g
 
 | Check | Metric / Condition | Status |
 |---|---|:---:|
-| Unit and regression test suite | 29 passing assertions (`tests/audit_project.py`) | Pass |
+| Unit and regression test suite | 30 regression tests (`tests/audit_project.py`) | Pass |
 | Results dashboard checks | 5 functional verifications | Pass |
 | RTL vs. bit-true integer emulator | 2,160 individual neuron comparisons across 30 frames | 0 mismatches |
 | Hardware RTL inference accuracy | 30 / 30 frames correctly identified | 100.00% |
 | C driver mock-transport test | Strict C11 build with boundary checks (`tests/test_c_driver.c`) | Pass |
 | Memory parameter integrity | 144 MIF files validated against model checkpoint | 0 errors |
 | Parameter clipping | 24,812 signed weights and biases mapped to Q3.13 | 0 clipped |
-| Maximum quantization rounding error | 0.0000610314 (under half of 1 Q3.13 LSB = 0.000122) | Pass |
+| Maximum quantization rounding error | 0.0000610314; half an LSB is 0.0000610352 | Pass |
 
 ### Classification Performance
 
-Comparison between the 15-layer software baseline 1D-CNN and the hardware-targeted Quantized 784-30-30-10-2 FCN on the held-out test cohort (590 windows):
+The software CNN and floating-point FCN were evaluated over 590 held-out synthetic windows. A separate Q3.13 integer-reference evaluation covers the same 590 windows. The 30-frame RTL run is a smaller, distinct evaluation.
 
-| Metric | 15-Layer 1D-CNN | Quantized FCN (Hardware) |
+| Metric | Software 1D-CNN | FCN (floating point) |
 |---|---:|---:|
 | Accuracy | 97.63% | 98.98% |
 | Balanced Accuracy | 95.33% | 98.00% |
@@ -67,9 +67,16 @@ Comparison between the 15-layer software baseline 1D-CNN and the hardware-target
 | Precision | 100.00% | 100.00% |
 | F1 Score | 0.9510 | 0.9796 |
 
+The Q3.13 integer reference scores **98.98% accuracy, 98.00% balanced accuracy,
+96.00% sensitivity, 100.00% specificity, 100.00% precision and 0.9796 F1** on the
+same 590 windows. It makes the same class decisions as the floating-point FCN.
+This is integer software evaluation, not a claim that all 590 frames ran in RTL.
+Reproduce it with `python python_pipeline/evaluate_quantized.py`. See
+[the integer results](results/verification/quantized_metrics.json).
+
 #### Confusion Matrix Counts (Cohort N = 590)
 
-| Category | 15-Layer 1D-CNN | Quantized FCN (Hardware) |
+| Category | Software 1D-CNN | FCN (floating point) |
 |---|---:|---:|
 | True Negatives (Normal) | 440 | 440 |
 | False Positives (Spurious Alarms) | 0 | 0 |
@@ -84,7 +91,7 @@ Mapped using Yosys 0.66 targeting Xilinx 7-series FPGA architectural primitives:
 |---|---:|---|
 | `DSP48E1` | 88 | Pipelined 16-bit signed multipliers in neuron PEs |
 | `RAMB18E1` | 40 | Synchronous Block RAM parameter memory tiles |
-| `FDRE` / `FDSE` (Flip-Flops) | 13,837 | Pipeline registers, accumulators, and serializers |
+| `FDCE` / `FDPE` / `FDRE` (Flip-Flops) | 13,837 | Pipeline registers, accumulators, and serializers |
 | `LUT` (Logic Cells) | 15,776 | Interconnect multiplexers, activation ROM, control FSM |
 | Estimated Logic Cells | 11,102 | Structural logic equivalent |
 | Total Active Parameters | 24,812 | 16-bit fixed-point weight and bias words |
@@ -98,7 +105,7 @@ Mapped using Yosys 0.66 targeting Xilinx 7-series FPGA architectural primitives:
 - **Python 3.10+** with `numpy`, `torch`, `scipy` (install via `python_pipeline/requirements.txt`)
 - **Icarus Verilog** (`iverilog`, `vvp`) for RTL compilation and simulation
 - **GCC / Clang** for compiling C driver tests
-- **Node.js** for local dashboard serving
+- **Node.js** for frontend checks (Python can serve the static website)
 - **Yosys** (optional) for open-source logic synthesis and FPGA cell mapping
 
 ### Installation and One-Command Verification
@@ -112,7 +119,7 @@ cd NeuroSomno-HDL
 pip install -r python_pipeline/requirements.txt
 
 # Run complete regression suite
-python -m unittest tests/audit_project.py
+python scripts/verify_project.py
 
 # Run memory and parameter validation
 python python_pipeline/validate_memory.py
@@ -354,12 +361,12 @@ NeuroSomno-HDL/
 ├── results/                   Compact test summaries and log archives
 ├── scripts/                   Automated cross-tool verification runners
 ├── tests/                     Unit test suite and C driver mock-transport tests
-├── app.js                     Interactive browser results dashboard logic
-├── index.html                 Live dashboard and Q3.13 numerical converter
+├── app.js                     Interactive signal, architecture and results controls
+├── index.html                 Informative project website and Q3.13 explorer
 ├── run_all.bat                Windows CMD verification launcher
 ├── run_all.ps1                Windows PowerShell verification launcher
 ├── run_all.sh                 Linux / macOS Bash verification launcher
-└── style.css                  Results dashboard styles
+└── style.css                  Responsive project website styles
 ```
 
 ---
@@ -375,3 +382,19 @@ NeuroSomno-HDL/
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Website development and deployment
+
+The public page explains the signal pipeline, model architecture, classification
+metrics, fixed-point arithmetic and FPGA resource tradeoffs. Developer diagnostics
+stay in the repository reports and are not shown in the public page.
+
+```sh
+python -m http.server 8765
+```
+
+The Pages workflow copies the public assets into a temporary directory, uploads a named
+`github-pages` artifact, checks that an artifact ID was produced, and deploys only
+after that build completes. The public package excludes RTL sources, model
+parameters, test reports and raw logs. A remote deployment must still run after
+these workflow changes are pushed.
