@@ -38,6 +38,18 @@ if (-not $phase1Done -and $octaveCmd) {
     }
 }
 
+$pythonCmd = Get-Command python -ErrorAction SilentlyContinue
+if (-not $phase1Done -and $pythonCmd) {
+    Write-Host "[INFO] Running Python ML & Quantization Pipeline..." -ForegroundColor Green
+    & python python_pipeline/preprocess_eeg.py
+    & python python_pipeline/train_model.py
+    & python python_pipeline/export_weights.py
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "[SUCCESS] Python pipeline completed." -ForegroundColor Green
+        $phase1Done = $true
+    }
+}
+
 if (-not $phase1Done) {
     Write-Host "[INFO] Utilizing pre-extracted memory initialization files (.mif / .mem / .txt) in hardware/mif/" -ForegroundColor Yellow
 }

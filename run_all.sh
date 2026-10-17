@@ -32,8 +32,15 @@ elif command -v octave &> /dev/null; then
     else
         echo "[WARNING] Octave execution encountered an issue. Using pre-extracted hardware MIF files..."
     fi
+elif command -v python3 &> /dev/null || command -v python &> /dev/null; then
+    PY_CMD="python3"
+    command -v python3 &> /dev/null || PY_CMD="python"
+    echo "[INFO] Running Python ML & Quantization Pipeline ($PY_CMD)..."
+    $PY_CMD python_pipeline/preprocess_eeg.py
+    $PY_CMD python_pipeline/train_model.py
+    $PY_CMD python_pipeline/export_weights.py
+    echo "[SUCCESS] Python pipeline completed."
 else
-    echo "[INFO] Neither MATLAB nor GNU Octave was found in PATH."
     echo "[INFO] Utilizing pre-extracted memory initialization files (.mif / .mem / .txt) in hardware/mif/"
 fi
 

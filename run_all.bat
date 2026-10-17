@@ -18,7 +18,15 @@ if %ERRORLEVEL% equ 0 (
         echo [INFO] GNU Octave detected. Running preprocessing pipeline in Octave...
         octave --no-gui --eval "run('matlab_preprocessing/preprocess_eeg.m'); run('matlab_preprocessing/segment_eeg.m'); run('matlab_preprocessing/handle_imbalance.m'); run('matlab_preprocessing/train_1dcnn.m'); run('matlab_preprocessing/extract_weights.m');"
     ) else (
-        echo [INFO] Neither MATLAB nor Octave found in PATH. Using pre-extracted hardware memory files in hardware/mif/
+        where python >nul 2>&1
+        if %ERRORLEVEL% equ 0 (
+            echo [INFO] Python detected. Running ML & Quantization Pipeline...
+            python python_pipeline/preprocess_eeg.py
+            python python_pipeline/train_model.py
+            python python_pipeline/export_weights.py
+        ) else (
+            echo [INFO] Utilizing pre-extracted memory initialization files in hardware/mif/
+        )
     )
 )
 
