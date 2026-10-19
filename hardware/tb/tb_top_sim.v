@@ -128,4 +128,4 @@ module tb_top_sim;
             $display("Sample %d: Pred = %d, Act = %d", sample_idx, rd_val[3:0], test_labels[sample_idx]);
         end
     endtask
-end
+endmodule

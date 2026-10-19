@@ -135,4 +135,4 @@ module axi_lite_wrapper (
             end
         end
     end
-end
+endmodule

@@ -22,8 +22,6 @@ module layer3 (
                 .layerNo(3),
                 .neuronNo(i),
                 .numWeight(30),
-                .mifFile($sformatf("w_3_%d.mif", i)),
-                .biasMifFile($sformatf("b_3_%d.mif", i)),
                 .actType("sigmoid")
             ) n_inst (
                 .clk(clk),
@@ -69,4 +67,5 @@ module layer3 (
                 end
             end
         end
+    end
 endmodule
