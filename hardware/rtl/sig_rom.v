@@ -11,4 +11,4 @@ module sig_rom (
     always @(posedge clk) begin
         o_data <= rom[index];
     end
-end
+endmodule

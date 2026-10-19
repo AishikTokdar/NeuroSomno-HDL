@@ -22,6 +22,8 @@ module neuron #(
     wire signed [15:0] w_data;
     weight_memory #(
         .numWeight(numWeight),
+        .layerNo(layerNo),
+        .neuronNo(neuronNo),
         .mifFile(mifFile)
     ) wm (
         .clk(clk),
@@ -33,9 +35,13 @@ module neuron #(
         .wdata(wdata)
     );
     reg signed [15:0] bias_mem [0:0];
+    reg [8*32-1:0] resolved_bias_mif_file;
     initial begin
         if (biasMifFile != "") begin
             $readmemb(biasMifFile, bias_mem);
+        end else begin
+            $sformat(resolved_bias_mif_file, "b_%0d_%0d.mif", layerNo, neuronNo);
+            $readmemb(resolved_bias_mif_file, bias_mem);
         end
     end
     always @(posedge clk) begin
@@ -118,4 +124,5 @@ module neuron #(
                 state <= 0;
             end
         end
+    end
 endmodule

@@ -22,8 +22,6 @@ module layer1 (
                 .layerNo(1),
                 .neuronNo(i),
                 .numWeight(784),
-                .mifFile($sformatf("w_1_%d.mif", i)),
-                .biasMifFile($sformatf("b_1_%d.mif", i)),
                 .actType("relu")
             ) n_inst (
                 .clk(clk),
@@ -69,4 +67,5 @@ module layer1 (
                 end
             end
         end
+    end
 endmodule
