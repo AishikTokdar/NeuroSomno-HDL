@@ -2,36 +2,60 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  group: github-pages
+  cancel-in-progress: false
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      artifact_id: ${{ steps.upload.outputs.artifact_id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Build public website
+        run: |
+          node tests/audit_dashboard.cjs
+          mkdir -p "$RUNNER_TEMP/site/assets" "$RUNNER_TEMP/site/results/verification"
+          cp index.html style.css app.js LICENSE "$RUNNER_TEMP/site/"
+          cp assets/signal_example.json "$RUNNER_TEMP/site/assets/"
+          cp results/verification/{model_metrics,quantized_metrics,synthesis_summary}.json "$RUNNER_TEMP/site/results/verification/"
+      - name: Upload Pages artifact
+        id: upload
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          name: github-pages
+          path: ${{ runner.temp }}/site
+      - name: Check upload completed
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
+        run: test -n "$ARTIFACT_ID"
+
   deploy:
+    needs: build
+    if: ${{ needs.build.outputs.artifact_id != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy uploaded website
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.1
+        with:
+          artifact_name: github-pages
