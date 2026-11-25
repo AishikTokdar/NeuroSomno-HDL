@@ -72,7 +72,7 @@ def main():
                'rtl_parity': json.loads((OUTPUT / 'rtl_parity.json').read_text()),
                'memory_assets': {k:v for k,v in json.loads((OUTPUT/'mif_validation.json').read_text()).items()
                                  if k not in ('files','auxiliary_files')},
-               'dashboard': '5 functional checks for the project website',
+               'dashboard': '9 functional checks for the project website',
                'c_driver': 'compiled and executed with mock MMIO/transport',
                'synthesis': 'Xilinx 7-series mapping' if args.synthesize else
                             'Yosys structural check' if args.yosys else 'not run: Yosys unavailable',

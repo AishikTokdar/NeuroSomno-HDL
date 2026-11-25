@@ -46,7 +46,7 @@ All validation figures reflect evaluation against synthetic biosignal datasets g
 | Check | Metric / Condition | Status |
 |---|---|:---:|
 | Unit and regression test suite | 30 regression tests (`tests/audit_project.py`) | Pass |
-| Results dashboard checks | 5 functional verifications | Pass |
+| Project website checks | 9 functional verifications | Pass |
 | RTL vs. bit-true integer emulator | 2,160 individual neuron comparisons across 30 frames | 0 mismatches |
 | Hardware RTL inference accuracy | 30 / 30 frames correctly identified | 100.00% |
 | C driver mock-transport test | Strict C11 build with boundary checks (`tests/test_c_driver.c`) | Pass |
@@ -389,6 +389,12 @@ The public page explains the signal pipeline, model architecture, classification
 metrics, fixed-point arithmetic and FPGA resource tradeoffs. Developer diagnostics
 stay in the repository reports and are not shown in the public page.
 
+The page includes waveform and frequency views of the supplied synthetic signal,
+a layer and parameter explorer, mathematical activation curves, model comparison
+charts, confusion matrices, an AXI transaction walkthrough, and a Q3.13 converter.
+Light, dark and system themes share the same accessible controls and chart scales.
+The theme preference is stored locally when browser storage is available.
+
 ```sh
 python -m http.server 8765
 ```
@@ -396,5 +402,4 @@ python -m http.server 8765
 The Pages workflow copies the public assets into a temporary directory, uploads a named
 `github-pages` artifact, checks that an artifact ID was produced, and deploys only
 after that build completes. The public package excludes RTL sources, model
-parameters, test reports and raw logs. A remote deployment must still run after
-these workflow changes are pushed.
+parameters, test reports and raw logs. Deployment runs after changes are pushed to `main`.
